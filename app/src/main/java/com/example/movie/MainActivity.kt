@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
 
         movieList = ArrayList<Movie>()
         postAdapter = MoviesAdapter(this,movieList)
-        recyclerView.layoutManager = GridLayoutManager(this, 2)
+        recyclerView.layoutManager = GridLayoutManager(this, 1)
         recyclerView.itemAnimator= DefaultItemAnimator()
         recyclerView.adapter = postAdapter
         postAdapter?.notifyDataSetChanged()

@@ -53,13 +53,13 @@ class MoviesAdapter(
             //                .placeholder(R.drawable.load)
 
             view.setOnClickListener {
-                val intent = Intent(view.context, DetailActivity::class.java)
+                val intent = Intent(context, DetailActivity::class.java)
                 intent.putExtra("original_title", post?.original_title)
                 intent.putExtra("poster_path", post?.poster_path)
                 intent.putExtra("overview", post?.overview)
                 intent.putExtra("vote_average", (post?.vote_average).toString())
                 intent.putExtra("relase_date", post?.release_date)
-                view.context.startActivity(intent)
+                context.startActivity(intent)
             }
         }
     }

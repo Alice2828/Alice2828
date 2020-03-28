@@ -21,8 +21,8 @@
 
             <ImageView
                 android:id="@+id/thumbnail"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_width="120dp"
+                android:layout_height="200dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="fitXY" />
 
