@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">FilmsApplication</string>
+    <string name="action_settings">Settings</string>
+    <string name="name_movie">FilmsApplication</string>
+    <string name="movie_details">FilmsApplication</string>
+    <string name="plot">FilmsApplication</string>
+    <string name="rating">FilmsApplication</string>
+    <string name="release">FilmsApplication</string>
+</resources>
