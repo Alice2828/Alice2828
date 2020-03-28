@@ -39,12 +39,14 @@ class MoviesAdapter(
 
         fun bind(post: Movie?) {
             val title = view.findViewById<TextView>(R.id.title)
+            val plotsynopsis = view.findViewById<TextView>(R.id.description)
             val userrating = view.findViewById<TextView>(R.id.userrating)
             val thumbnail = view.findViewById<ImageView>(R.id.thumbnail)
 
 
             title.text = post?.original_title
             val vote = post?.vote_average
+            plotsynopsis.text= post?.overview
             userrating.text = vote.toString()
 
             Glide.with(context)
@@ -54,11 +56,11 @@ class MoviesAdapter(
 
             view.setOnClickListener {
                 val intent = Intent(context, DetailActivity::class.java)
-                intent.putExtra("original_title", post?.original_title)
-                intent.putExtra("poster_path", post?.poster_path)
-                intent.putExtra("overview", post?.overview)
-                intent.putExtra("vote_average", (post?.vote_average).toString())
-                intent.putExtra("relase_date", post?.release_date)
+                intent.putExtra("original_title", post?.original_title)/*название*/
+                intent.putExtra("poster_path", post?.poster_path)/*фото*/
+                intent.putExtra("overview", post?.overview)/*описание*/
+                intent.putExtra("vote_average", (post?.vote_average).toString())/*рейтинг*/
+                intent.putExtra("relase_date", post?.release_date)/*дата создания*/
                 context.startActivity(intent)
             }
         }

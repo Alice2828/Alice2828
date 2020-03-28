@@ -34,6 +34,7 @@ class DetailActivity:AppCompatActivity(){
         userRating=findViewById(R.id.userrating)
         releaseDate=findViewById(R.id.releasedate)
 
+
         val intent=getIntent()
         if(intent.hasExtra("original_title"))
         {
@@ -43,6 +44,7 @@ class DetailActivity:AppCompatActivity(){
             val rating=getIntent().getExtras()?.getString("vote_average")
             val sateOfRelease=getIntent().getExtras()?.getString("release_date")
 
+
             Glide.with(this)
                 .load(thumbnail)
                 .into(imageView)
@@ -51,6 +53,7 @@ class DetailActivity:AppCompatActivity(){
             plotSynopsis.text=synopsis
             userRating.text=rating
             releaseDate.text=sateOfRelease
+
         }
 
         else
@@ -87,7 +90,6 @@ class DetailActivity:AppCompatActivity(){
                     collapse.setTitle(" ")
                     isShow=false
                 }
-
             }
         })
 

@@ -28,15 +28,11 @@ interface PostApi {
     @GET("movie/popular")
     fun getPopularMovieList(@Query("api_key") apiKey: String): Call<MovieResponse>
 
-
     @GET("movie/upcoming")
     fun getUpcomingMovieList(@Query("api_key") apiKey: String): Call<MovieResponse>
 
-
     @GET("movie/top_rated")
     fun getTopRatedMovieList(@Query("api_key") apiKey: String): Call<MovieResponse>
-
-
 
     @GET("movie/now_playing")
     fun getNowPlayingMovieList(@Query("api_key") apiKey: String): Call<MovieResponse>
