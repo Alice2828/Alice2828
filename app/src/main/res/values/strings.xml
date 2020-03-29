@@ -6,4 +6,8 @@
     <string name="plot">Plot Synopsis</string>
     <string name="rating">Rating</string>
     <string name="release">Release Date</string>
+    <string name="main_name">Кино ТВ-Онлайн Фильмы</string>
+    <string name="profile_name">Профиль</string>
+
+
 </resources>
