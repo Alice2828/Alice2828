@@ -23,7 +23,7 @@ class DetailActivity:AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
         toolbar = findViewById(R.id.toolbar)
-
+        setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         initCollapsingToolbar()
