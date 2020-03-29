@@ -18,10 +18,10 @@
         >
 
         <LinearLayout
-            android:layout_width="380dp"
+            android:layout_width="620dp"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="30dp"
             android:background="#ffffff">
 
 
@@ -79,7 +79,7 @@
                 <ImageView
                     android:layout_width="19dp"
                     android:layout_height="19dp"
-                    android:layout_marginLeft="160dp"
+                    android:layout_marginLeft="380dp"
                     android:layout_marginTop="0dp"
                     android:background="@drawable/ic_message"/>
 
@@ -122,8 +122,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/movieTitle"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="19dp"
                 android:textAlignment="center"
                 android:text="Читать комментарий"
                 android:textSize="15dp"
