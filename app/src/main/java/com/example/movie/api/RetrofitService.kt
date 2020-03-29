@@ -4,6 +4,7 @@ package com.example.movie.api
 import com.example.movie.model.MovieResponse
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
+import okhttp3.Response
 
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -28,13 +29,6 @@ object RetrofitService {
     }
 
 
-//    private fun getOkHttp(): OkHttpClient {
-//        val okHttpClient = OkHttpClient.Builder()
-//            .connectTimeout(60, TimeUnit.SECONDS)
-//            .readTimeout(60, TimeUnit.SECONDS)
-//
-//        return okHttpClient.build()
-//    }
 
 
 }
@@ -53,8 +47,8 @@ interface PostApi {
     fun getRequestToken(@Query("api_key") apiKey: String): Call<RequestToken>
 
 
-//    @GET("authenticate/")
-//    fun getResponse(@Query("request_token") request_token: RequestToken):Callback
+    @GET("authenticate/")
+    fun getResponse(@Query("request_token") request_token: String):Response
 
     @POST ("authentication/session/new")
     fun getNewSession(@Query("api_key") apiKey:String, @Query("request_token") requestToken:RequestToken):Call<Session>

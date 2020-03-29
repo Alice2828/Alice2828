@@ -19,8 +19,8 @@ import retrofit2.Response
 
 class RegistrationActivity : AppCompatActivity() {
     lateinit var email: EditText
-    lateinit  var password: EditText
-    lateinit var name:EditText
+    lateinit var password: EditText
+    lateinit var name: EditText
     lateinit var login: Button
     lateinit var register: Button
     lateinit var preferences: SharedPreferences
@@ -37,49 +37,65 @@ class RegistrationActivity : AppCompatActivity() {
 
         register.setOnClickListener {
 
-                val emailValue = email.getText().toString()
-                val passwordValue = password.getText().toString()
-                val nameValue = name.getText().toString()
-                val editor = preferences.edit()
+            val emailValue = email.getText().toString()
+            val passwordValue = password.getText().toString()
+            val nameValue = name.getText().toString()
+            val editor = preferences.edit()
 
-//            if(emailValue.isEmpty()||passwordValue.isEmpty()||nameValue.isEmpty())
-//            {
-//                Toast.makeText(this,"Empty values are invalid", Toast.LENGTH_SHORT).show()
-//            }
-//            else if(!emailValue.contains("[a-zA-Z0-9._-]+@[a-zA-Z0-9-]+\\.[a-zA-Z.]{2,18}".toRegex())){
-//                Toast.makeText(this,"Invalid email", Toast.LENGTH_SHORT).show()
-//            }
-//            else if(!passwordValue.contains("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#\$%!\\-_?&])(?=\\S+\$).{8,}".toRegex())){
-//                Toast.makeText(this,"Invalid password", Toast.LENGTH_SHORT).show()
-//
-//            }
-//            else {
-//                try {
-//
-//                    RetrofitService.getPostApi().getRequestToken(BuildConfig.THE_MOVIE_DB_API_TOKEN)
-//                        .enqueue(object : Callback<RequestToken> {
-//                            override fun onFailure(call: Call<RequestToken>, t: Throwable) {
-//
-//                            }
-//
-//                            override fun onResponse(
-//                                call: Call<RequestToken>,
-//                                response: Response<RequestToken>
-//                            ) {
-//
-//                                if (response.isSuccessful) {
+            if (emailValue.isEmpty() || passwordValue.isEmpty() || nameValue.isEmpty()) {
+                Toast.makeText(this, "Empty values are invalid", Toast.LENGTH_SHORT).show()
+            } else if (!emailValue.contains("[a-zA-Z0-9._-]+@[a-zA-Z0-9-]+\\.[a-zA-Z.]{2,18}".toRegex())) {
+                Toast.makeText(this, "Invalid email", Toast.LENGTH_SHORT).show()
+            } else if (!passwordValue.contains("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#\$%!\\-_?&])(?=\\S+\$).{8,}".toRegex())) {
+                Toast.makeText(this, "Invalid password", Toast.LENGTH_SHORT).show()
+
+            } else {
+                try {
+
+                    RetrofitService.getPostApi().getRequestToken(BuildConfig.THE_MOVIE_DB_API_TOKEN)
+                        .enqueue(object : Callback<RequestToken> {
+                            override fun onFailure(call: Call<RequestToken>, t: Throwable) {
+
+                            }
+
+                            override fun onResponse(
+                                call: Call<RequestToken>,
+                                response: Response<RequestToken>
+                            ) {
+
+                                if (response.isSuccessful) {
+
 //                                    val token = response.body()?.request_token
+//                                    RetrofitService.getPostApi().getResponse(BuildConfig.THE_MOVIE_DB_API_TOKEN)
+//                                        .enqueue(object : Callback<RequestToken> {
+//                                            override fun onFailure(call: Call<RequestToken>, t: Throwable) {
+//
+//                                            }
+//
+//                                            override fun onResponse(
+//                                                call: Call<RequestToken>,
+//                                                response: Response<RequestToken>
+//                                            ) {
+//
+//                                                if (response.isSuccessful) {
+//                                                    val token = response.body()?.request_token
 //
 //
-//                                }
+//                                                }
 //
-//                            }
-//                        })
-//
-//
-//                } catch (e: Exception) {
-//                    Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT)
-//                }
+//                                            }
+//                                        })
+
+
+                                }
+
+                            }
+                        })
+
+
+                } catch (e: Exception) {
+                    Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT)
+                }
 
 
 
@@ -89,11 +105,11 @@ class RegistrationActivity : AppCompatActivity() {
                 editor.apply()
                 Toast.makeText(this@RegistrationActivity, "User registered", Toast.LENGTH_SHORT)
                     .show()
-//            }
+            }
 
         }
 
-        login.setOnClickListener{
+        login.setOnClickListener {
 
             onBackPressed()
 
