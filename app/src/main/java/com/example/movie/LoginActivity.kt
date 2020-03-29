@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.content.Intent
 import android.view.View
+import android.widget.Toast
 
 class LoginActivity : AppCompatActivity() {
     lateinit var email:EditText
@@ -29,12 +30,17 @@ class LoginActivity : AppCompatActivity() {
                 val passwordValue = password.getText().toString()
                 val registeredEmail = preferences.getString("email", "")
                 val registeredPassword = preferences.getString("password", "")
-                if (emailValue == registeredEmail && passwordValue == registeredPassword)
+                if (emailValue == registeredEmail && passwordValue == registeredPassword && emailValue!=""&& passwordValue!="")
                 {
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
 
             }
+            else if(!"\\w".toRegex().matches(emailValue) || !passwordValue.contains("\\w".toRegex()))
+                {
+                    Toast.makeText(this, "Empty login or password", Toast.LENGTH_LONG).show()
+                }
+
         }
         register.setOnClickListener {
 
