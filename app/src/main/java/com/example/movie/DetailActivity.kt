@@ -1,6 +1,7 @@
 package com.example.movie
 
 import android.os.Bundle
+import android.view.Menu
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -25,6 +26,7 @@ class DetailActivity:AppCompatActivity(){
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
 
         initCollapsingToolbar()
 
@@ -58,6 +60,11 @@ class DetailActivity:AppCompatActivity(){
             Toast.makeText(this,"No API Data", Toast.LENGTH_SHORT).show()
         }
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.detail_menu,menu)
+        return true
     }
 
      fun initCollapsingToolbar()
