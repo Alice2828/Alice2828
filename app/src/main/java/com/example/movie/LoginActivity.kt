@@ -30,16 +30,22 @@ class LoginActivity : AppCompatActivity() {
                 val passwordValue = password.getText().toString()
                 val registeredEmail = preferences.getString("email", "")
                 val registeredPassword = preferences.getString("password", "")
-                if (emailValue == registeredEmail && passwordValue == registeredPassword && emailValue!=""&& passwordValue!="")
-                {
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
+//                if (emailValue == registeredEmail && passwordValue == registeredPassword && emailValue!=""&& passwordValue!="")
+//                {
+//                    val intent = Intent(this, MainActivity::class.java)
+//                    startActivity(intent)
+//
+//            }
+            if (emailValue == registeredEmail && passwordValue == registeredPassword)
+            {
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
 
             }
-            else if(!"\\w".toRegex().matches(emailValue) || !passwordValue.contains("\\w".toRegex()))
-                {
-                    Toast.makeText(this, "Empty login or password", Toast.LENGTH_LONG).show()
-                }
+//            else if(!"\\w".toRegex().matches(emailValue) || !passwordValue.contains("\\w".toRegex()))
+//                {
+//                    Toast.makeText(this, "Empty login or password", Toast.LENGTH_LONG).show()
+//                }
 
         }
         register.setOnClickListener {
