@@ -14,7 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:overScrollMode="never"
-        android:background="@color/grey"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         >
 
@@ -38,19 +37,17 @@
                 android:paddingEnd="10dp"
                 android:textStyle="bold"
                 android:textSize="22sp" />
-
             <TextView
                 android:id="@+id/plotsynopsis_ganre"
-                android:layout_width="88dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/plot"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:background="#097BB1"
-                android:text="Экшен"
-                android:textAlignment="center"
+                android:layout_marginTop="5dp"
+                android:background="#0B83F7"
                 android:textColor="#ffffff"
+                android:text="Экшен"
                 android:textSize="15dp" />
 
             <TextView
@@ -133,9 +130,8 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="8dp"
                 android:textAlignment="center"
-                android:text="Напишите свой первый комментарий..."
+                android:text="Читать комментарий"
                 android:textSize="15dp"
-                android:textStyle="bold"
                 android:textColor="#000000"/>
 
 

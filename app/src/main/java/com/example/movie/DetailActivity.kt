@@ -2,6 +2,7 @@ package com.example.movie
 
 import android.os.Bundle
 import android.view.Menu
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -66,6 +67,8 @@ class DetailActivity:AppCompatActivity(){
         menuInflater.inflate(R.menu.detail_menu,menu)
         return true
     }
+
+
 
      fun initCollapsingToolbar()
     {
