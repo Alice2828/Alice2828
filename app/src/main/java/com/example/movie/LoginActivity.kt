@@ -26,6 +26,8 @@ class LoginActivity : AppCompatActivity() {
         login = findViewById(R.id.login)
         register = findViewById(R.id.register)
         preferences = getSharedPreferences("Userinfo", 0)
+
+
         login.setOnClickListener {
 
                 val emailValue = email.getText().toString()
@@ -38,7 +40,28 @@ class LoginActivity : AppCompatActivity() {
 //                    startActivity(intent)
 //
 //            }
-            if (emailValue == registeredEmail && passwordValue == registeredPassword)
+            if( emailValue.isEmpty()){
+                email.error="This field is required"
+                email.requestFocus()}
+            else if (!emailValue.contains("[a-zA-Z0-9._-]+@[a-zA-Z0-9-]+\\.[a-zA-Z.]{2,18}".toRegex()))
+            {
+                email.error="Please Check and Enter a valid Email Address"
+                email.requestFocus()
+            }
+
+
+            else if(passwordValue.isEmpty()) {
+                password.error = "This field is required"
+                password.requestFocus()
+            }
+
+            else if (!passwordValue.contains("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#\$%!\\-_?&])(?=\\S+\$).{8,}".toRegex()))
+            {
+                password.error="Enter a Password Correctly"
+                password.requestFocus()
+
+            }
+            else if (emailValue == registeredEmail && passwordValue == registeredPassword)
             {
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
