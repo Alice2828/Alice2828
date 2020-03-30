@@ -26,14 +26,10 @@ class MoviesAdapter(
 
     override fun getItemCount(): Int = moviesList?.size ?: 0
 
-    override fun onBindViewHolder(p0: MovieViewHolder, p1: Int) {
-        p0.bind(moviesList?.get(p1))
+    override fun onBindViewHolder(viewHolder: MovieViewHolder, i: Int) {
+        viewHolder.bind(moviesList?.get(i))
     }
 
-    fun clearAll() {
-        (moviesList as? ArrayList<Movie>)?.clear()
-        notifyDataSetChanged()
-    }
 
     inner class MovieViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
@@ -59,14 +55,11 @@ class MoviesAdapter(
                 intent.putExtra("overview", post?.overview)
                 intent.putExtra("vote_average", (post?.vote_average).toString())
                 intent.putExtra("relase_date", post?.release_date)
-                context.startActivity(intent)
+                view.context.startActivity(intent)
             }
         }
     }
 
-    interface RecyclerViewItemClick {
 
-        fun itemClick(position: Int, item: Movie)
-    }
 }
 

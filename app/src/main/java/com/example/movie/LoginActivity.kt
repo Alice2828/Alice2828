@@ -1,13 +1,12 @@
 package com.example.movie
 
+import android.content.Intent
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
-import android.content.Intent
-import android.view.View
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.movie.myFragments.MainFragment
 
 class LoginActivity : AppCompatActivity() {
     lateinit var email:EditText
@@ -15,6 +14,9 @@ class LoginActivity : AppCompatActivity() {
     lateinit var login:Button
     lateinit var register:Button
     lateinit var preferences:SharedPreferences
+
+//
+//    var fragment: FragmentLike = FragmentLike()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
