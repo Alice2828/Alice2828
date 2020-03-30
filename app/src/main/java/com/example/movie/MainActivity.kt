@@ -18,6 +18,7 @@ import com.example.movie.model.Movie
 import com.example.movie.model.MovieResponse
 import com.example.movie.myFragments.LikeFragment
 import com.example.movie.myFragments.MainFragment
+import com.example.movie.myFragments.ProfileFragment
 import com.example.movie.pager.LockableViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import retrofit2.Call
@@ -33,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pagerAdapter: PagerAdapter
     private var f1: Fragment = MainFragment()
     private var f2: Fragment = LikeFragment()
-   // private var f3: Fragment = ThirdFragment()
+    private var f3: Fragment = ProfileFragment()
     private var list: MutableList<Fragment> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.main_page)
         list.add(f1)
         list.add(f2)
-       // list.add(f3)
+        list.add(f3)
         pager = findViewById(R.id.pager)
         pager.setSwipable(false)
         pagerAdapter = SlidePagerAdapter(supportFragmentManager, list)
@@ -55,6 +56,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.like_posts -> {
                     pager.setCurrentItem(1, false)
+                }
+                R.id.about -> {
+                    pager.setCurrentItem(2, false)
                 }
 //                    <item
 //                android:id="@+id/home"
