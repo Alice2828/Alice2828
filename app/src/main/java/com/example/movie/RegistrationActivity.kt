@@ -15,6 +15,7 @@ import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okio.utf8Size
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -48,8 +49,53 @@ class RegistrationActivity : AppCompatActivity() {
             val nameValue = name.getText().toString()
             val editor = preferences.edit()
 
-            if (emailValue.isEmpty() || passwordValue.isEmpty() || nameValue.isEmpty()) {
-                Toast.makeText(this, "Empty values are invalid", Toast.LENGTH_SHORT).show()
+//            if (emailValue.isEmpty() || passwordValue.isEmpty() || nameValue.isEmpty()) {
+//                Toast.makeText(this, "Empty values are invalid", Toast.LENGTH_SHORT).show()
+//            }
+
+            if(nameValue.isEmpty()){
+                name.error="This field is required"
+                name.requestFocus()}
+
+
+            else if(name.getText().length<4)
+            {
+
+                name.error="Enter Valid Full Name"
+                name.requestFocus()
+
+            }
+
+            else if( emailValue.isEmpty()){
+            email.error="This field is required"
+            email.requestFocus()}
+            else if (!emailValue.contains("[a-zA-Z0-9._-]+@[a-zA-Z0-9-]+\\.[a-zA-Z.]{2,18}".toRegex()))
+            {
+                email.error="Please Check and Enter a valid Email Address"
+                email.requestFocus()
+            }
+
+
+            else if(passwordValue.isEmpty()) {
+            password.error = "This field is required"
+            password.requestFocus()
+        }
+
+            else if (!passwordValue.contains("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#\$%!\\-_?&])(?=\\S+\$).{8,}".toRegex()))
+                {
+                    password.error="Enter a Password Correctly"
+                    password.requestFocus()
+
+                }
+
+
+
+
+
+
+
+//
+
 
 //            }
 //            else if (!emailValue.contains("[a-zA-Z0-9._-]+@[a-zA-Z0-9-]+\\.[a-zA-Z.]{2,18}".toRegex())) {
@@ -57,7 +103,7 @@ class RegistrationActivity : AppCompatActivity() {
 //            } else if (!passwordValue.contains("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#\$%!\\-_?&])(?=\\S+\$).{8,}".toRegex())) {
 //                Toast.makeText(this, "Invalid password", Toast.LENGTH_SHORT).show()
 
-            } else
+             else
             {
                // getSharedPreferences("Userinfo", 0).edit().clear().apply()
                 try {
@@ -115,7 +161,7 @@ class RegistrationActivity : AppCompatActivity() {
 
     } catch (e: Exception)
     {
-        Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT)
+        Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()
     }
 
 
