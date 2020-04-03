@@ -20,6 +20,9 @@ class ProfileActivity : AppCompatActivity() {
         val authorizedEmail = preferences.getString("email", "")
         nameInfo.setText(authorizedName)
         emailInfo.setText(authorizedEmail)
+//        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
 
 
 

@@ -44,15 +44,7 @@
                 android:textStyle="bold"
                 android:text="РЕГИСТРАЦИЯ" />
 
-            <EditText
-                android:id="@+id/email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="20dp"
-                android:hint="Email"
-                android:inputType="textEmailAddress" />
+
             <EditText
                 android:id="@+id/name"
                 android:layout_width="match_parent"
@@ -62,6 +54,15 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="20dp"
                 android:inputType="text"/>
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="20dp"
+                android:hint="Email"
+                android:inputType="textEmailAddress" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
