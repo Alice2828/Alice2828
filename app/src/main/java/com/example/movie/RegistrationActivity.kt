@@ -28,8 +28,8 @@ class RegistrationActivity : AppCompatActivity() {
     lateinit var login: Button
     lateinit var register: Button
     lateinit var preferences: SharedPreferences
-    var requestToken: String = ""
-    var myResponse: String? = ""
+    lateinit var editor: SharedPreferences.Editor
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,14 +39,13 @@ class RegistrationActivity : AppCompatActivity() {
         login = findViewById(R.id.login)
         register = findViewById(R.id.register)
         name = findViewById(R.id.name)
-        preferences = getSharedPreferences("Userinfo", 0)
 
         register.setOnClickListener {
 
             val emailValue = email.getText().toString()
             val passwordValue = password.getText().toString()
             val nameValue = name.getText().toString()
-            val editor = preferences.edit()
+
 
             if (emailValue.isEmpty() || passwordValue.isEmpty() || nameValue.isEmpty()) {
                 Toast.makeText(this, "Empty values are invalid", Toast.LENGTH_SHORT).show()
@@ -60,64 +59,7 @@ class RegistrationActivity : AppCompatActivity() {
             } else
             {
                // getSharedPreferences("Userinfo", 0).edit().clear().apply()
-                try {
-
-                    RetrofitService.getPostApi().getRequestToken(BuildConfig.THE_MOVIE_DB_API_TOKEN)
-                        .enqueue(object : Callback<RequestToken> {
-                            override fun onFailure(call: Call<RequestToken>, t: Throwable) {
-
-                            }
-
-                            override fun onResponse(
-                                call: Call<RequestToken>,
-                                response: Response<RequestToken>
-                            ) {
-
-                                if (response.isSuccessful) {
-
-                                    val requestToken = response.body()?.request_token
-                                    Toast.makeText(
-                                        this@RegistrationActivity,
-                                        requestToken,
-                                        Toast.LENGTH_LONG
-                                    ).show()
-
-
-                                    val url =
-                                        "https://themoviedb.org/3/authenticate/" + requestToken
-                                    Toast.makeText(
-                                        this@RegistrationActivity,
-                                        url,
-                                        Toast.LENGTH_LONG
-                                    ).show()
-
-
-                                    this@RegistrationActivity.runOnUiThread(object :
-                                        Runnable {
-                                        override fun run() {
-                                            val browserIntent = Intent(
-                                                Intent.ACTION_VIEW,
-                                                Uri.parse(url)
-                                            )
-                                            startActivity(browserIntent)
-                                        }
-                                    })
-                                }
-                                registration(
-                                    editor,
-                                    emailValue,
-                                    passwordValue,
-                                    nameValue
-                                )
-                            }
-                        })
-
-
-    } catch (e: Exception)
-    {
-        Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT)
-    }
-
+               registration(emailValue, passwordValue, nameValue)
 
 }
 
@@ -133,11 +75,12 @@ login.setOnClickListener {
 }
 
 fun registration(
-    editor: SharedPreferences.Editor,
     emailValue: String,
     passwordValue: String,
     nameValue: String
 ) {
+    preferences = getSharedPreferences(emailValue, 0)
+    editor = preferences.edit()
     editor.putString("email", emailValue)
     editor.putString("password", passwordValue)
     editor.putString("name", nameValue)

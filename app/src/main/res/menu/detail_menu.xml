@@ -2,12 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/home"
+        android:id="@+id/favourite"
         android:title="Favourite"
         app:showAsAction="always"
         android:icon="@drawable/ic_favorite_border"/>
     <item
-        android:id="@+id/like_posts"
+        android:id="@+id/share"
         android:title="Закладки"
         app:showAsAction="always"
         android:icon="@drawable/ic_share"/>

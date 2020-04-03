@@ -1,12 +1,13 @@
 package com.example.movie
 
+//import android.widget.Toolbar
 import android.os.Bundle
 import android.view.Menu
-import android.view.View
+import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-//import android.widget.Toolbar
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
@@ -54,7 +55,19 @@ class DetailActivity:AppCompatActivity(){
             plotSynopsis.text=synopsis
             userRating.text=rating
             releaseDate.text=sateOfRelease
-        }
+//            toolbar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener {
+//                   if (it.itemId == R.id.favourite) {
+//                       if (toolbar.getMenu().findItem(R.id.favourite).icon == getResources().getDrawable(
+//                               R.drawable.hearted
+//                           )
+//                       )
+//                           toolbar.getMenu().findItem(R.id.favourite).setIcon(R.drawable.ic_favorite_border)
+//                       else
+//                           toolbar.getMenu().findItem(R.id.favourite).setIcon(R.drawable.hearted)
+//                   }
+//                true
+//            })
+       }
 
         else
         {
@@ -67,6 +80,7 @@ class DetailActivity:AppCompatActivity(){
         menuInflater.inflate(R.menu.detail_menu,menu)
         return true
     }
+
 
 
 
