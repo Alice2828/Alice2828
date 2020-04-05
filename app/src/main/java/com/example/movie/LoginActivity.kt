@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -11,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.movie.api.RequestToken
 import com.example.movie.api.RetrofitService
 import com.example.movie.api.Session
+import com.example.movie.model.MyAccount
+import com.example.movie.model.User
 import com.example.movie.myFragments.MainFragment
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -26,10 +29,7 @@ class LoginActivity : AppCompatActivity() {
     lateinit var preferences: SharedPreferences
     lateinit var requestToken: String
     lateinit var newRequestToken: String
-    var first = false
-    var second = false
-//
-//    var fragment: FragmentLike = FragmentLike()
+    var idAcc: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,22 +38,15 @@ class LoginActivity : AppCompatActivity() {
         password = findViewById(R.id.password)
         login = findViewById(R.id.login)
         register = findViewById(R.id.register)
-        preferences = getSharedPreferences("", 0)
+        preferences = getSharedPreferences("Username", 0)
 
         login.setOnClickListener {
 
             val emailValue = email.getText().toString()
             val passwordValue = password.getText().toString()
-            preferences = getSharedPreferences(emailValue, 0)
-            val registeredEmail = preferences.getString("email", "")
-            val registeredPassword = preferences.getString("password", "")
 
-//            if (!"\\w".toRegex().matches(emailValue) || !passwordValue.contains("\\w".toRegex())) {
-//                Toast.makeText(this, "Empty login or password", Toast.LENGTH_LONG).show()
-//            } else
+
             if (emailValue != "" && passwordValue != "") {
-//                    emailValue == registeredEmail && passwordValue == registeredPassword &&
-
                 RetrofitService.getPostApi().getRequestToken(BuildConfig.THE_MOVIE_DB_API_TOKEN)
                     .enqueue(object : Callback<RequestToken> {
                         override fun onFailure(call: Call<RequestToken>, t: Throwable) {
@@ -66,7 +59,7 @@ class LoginActivity : AppCompatActivity() {
                         ) {
 
                             if (response.isSuccessful) {
-                                // first = true
+
                                 requestToken = response.body()?.request_token!!
                                 Toast.makeText(
                                     this@LoginActivity,
@@ -96,7 +89,7 @@ class LoginActivity : AppCompatActivity() {
                                             if (response.isSuccessful) {
 
                                                 var gson = Gson()
-                                                var new_RequestToken = gson?.fromJson(
+                                                var new_RequestToken = gson.fromJson(
                                                     response.body(),
                                                     RequestToken::class.java
                                                 )
@@ -108,9 +101,15 @@ class LoginActivity : AppCompatActivity() {
                                                 ).show()
 
                                                 RetrofitService.getPostApi()
-                                                    .getSession(BuildConfig.THE_MOVIE_DB_API_TOKEN, body)
+                                                    .getSession(
+                                                        BuildConfig.THE_MOVIE_DB_API_TOKEN,
+                                                        body
+                                                    )
                                                     .enqueue(object : Callback<JsonObject> {
-                                                        override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                                                        override fun onFailure(
+                                                            call: Call<JsonObject>,
+                                                            t: Throwable
+                                                        ) {
 
                                                         }
 
@@ -121,15 +120,98 @@ class LoginActivity : AppCompatActivity() {
 
                                                             if (response.isSuccessful) {
 
+                                                                var gson = Gson()
+                                                                var new_session =
+                                                                    gson.fromJson(
+                                                                        response.body(),
+                                                                        Session::class.java
+                                                                    )
+
                                                                 val sessionId =
-                                                                    response.body()?.get("session_id").toString()
+                                                                    new_session.session_id
                                                                 Toast.makeText(
                                                                     this@LoginActivity,
                                                                     sessionId,
                                                                     Toast.LENGTH_LONG
                                                                 ).show()
-                                                                val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                                                                startActivity(intent)
+
+
+                                                                RetrofitService.getPostApi()
+                                                                    .getAccount(
+                                                                        BuildConfig.THE_MOVIE_DB_API_TOKEN,
+                                                                        sessionId
+                                                                    )
+                                                                    .enqueue(object :
+                                                                        Callback<JsonObject> {
+                                                                        override fun onFailure(
+                                                                            call: Call<JsonObject>,
+                                                                            t: Throwable
+                                                                        ) {
+                                                                            Toast.makeText(
+                                                                                this@LoginActivity,
+                                                                                "fail",
+                                                                                Toast.LENGTH_SHORT
+                                                                            ).show()
+                                                                        }
+
+                                                                        override fun onResponse(
+                                                                            call: Call<JsonObject>,
+                                                                            response: Response<JsonObject>
+                                                                        ) {
+
+                                                                            if (response.isSuccessful) {
+
+
+                                                                                var gson = Gson()
+                                                                                var new_idAcc =
+                                                                                    gson.fromJson(
+                                                                                        response.body(),
+                                                                                        MyAccount::class.java
+                                                                                    )
+                                                                                var idAcc =
+                                                                                    new_idAcc.id
+
+                                                                                Toast.makeText(
+                                                                                    this@LoginActivity,
+                                                                                    "id Acc " + idAcc,
+                                                                                    Toast.LENGTH_LONG
+                                                                                ).show()
+//                                                                                preferences.edit()
+//                                                                                    .putString(
+//                                                                                        "username",
+//                                                                                        emailValue
+//                                                                                    )
+//                                                                                preferences.edit()
+//                                                                                    .putString(
+//                                                                                        "request_token",
+//                                                                                        requestToken
+//                                                                                    )
+//                                                                                preferences.edit()
+//                                                                                    .putString(
+//                                                                                        "session_id",
+//                                                                                        sessionId
+//                                                                                    )
+//                                                                                preferences.edit()
+//                                                                                    .putInt(
+//                                                                                        "account_id",
+//                                                                                        idAcc
+//                                                                                    )
+//                                                                                preferences.edit()
+//                                                                                    .apply()
+//                                                                                preferences.edit()
+//                                                                                    .commit()
+                                                                                val user=User.create(emailValue,sessionId,idAcc)
+                                                                                val intent = Intent(
+                                                                                    this@LoginActivity,
+                                                                                    MainActivity::class.java
+                                                                                )
+                                                                                startActivity(intent)
+
+
+                                                                            }
+
+                                                                        }
+                                                                    })
 
 
                                                             }

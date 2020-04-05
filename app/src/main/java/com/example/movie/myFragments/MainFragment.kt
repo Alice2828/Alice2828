@@ -28,6 +28,8 @@ import com.example.movie.api.RetrofitService
 import com.example.movie.model.Movie
 import com.example.movie.model.MovieResponse
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import kotlinx.android.synthetic.main.content_main.view.*
 import okhttp3.internal.wait
 import retrofit2.Call
@@ -53,7 +55,9 @@ class MainFragment : Fragment() {
     lateinit var movieList: List<Movie>
     lateinit var movie: Movie
     private var rootView: View?=null
-    private var postAdapter1:MoviesAdapter?=null
+//    var account_id = activity?.getSharedPreferences("Userinfo", 0)?.getInt("account_id", 0)
+//    var session_id =activity?.getSharedPreferences("Userinfo", 0)?.getString("session_id", "")!!
+//    lateinit var favouriteMovies: List<Movie>
 
 
     override fun onCreateView(
@@ -73,11 +77,13 @@ class MainFragment : Fragment() {
         relativeLayout=(rootView as ViewGroup).findViewById(R.id.main_layout_pic)
         relativeLayout?.setOnClickListener {
             val intent = Intent(context, DetailActivity::class.java)
-            intent.putExtra("original_title", movie?.original_title)
-            intent.putExtra("poster_path", movie?.poster_path)
-            intent.putExtra("overview", movie?.overview)
-            intent.putExtra("vote_average", (movie?.vote_average).toString())
-            intent.putExtra("relase_date", movie?.release_date)
+
+            intent.putExtra("movie_id", movie.id)
+            intent.putExtra("original_title", movie.original_title)
+            intent.putExtra("poster_path", movie.poster_path)
+            intent.putExtra("overview", movie.overview)
+            intent.putExtra("vote_average", (movie.vote_average).toString())
+            intent.putExtra("relase_date", movie.release_date)
             view?.context?.startActivity(intent)
         }
         swipeRefreshLayout = (rootView as ViewGroup).findViewById(R.id.main_content)
@@ -94,6 +100,8 @@ class MainFragment : Fragment() {
         }
         bigPicCard()
         initViews()
+
+
 
 
         return rootView
@@ -143,10 +151,10 @@ class MainFragment : Fragment() {
                             movie = list!!.first()
                             dateTv?.text="март 30, 2020"
                             commentsTv?.text="0"
-                            bigPictv?.text=movie?.original_title
+                            bigPictv?.text=movie.original_title
                             bigPicCardIm?.visibility=View.VISIBLE
                             Glide.with(rootView!!.context)
-                                .load(movie?.getPosterPath())
+                                .load(movie.getPosterPath())
                                 .into((rootView as ViewGroup).findViewById(R.id.main_big_pic))
 
 
@@ -186,7 +194,7 @@ class MainFragment : Fragment() {
                             //Log.d("My_post_list", response.body().toString())
                             if (response.isSuccessful) {
                                 val list = response.body()?.results
-                                val list2=list!!.subList(1,list!!.lastIndex)
+                                val list2=list!!.subList(1,list.lastIndex)
                                 postAdapter?.moviesList=list2
                                 postAdapter?.notifyDataSetChanged()
                             }
@@ -196,8 +204,11 @@ class MainFragment : Fragment() {
 
 
             } catch (e: Exception) {
-                Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT)
+                Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show()
             }
+
+
+
         }
 
 }

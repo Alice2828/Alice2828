@@ -42,51 +42,51 @@ class RegistrationActivity : AppCompatActivity() {
 
         register.setOnClickListener {
 
-            val emailValue = email.getText().toString()
-            val passwordValue = password.getText().toString()
-            val nameValue = name.getText().toString()
+//            val emailValue = email.getText().toString()
+//            val passwordValue = password.getText().toString()
+//            val nameValue = name.getText().toString()
 
 
-            if (emailValue.isEmpty() || passwordValue.isEmpty() || nameValue.isEmpty()) {
-                Toast.makeText(this, "Empty values are invalid", Toast.LENGTH_SHORT).show()
+//            if (emailValue.isEmpty() || passwordValue.isEmpty() || nameValue.isEmpty()) {
+//                Toast.makeText(this, "Empty values are invalid", Toast.LENGTH_SHORT).show()
 
 //            }
 //            else if (!emailValue.contains("[a-zA-Z0-9._-]+@[a-zA-Z0-9-]+\\.[a-zA-Z.]{2,18}".toRegex())) {
 //                Toast.makeText(this, "Invalid email", Toast.LENGTH_SHORT).show()
 //            } else if (!passwordValue.contains("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#\$%!\\-_?&])(?=\\S+\$).{8,}".toRegex())) {
 //                Toast.makeText(this, "Invalid password", Toast.LENGTH_SHORT).show()
+//
+//            } else
+          //  {
+                // getSharedPreferences("Userinfo", 0).edit().clear().apply()
+//                registration(emailValue, passwordValue, nameValue)
+//
+//            }
 
-            } else
-            {
-               // getSharedPreferences("Userinfo", 0).edit().clear().apply()
-               registration(emailValue, passwordValue, nameValue)
+        }
 
-}
+        login.setOnClickListener {
 
-}
+            onBackPressed()
 
-login.setOnClickListener {
-
-    onBackPressed()
-
-}
+        }
 
 
-}
+    }
 
-fun registration(
-    emailValue: String,
-    passwordValue: String,
-    nameValue: String
-) {
-    preferences = getSharedPreferences(emailValue, 0)
-    editor = preferences.edit()
-    editor.putString("email", emailValue)
-    editor.putString("password", passwordValue)
-    editor.putString("name", nameValue)
-
-    editor.apply()
-    Toast.makeText(this@RegistrationActivity, "User registered", Toast.LENGTH_SHORT)
-        .show()
-}
+//    fun registration(
+//        emailValue: String,
+//        passwordValue: String,
+//        nameValue: String
+//    ) {
+//        preferences = getSharedPreferences(emailValue, 0)
+//        editor = preferences.edit()
+//        editor.putString("email", emailValue)
+//        editor.putString("password", passwordValue)
+//        editor.putString("name", nameValue)
+//
+//        editor.apply()
+//        Toast.makeText(this@RegistrationActivity, "User registered", Toast.LENGTH_SHORT)
+//            .show()
+//    }
 }

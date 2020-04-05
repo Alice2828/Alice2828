@@ -1,6 +1,5 @@
 package com.example.movie.adapter
 
-
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -13,25 +12,24 @@ import com.bumptech.glide.Glide
 import com.example.movie.DetailActivity
 import com.example.movie.R
 import com.example.movie.model.Movie
-import kotlinx.android.synthetic.main.movie_card.view.*
 
-class MoviesAdapter(
+class LikeMoviesAdapter (
     var context: Context,
-    var moviesList: List<Movie>? = null
-) : RecyclerView.Adapter<MoviesAdapter.MovieViewHolder>() {
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): MovieViewHolder {
+                         var moviesList: List<Movie>? = null
+) : RecyclerView.Adapter<LikeMoviesAdapter.LikeMovieViewHolder>() {
+    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): LikeMovieViewHolder {
         val view = LayoutInflater.from(p0.context).inflate(R.layout.movie_card, p0, false)
-        return MovieViewHolder(view)
+        return LikeMovieViewHolder(view)
     }
 
     override fun getItemCount(): Int = moviesList?.size ?: 0
 
-    override fun onBindViewHolder(viewHolder: MovieViewHolder, i: Int) {
+    override fun onBindViewHolder(viewHolder: LikeMovieViewHolder, i: Int) {
         viewHolder.bind(moviesList?.get(i))
     }
 
 
-    inner class MovieViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    inner class LikeMovieViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(post: Movie?) {
             val title = view.findViewById<TextView>(R.id.title)
@@ -50,7 +48,6 @@ class MoviesAdapter(
 
             view.setOnClickListener {
                 val intent = Intent(context, DetailActivity::class.java)
-                intent.putExtra("movie_id", post?.id)
                 intent.putExtra("original_title", post?.original_title)
                 intent.putExtra("poster_path", post?.poster_path)
                 intent.putExtra("overview", post?.overview)

@@ -1,17 +1,10 @@
 package com.example.movie
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.PagerAdapter
-import com.example.movie.adapter.MoviesAdapter
 import com.example.movie.adapter.SlidePagerAdapter
 import com.example.movie.api.RetrofitService
 import com.example.movie.model.Movie
@@ -25,17 +18,18 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+
 class MainActivity : AppCompatActivity() {
 
-
     lateinit var bottomNavigationView: BottomNavigationView
-   // var pagefragment: MainFragment = MainFragment()
-   private lateinit var pager: LockableViewPager
+       private lateinit var pager: LockableViewPager
     private lateinit var pagerAdapter: PagerAdapter
     private var f1: Fragment = MainFragment()
     private var f2: Fragment = LikeFragment()
     private var f3: Fragment = ProfileFragment()
     private var list: MutableList<Fragment> = ArrayList()
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,25 +54,12 @@ class MainActivity : AppCompatActivity() {
                 R.id.about -> {
                     pager.setCurrentItem(2, false)
                 }
-//                    <item
-//                android:id="@+id/home"
-//                android:title="Лента"
-//                android:icon="@drawable/ic_home"/>
-//                    <item
-//                android:id="@+id/like_posts"
-//                android:title="Закладки"
-//                android:icon="@drawable/ic_favorite"/>
-//                    <item
-//                android:id="@+id/catygory"
-//                android:title="Категории"
-//                android:icon="@drawable/ic_storage"/>
-//                    <item
-//                android:id="@+id/about"
-//                android:title="Профиль"
-//                android:icon="@drawable/ic_perm"/>
             }
             false
         }
+
+
+
     }
 
 }

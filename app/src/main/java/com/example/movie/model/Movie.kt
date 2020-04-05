@@ -2,6 +2,7 @@ package com.example.movie.model
 
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Movie(
 
@@ -33,7 +34,7 @@ data class Movie(
     val overview: String,
     @SerializedName("release_date")
     val release_date: String
-) {
+):Serializable {
     val baseImageUrl: String = "https://image.tmdb.org/t/p/w500"
 
     fun getPosterPath(): String {

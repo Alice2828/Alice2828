@@ -1,6 +1,8 @@
 package com.example.movie.api
 
 
+
+import com.example.movie.model.Movie
 import com.example.movie.model.MovieResponse
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -52,10 +54,35 @@ interface PostApi {
     fun getSession(@Query("api_key")apiKey:String,@Body body: JsonObject) : Call<JsonObject>
 
     @GET("account")
-    fun getAccount(@Query("session_id") sessionId: String):Call<JsonObject>
+    fun getAccount(@Query("api_key")apiKey:String, @Query("session_id") sessionId: String):Call<JsonObject>
 
    @POST("account/{account_id}/favorite")
-   fun postFavourite()
+   fun rate(@Path("account_id") accountId: Int?,
+       @Query("api_key")apiKey:String,
+    @Query("session_id") sessionId: String?,
+             @Body body:JsonObject ):Call<JsonObject>
+
+    @GET("account/{account_id}/favorite/movies")
+    fun getFavoriteMovies(
+        @Path("account_id") accountId: Int?,
+        @Query("api_key")apiKey:String,
+        @Query("session_id") sessionId: String?
+    ) : Call<MovieResponse>
+
+//
+//    @POST("account/{account_id}/favorite")
+//    fun unrateMovie(
+//        @Path("account_id") accountId: Int,
+//        @Query("session_id") sessionId: String,
+//        @Body body: JsonObject
+//    ) : Deferred<Response<JsonObject>>
+//
+//    @POST("account/{account_id}/favorite")
+//    fun rateMovie(
+//        @Path("account_id") accountId: Int,
+//        @Query("session_id") sessionId: String,
+//        @Body body: JsonObject
+//    ) : Deferred<Response<JsonObject>>
 
 //    @DELETE("authentication/session")
 //    fun deleteSession(@Query("api_key") apiKey:String, @Query("session_id")session_id:Session):Call<BooleanResponse>
