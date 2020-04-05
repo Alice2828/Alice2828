@@ -3,8 +3,10 @@ package com.example.movie
 //import android.widget.Toolbar
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.nfc.Tag
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
@@ -78,6 +80,7 @@ class DetailActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.detail_menu, menu)
+
         hasLike()
 //        if (hasLike()) {
 //            toolbar.menu.findItem(R.id.favourite).icon = getDrawable(R.drawable.ic_favorite_liked)
@@ -124,7 +127,7 @@ class DetailActivity : AppCompatActivity() {
                 item.icon = getDrawable(R.drawable.ic_favorite_border)
                 likeMovie(false)
             }
-                //invalidateOptionsMenu()
+            //invalidateOptionsMenu()
             return true
         }
 
@@ -147,7 +150,7 @@ class DetailActivity : AppCompatActivity() {
                     call: Call<JsonObject>,
                     response: Response<JsonObject>
                 ) {
-
+                    Log.d("TAG", response.toString())
                     if (response.isSuccessful) {
                         val gson = Gson()
                         var like = gson.fromJson(
