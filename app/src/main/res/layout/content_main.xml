@@ -25,8 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="290dp"
                 android:id="@+id/main_big_pic"
-
-                android:scaleType="centerCrop">
+                android:scaleType="center">
             </ImageView>
                 <LinearLayout
                     android:layout_width="wrap_content"

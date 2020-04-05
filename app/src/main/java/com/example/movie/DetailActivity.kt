@@ -1,6 +1,7 @@
 package com.example.movie
 
 //import android.widget.Toolbar
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -13,6 +14,12 @@ import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.view.ContextMenu
+import androidx.core.content.ContextCompat
+
 
 class DetailActivity:AppCompatActivity(){
     lateinit var nameofMovie: TextView
@@ -21,6 +28,7 @@ class DetailActivity:AppCompatActivity(){
     lateinit var releaseDate: TextView
     lateinit var imageView: ImageView
     lateinit var toolbar: Toolbar
+    private val menu: Menu? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,9 +86,25 @@ class DetailActivity:AppCompatActivity(){
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.detail_menu,menu)
+
         return true
     }
 
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId==R.id.favourite){
+            var drawable: Drawable=item.icon.current
+            if(drawable.constantState!!.equals(getDrawable(R.drawable.ic_favorite_border)?.constantState))
+            {
+                Toast.makeText(this,"liked",Toast.LENGTH_SHORT).show()
+                item.icon=getDrawable(R.drawable.ic_favorite_liked)
+            }
+            else{
+                item.icon=getDrawable(R.drawable.ic_favorite_border)
+            }
+        }
+        return true
+    }
 
 
 
