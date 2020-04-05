@@ -1,5 +1,6 @@
 package com.example.movie
 
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
@@ -17,9 +18,11 @@ import com.example.movie.model.User
 import com.example.movie.myFragments.MainFragment
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.reflect.Type
 
 class LoginActivity : AppCompatActivity() {
     lateinit var email: EditText
@@ -29,7 +32,6 @@ class LoginActivity : AppCompatActivity() {
     lateinit var preferences: SharedPreferences
     lateinit var requestToken: String
     lateinit var newRequestToken: String
-    var idAcc: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,9 +40,29 @@ class LoginActivity : AppCompatActivity() {
         password = findViewById(R.id.password)
         login = findViewById(R.id.login)
         register = findViewById(R.id.register)
-        preferences = getSharedPreferences("Username", 0)
+        preferences = this@LoginActivity.getSharedPreferences("Username", 0)
+
+        var gsonGen =
+            Gson()
+        var json: String? = preferences.getString("user", null)
+        var type: Type = object : TypeToken<User>() {}.type
+        var userGen = gsonGen.fromJson<User>(json, type)
+            //Toast.makeText(this@LoginActivity, userGen.session_id,Toast.LENGTH_LONG).show()
+//        if (userGen.session_id!="") {
+//            val intent =
+//                Intent(
+//                    this@LoginActivity,
+//                    MainActivity::class.java
+//                )
+//            startActivity(
+//                intent
+//            )
+//
+//        }
+
 
         login.setOnClickListener {
+
 
             val emailValue = email.getText().toString()
             val passwordValue = password.getText().toString()
@@ -162,7 +184,8 @@ class LoginActivity : AppCompatActivity() {
                                                                             if (response.isSuccessful) {
 
 
-                                                                                var gson = Gson()
+                                                                                var gson =
+                                                                                    Gson()
                                                                                 var new_idAcc =
                                                                                     gson.fromJson(
                                                                                         response.body(),
@@ -176,36 +199,32 @@ class LoginActivity : AppCompatActivity() {
                                                                                     "id Acc " + idAcc,
                                                                                     Toast.LENGTH_LONG
                                                                                 ).show()
-//                                                                                preferences.edit()
-//                                                                                    .putString(
-//                                                                                        "username",
-//                                                                                        emailValue
-//                                                                                    )
-//                                                                                preferences.edit()
-//                                                                                    .putString(
-//                                                                                        "request_token",
-//                                                                                        requestToken
-//                                                                                    )
-//                                                                                preferences.edit()
-//                                                                                    .putString(
-//                                                                                        "session_id",
-//                                                                                        sessionId
-//                                                                                    )
-//                                                                                preferences.edit()
-//                                                                                    .putInt(
-//                                                                                        "account_id",
-//                                                                                        idAcc
-//                                                                                    )
-//                                                                                preferences.edit()
-//                                                                                    .apply()
-//                                                                                preferences.edit()
-//                                                                                    .commit()
-                                                                                val user=User.create(emailValue,sessionId,idAcc)
-                                                                                val intent = Intent(
-                                                                                    this@LoginActivity,
-                                                                                    MainActivity::class.java
+
+
+                                                                                val user =
+                                                                                    User.create(
+                                                                                        emailValue,
+                                                                                        sessionId,
+                                                                                        idAcc
+                                                                                    )
+                                                                                val json1: String =
+                                                                                    gson!!.toJson(
+                                                                                        user
+                                                                                    )
+                                                                                preferences.edit()
+                                                                                    .putString(
+                                                                                        "user",
+                                                                                        json1
+                                                                                    )
+
+                                                                                val intent =
+                                                                                    Intent(
+                                                                                        this@LoginActivity,
+                                                                                        MainActivity::class.java
+                                                                                    )
+                                                                                startActivity(
+                                                                                    intent
                                                                                 )
-                                                                                startActivity(intent)
 
 
                                                                             }
@@ -232,9 +251,9 @@ class LoginActivity : AppCompatActivity() {
 
 
             }
-
-
         }
+
+
         register.setOnClickListener {
 
             val intent = Intent(this, RegistrationActivity::class.java)

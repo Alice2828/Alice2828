@@ -55,7 +55,7 @@ class MoviesAdapter(
                 intent.putExtra("poster_path", post?.poster_path)
                 intent.putExtra("overview", post?.overview)
                 intent.putExtra("vote_average", (post?.vote_average).toString())
-                intent.putExtra("relase_date", post?.release_date)
+                intent.putExtra("release_date", post?.release_date)
                 view.context.startActivity(intent)
             }
         }

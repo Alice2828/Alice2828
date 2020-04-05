@@ -59,23 +59,14 @@ class LikeFragment : Fragment() {
         bigPicCardIm = (rootView as ViewGroup).findViewById(R.id.main_big_pic)
         bigPictv = (rootView as ViewGroup).findViewById(R.id.main_big_tv)
         recyclerView = (rootView as ViewGroup).findViewById(R.id.recycler_view)
-            //relativeLayout = (rootView as ViewGroup).findViewById(R.id.main_layout_pic)
-//        relativeLayout?.setOnClickListener {
-//            val intent = Intent(context, DetailActivity::class.java)
-//            intent.putExtra("id", movie.id)
-//            intent.putExtra("original_title", movie.original_title)
-//            intent.putExtra("poster_path", movie.poster_path)
-//            intent.putExtra("overview", movie.overview)
-//            intent.putExtra("vote_average", (movie.vote_average).toString())
-//            intent.putExtra("relase_date", movie.release_date)
-//            view?.context?.startActivity(intent)
-//        }
+
         swipeRefreshLayout = (rootView as ViewGroup).findViewById(R.id.main_content)
         swipeRefreshLayout.setOnRefreshListener {
 //            if (swipeRefreshLayout.isRefreshing) {
 //                commentsIc.visibility = View.INVISIBLE
 //                timeIc.visibility = View.INVISIBLE
-//            } else {
+//            }
+            //else {
 //                commentsIc.visibility = View.VISIBLE
 //                timeIc.visibility = View.VISIBLE
 //            }
@@ -83,20 +74,11 @@ class LikeFragment : Fragment() {
         }
         initViews()
 
-
-
-
         return rootView
     }
 
     fun initViews() {
-//        commentsIc.visibility = View.INVISIBLE
-//        timeIc.visibility = View.INVISIBLE
-//        bigPictv?.text = ""
-//        dateTv?.text = ""
-//        commentsTv?.text = ""
-//        commentsIc.setImageBitmap(null)
-//        timeIc.setImageBitmap(null)
+
         bigPicCardIm?.visibility = View.INVISIBLE
         movieList = ArrayList<Movie>()
         postAdapter = activity?.applicationContext?.let { LikeMoviesAdapter(it, movieList) }!!

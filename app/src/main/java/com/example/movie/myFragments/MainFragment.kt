@@ -83,7 +83,7 @@ class MainFragment : Fragment() {
             intent.putExtra("poster_path", movie.poster_path)
             intent.putExtra("overview", movie.overview)
             intent.putExtra("vote_average", (movie.vote_average).toString())
-            intent.putExtra("relase_date", movie.release_date)
+            intent.putExtra("release_date", movie.release_date)
             view?.context?.startActivity(intent)
         }
         swipeRefreshLayout = (rootView as ViewGroup).findViewById(R.id.main_content)

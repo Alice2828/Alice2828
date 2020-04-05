@@ -10,13 +10,15 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.movie.DetailActivity
+import com.example.movie.LikeDetailActivity
 import com.example.movie.R
 import com.example.movie.model.Movie
 
 class LikeMoviesAdapter (
     var context: Context,
-                         var moviesList: List<Movie>? = null
+    var moviesList: List<Movie>? = null
 ) : RecyclerView.Adapter<LikeMoviesAdapter.LikeMovieViewHolder>() {
+
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): LikeMovieViewHolder {
         val view = LayoutInflater.from(p0.context).inflate(R.layout.movie_card, p0, false)
         return LikeMovieViewHolder(view)
@@ -47,12 +49,13 @@ class LikeMoviesAdapter (
             //                .placeholder(R.drawable.load)
 
             view.setOnClickListener {
-                val intent = Intent(context, DetailActivity::class.java)
+                val intent = Intent(context, LikeDetailActivity::class.java)
+                intent.putExtra("movei_id",post?.id)
                 intent.putExtra("original_title", post?.original_title)
                 intent.putExtra("poster_path", post?.poster_path)
                 intent.putExtra("overview", post?.overview)
                 intent.putExtra("vote_average", (post?.vote_average).toString())
-                intent.putExtra("relase_date", post?.release_date)
+                intent.putExtra("release_date", post?.release_date)
                 view.context.startActivity(intent)
             }
         }

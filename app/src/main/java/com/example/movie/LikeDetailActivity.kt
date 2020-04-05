@@ -1,21 +1,18 @@
 package com.example.movie
 
-//import android.widget.Toolbar
-import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
 import com.example.movie.api.RetrofitService
-import com.example.movie.model.*
+import com.example.movie.model.FavResponse
+import com.example.movie.model.User
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.gson.Gson
@@ -24,7 +21,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DetailActivity : AppCompatActivity() {
+class LikeDetailActivity : AppCompatActivity() {
     lateinit var nameofMovie: TextView
     lateinit var plotSynopsis: TextView
     lateinit var userRating: TextView
@@ -124,7 +121,7 @@ class DetailActivity : AppCompatActivity() {
                 item.icon = getDrawable(R.drawable.ic_favorite_border)
                 likeMovie(false)
             }
-                //invalidateOptionsMenu()
+            //invalidateOptionsMenu()
             return true
         }
 
@@ -187,13 +184,13 @@ class DetailActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         if (favourite)
                             Toast.makeText(
-                                this@DetailActivity,
+                                this@LikeDetailActivity,
                                 "Movie has been added to favourites",
                                 Toast.LENGTH_LONG
                             ).show()
                         else
                             Toast.makeText(
-                                this@DetailActivity,
+                                this@LikeDetailActivity,
                                 "Movie has been removed from favourites",
                                 Toast.LENGTH_LONG
                             ).show()
