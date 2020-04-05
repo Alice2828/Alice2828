@@ -75,6 +75,12 @@ interface PostApi {
         @Query("session_id") sessionId: String?
     ) : Call<MovieResponse>
 
+    @GET("movie/{movie_id}/account_states")
+    fun hasLike(
+        @Path("movie_id") movieId: Int?,
+        @Query("api_key")apiKey:String,
+        @Query("session_id") sessionId: String?
+    ):Call<JsonObject>
 //
 //    @POST("account/{account_id}/favorite")
 //    fun unrateMovie(
