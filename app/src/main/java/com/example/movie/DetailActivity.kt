@@ -2,6 +2,7 @@ package com.example.movie
 
 //import android.widget.Toolbar
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.Menu
@@ -40,12 +41,6 @@ class DetailActivity : AppCompatActivity() {
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-//        session_id =getSharedPreferences("Username", 0).getString("session_id", "")
-//        account_id= getSharedPreferences("Username",0).getInt("account_id",0)
-//         account_id=
-//            PreferenceManager.getDefaultSharedPreferences(this@DetailActivity).getInt("account_id", 0)
-//         session_id= PreferenceManager.getDefaultSharedPreferences(this@DetailActivity).getString("session_id", "")
         initCollapsingToolbar()
 
         imageView = findViewById(R.id.thumbnail_image_header)
@@ -89,41 +84,85 @@ class DetailActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here.
-        val id = item.getItemId()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        if (id == R.id.favourite) {
-    //Toast.makeText(this@DetailActivity, session_id+" "+account_id,Toast.LENGTH_LONG).show()
+        if (item.itemId == R.id.favourite) {
+            var drawable: Drawable =item.icon.current
+            if(drawable.constantState!!.equals(getDrawable(R.drawable.ic_favorite_border)?.constantState))
+            {
+                //Toast.makeText(this,"liked",Toast.LENGTH_SHORT).show()
+                item.icon=getDrawable(R.drawable.ic_favorite_liked)
 
-            val body = JsonObject().apply {
-                addProperty("media_type","movie" )
-                addProperty("media_id", movie_id)
-                addProperty("favorite", true)
-            }
+                val body = JsonObject().apply {
+                    addProperty("media_type","movie" )
+                    addProperty("media_id", movie_id)
+                    addProperty("favorite", true)
+                }
 
-            RetrofitService.getPostApi()
-                .rate(account_id, BuildConfig.THE_MOVIE_DB_API_TOKEN, session_id, body)
-                .enqueue(object : Callback<JsonObject> {
-                    override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-
-                    }
-
-                    override fun onResponse(
-                        call: Call<JsonObject>,
-                        response: Response<JsonObject>
-                    ) {
-
-                        if (response.isSuccessful) {
-
-                            Toast.makeText(
-                                this@DetailActivity,
-                                "Movie has been added to favourites",
-                                Toast.LENGTH_LONG
-                            ).show()
+                RetrofitService.getPostApi()
+                    .rate(account_id, BuildConfig.THE_MOVIE_DB_API_TOKEN, session_id, body)
+                    .enqueue(object : Callback<JsonObject> {
+                        override fun onFailure(call: Call<JsonObject>, t: Throwable) {
 
                         }
 
-                    }
-                })
+                        override fun onResponse(
+                            call: Call<JsonObject>,
+                            response: Response<JsonObject>
+                        ) {
+
+                            if (response.isSuccessful) {
+
+                                Toast.makeText(
+                                    this@DetailActivity,
+                                    "Movie has been added to favourites",
+                                    Toast.LENGTH_LONG
+                                ).show()
+
+                            }
+
+                        }
+                    })
+            }
+            else{
+                item.icon=getDrawable(R.drawable.ic_favorite_border)
+
+                val body = JsonObject().apply {
+                    addProperty("media_type","movie" )
+                    addProperty("media_id", movie_id)
+                    addProperty("favorite", false)
+                }
+
+                RetrofitService.getPostApi()
+                    .unrate(account_id, BuildConfig.THE_MOVIE_DB_API_TOKEN, session_id, body)
+                    .enqueue(object : Callback<JsonObject> {
+                        override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+
+                        }
+
+                        override fun onResponse(
+                            call: Call<JsonObject>,
+                            response: Response<JsonObject>
+                        ) {
+
+                            if (response.isSuccessful) {
+
+                                Toast.makeText(
+                                    this@DetailActivity,
+                                    "Movie has been removed from favourites",
+                                    Toast.LENGTH_LONG
+                                ).show()
+
+                            }
+
+                        }
+                    })
+            }
+
+//
+//
+
+
             return true
         }
 

@@ -62,6 +62,12 @@ interface PostApi {
     @Query("session_id") sessionId: String?,
              @Body body:JsonObject ):Call<JsonObject>
 
+    @POST("account/{account_id}/favorite")
+    fun unrate(@Path("account_id") accountId: Int?,
+             @Query("api_key")apiKey:String,
+             @Query("session_id") sessionId: String?,
+             @Body body:JsonObject ):Call<JsonObject>
+
     @GET("account/{account_id}/favorite/movies")
     fun getFavoriteMovies(
         @Path("account_id") accountId: Int?,
