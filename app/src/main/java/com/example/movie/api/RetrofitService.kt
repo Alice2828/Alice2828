@@ -84,7 +84,7 @@ interface PostApi {
     ):Call<JsonObject>
 
     @DELETE("authentication/session")
-    fun deleteSession(@Query("api_key") apiKey:String, @Query("session_id")session_id:Session):Call<BooleanResponse>
+    fun deleteSession(@Query("api_key") apiKey:String, @Body session:JsonObject):Call<JsonObject>
 
 //    @POST("authentication/session/new")
 //    fun getSession(@Query("api_key")apiKey:String,@Body body: JsonObject) : Call<JsonObject>
