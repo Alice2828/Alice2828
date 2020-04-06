@@ -15,6 +15,9 @@ import com.example.movie.R
 import com.example.movie.api.RetrofitService
 import com.example.movie.model.Singleton
 import com.google.gson.JsonObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ProfileFragment:Fragment() {
     lateinit var preferences: SharedPreferences
@@ -26,35 +29,46 @@ class ProfileFragment:Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val rootView=inflater.inflate(R.layout.activity_profile, container, false) as ViewGroup
-
+        val rootView = inflater.inflate(R.layout.activity_profile, container, false) as ViewGroup
         preferences = activity?.getSharedPreferences("Userinfo", 0)!!
         nameInfo = rootView.findViewById(R.id.name)
         emailInfo = rootView.findViewById(R.id.email)
         val authorizedName = Singleton.getUserName()
-       val authorizedEmail = Singleton.getUserName()+"@mail.ru"
+        val authorizedEmail = Singleton.getUserName() + "@mail.ru"
         nameInfo.setText(authorizedName)
         emailInfo.setText(authorizedEmail)
         logout = rootView.findViewById(R.id.logout)
         return rootView
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        logout.setOnClickListener{
-            val body:JsonObject = JsonObject().apply {
+        logout.setOnClickListener {
+            val body: JsonObject = JsonObject().apply {
                 addProperty("session_id", Singleton.getSession())
             }
-
             RetrofitService.getPostApi().deleteSession(BuildConfig.THE_MOVIE_DB_API_TOKEN, body)
-            val editor = preferences.edit()
-            editor.clear().commit()
+                .enqueue(object :
+                    Callback<JsonObject> {
+                    override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                    }
 
-            val intent = Intent(getActivity(), LoginActivity::class.java)
-            startActivity(intent)
+                    override fun onResponse(
+                        call: Call<JsonObject>,
+                        response: Response<JsonObject>
+                    ) {
+                        if (response.isSuccessful) {
+                            val editor = preferences.edit()
+                            editor.clear().commit()
+                            val intent = Intent(getActivity(), LoginActivity::class.java)
+                            startActivity(intent)
+                        }
+
+
+                    }
+                })
+
+
         }
     }
-
-    }
+}

@@ -92,6 +92,7 @@ class LoginActivity : AppCompatActivity() {
 
 
         if (emailValue != "" && passwordValue != "") {
+
             RetrofitService.getPostApi().getRequestToken(BuildConfig.THE_MOVIE_DB_API_TOKEN)
                 .enqueue(object : Callback<RequestToken> {
                     override fun onFailure(call: Call<RequestToken>, t: Throwable) {

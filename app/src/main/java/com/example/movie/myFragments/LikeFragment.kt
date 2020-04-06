@@ -1,5 +1,4 @@
 package com.example.movie.myFragments
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -62,12 +61,10 @@ class LikeFragment : Fragment() {
             initViews()
         }
         initViews()
-
         return rootView
     }
 
     fun initViews() {
-
         bigPicCardIm?.visibility = View.INVISIBLE
         movieList = ArrayList<Movie>()
         postAdapter = activity?.applicationContext?.let { LikeMoviesAdapter(it, movieList) }!!
@@ -76,10 +73,7 @@ class LikeFragment : Fragment() {
         recyclerView.adapter = postAdapter
         postAdapter?.notifyDataSetChanged()
         loadJSON()
-
-
     }
-
 
     fun loadJSON() {
         try {
@@ -92,12 +86,10 @@ class LikeFragment : Fragment() {
                     override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
                         swipeRefreshLayout.isRefreshing = false
                     }
-
                     override fun onResponse(
                         call: Call<MovieResponse>,
                         response: Response<MovieResponse>
                     ) {
-
                         if (response.isSuccessful) {
                             val list = response.body()?.results
                             postAdapter?.moviesList = list

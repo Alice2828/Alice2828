@@ -40,7 +40,6 @@ import retrofit2.Response
  * A simple [Fragment] subclass.
  */
 class MainFragment : Fragment() {
-
     private var relativeLayout:RelativeLayout?=null
     private var a:Int=0
     lateinit var commentsIc: ImageView
