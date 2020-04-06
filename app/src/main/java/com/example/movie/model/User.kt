@@ -1,30 +1,19 @@
 package com.example.movie.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
-class User private constructor(
+data class User (
+   @SerializedName("username")
     var username: String,
+   @SerializedName("session_id")
     var session_id: String,
+   @SerializedName("account_id")
     var account_id: Int
-) {
-
-
-    companion object Factory {
-        @Volatile
-        private var INSTANCE: User? = null
-
-        @Synchronized
-        fun create(username: String, session_id: String, account_id: Int):
-                User = INSTANCE?:User(username, session_id, account_id).also{ INSTANCE=it}
-        fun getSession():String{
-            return INSTANCE!!.session_id
-        }
-        fun getAccountId():Int{
-            return INSTANCE!!.account_id
-        }
-
-    }
+)
 
 
 
-}
+
+

@@ -9,6 +9,8 @@ import com.example.movie.adapter.SlidePagerAdapter
 import com.example.movie.api.RetrofitService
 import com.example.movie.model.Movie
 import com.example.movie.model.MovieResponse
+import com.example.movie.model.Singleton
+import com.example.movie.model.User
 import com.example.movie.myFragments.LikeFragment
 import com.example.movie.myFragments.MainFragment
 import com.example.movie.myFragments.ProfileFragment
@@ -28,6 +30,9 @@ class MainActivity : AppCompatActivity() {
     private var f2: Fragment = LikeFragment()
     private var f3: Fragment = ProfileFragment()
     private var list: MutableList<Fragment> = ArrayList()
+
+
+
 
 
 
@@ -57,7 +62,6 @@ class MainActivity : AppCompatActivity() {
             }
             false
         }
-
 
 
     }

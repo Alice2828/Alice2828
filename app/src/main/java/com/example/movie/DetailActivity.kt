@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.nfc.Tag
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -53,8 +52,8 @@ class DetailActivity : AppCompatActivity() {
 
         val intent = getIntent()
         if (intent.hasExtra("original_title")) {
-            session_id = User.getSession()
-            account_id = User.getAccountId()
+            session_id = Singleton.getSession()
+            account_id = Singleton.getAccountId()
             movie_id = getIntent().extras?.getInt("movie_id")
             val thumbnail =
                 "https://image.tmdb.org/t/p/w500" + getIntent().getExtras()?.getString("poster_path")
@@ -80,34 +79,7 @@ class DetailActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.detail_menu, menu)
-
         hasLike()
-//        if (hasLike()) {
-//            toolbar.menu.findItem(R.id.favourite).icon = getDrawable(R.drawable.ic_favorite_liked)
-//        } else {
-//            toolbar.menu.findItem(R.id.favourite).icon = getDrawable(R.drawable.ic_favorite_border)
-//        }
-
-
-//        RetrofitService.getPostApi().getFavoriteMovies(account_id,BuildConfig.THE_MOVIE_DB_API_TOKEN,session_id)
-//            .enqueue(object:Callback<MovieResponse>{
-//                override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-//
-//                }
-//
-//                override fun onResponse(
-//                    call: Call<MovieResponse>,
-//                    response: Response<MovieResponse>
-//                ) {
-//                    val list = response.body()?.results
-//                    for(i in 0..list!!.lastIndex){
-//                        if(movie_id==list[i].id){
-//                            toolbar.menu.findItem(R.id.favourite).icon=getDrawable(R.drawable.ic_favorite_liked)
-//                            break
-//                        }
-//                    }
-//                }
-//            })
         return true
     }
 
@@ -117,7 +89,6 @@ class DetailActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (item.itemId == R.id.favourite) {
-            // if (!hasLike()) {
             var drawable: Drawable = item.icon.current
             if (drawable.constantState!!.equals(getDrawable(R.drawable.ic_favorite_border)?.constantState)) {
                 item.icon = getDrawable(R.drawable.ic_favorite_liked)
@@ -127,7 +98,6 @@ class DetailActivity : AppCompatActivity() {
                 item.icon = getDrawable(R.drawable.ic_favorite_border)
                 likeMovie(false)
             }
-            //invalidateOptionsMenu()
             return true
         }
 
@@ -137,7 +107,6 @@ class DetailActivity : AppCompatActivity() {
     }
 
     fun hasLike() {
-
 
         RetrofitService.getPostApi()
             .hasLike(movie_id, BuildConfig.THE_MOVIE_DB_API_TOKEN, session_id)
