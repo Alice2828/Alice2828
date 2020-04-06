@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.nfc.Tag
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -86,7 +87,7 @@ class DetailActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here.
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
 
         if (item.itemId == R.id.favourite) {
             var drawable: Drawable = item.icon.current
@@ -98,8 +99,15 @@ class DetailActivity : AppCompatActivity() {
                 item.icon = getDrawable(R.drawable.ic_favorite_border)
                 likeMovie(false)
             }
-            return true
+            //invalidateOptionsMenu()
         }
+        if(item.itemId==android.R.id.home){
+            onBackPressed()
+        }
+
+
+         return true
+    }
 
 
         return super.onOptionsItemSelected(item)
@@ -107,6 +115,7 @@ class DetailActivity : AppCompatActivity() {
     }
 
     fun hasLike() {
+
 
         RetrofitService.getPostApi()
             .hasLike(movie_id, BuildConfig.THE_MOVIE_DB_API_TOKEN, session_id)
