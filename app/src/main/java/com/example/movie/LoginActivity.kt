@@ -46,14 +46,14 @@ class LoginActivity : AppCompatActivity() {
         login = findViewById(R.id.login)
         register = findViewById(R.id.register)
         preferences = this@LoginActivity.getSharedPreferences("Username", 0)
-        //   preferences.edit().clear().commit()
+        preferences.edit().clear().commit()
         var gsonGen =
             Gson()
         var json: String? = preferences.getString("user", null)
         var type: Type = object : TypeToken<User>() {}.type
         var user = gsonGen.fromJson<User>(json, type)
 
-        if (user.session_id != "") {
+        /*if (user.session_id != "") {
             var singleton =
                 Singleton.create(
                     user.username,
@@ -70,7 +70,7 @@ class LoginActivity : AppCompatActivity() {
                 intent
             )
 
-        }
+        }*/
 
 
         login.setOnClickListener {

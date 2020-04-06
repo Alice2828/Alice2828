@@ -55,8 +55,8 @@ class LikeFragment : Fragment() {
         bigPictv = (rootView as ViewGroup).findViewById(R.id.main_big_tv)
         recyclerView = (rootView as ViewGroup).findViewById(R.id.recycler_view)
         relativeLayout=(rootView as ViewGroup).findViewById(R.id.main_layout_pic)
-        relativeLayout?.visibility=View.INVISIBLE
-        relativeLayout?.visibility=View.GONE
+        relativeLayout?.visibility = View.INVISIBLE
+        relativeLayout?.visibility = View.GONE
         swipeRefreshLayout = (rootView as ViewGroup).findViewById(R.id.main_content)
         swipeRefreshLayout.setOnRefreshListener {
             initViews()

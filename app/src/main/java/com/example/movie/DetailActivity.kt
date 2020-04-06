@@ -32,6 +32,7 @@ class DetailActivity : AppCompatActivity() {
     lateinit var userRating: TextView
     lateinit var releaseDate: TextView
     lateinit var imageView: ImageView
+
     lateinit var toolbar: Toolbar
     var movie_id: Int? = null
     var account_id: Int? = null
@@ -51,6 +52,7 @@ class DetailActivity : AppCompatActivity() {
         userRating = findViewById(R.id.userrating)
         releaseDate = findViewById(R.id.releasedate)
 
+
         val intent = getIntent()
         if (intent.hasExtra("original_title")) {
             session_id = Singleton.getSession()
@@ -63,6 +65,7 @@ class DetailActivity : AppCompatActivity() {
             val rating = getIntent().getExtras()?.getString("vote_average")
             val sateOfRelease = getIntent().getExtras()?.getString("release_date")
 
+
             Glide.with(this)
                 .load(thumbnail)
                 .into(imageView)
@@ -71,6 +74,7 @@ class DetailActivity : AppCompatActivity() {
             plotSynopsis.text = synopsis
             userRating.text = rating
             releaseDate.text = sateOfRelease
+
 
         } else {
             Toast.makeText(this, "No API Data", Toast.LENGTH_SHORT).show()
