@@ -114,7 +114,7 @@ class DetailActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here.
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
 
         if (item.itemId == R.id.favourite) {
             // if (!hasLike()) {
@@ -128,12 +128,13 @@ class DetailActivity : AppCompatActivity() {
                 likeMovie(false)
             }
             //invalidateOptionsMenu()
-            return true
+        }
+        if(item.itemId==android.R.id.home){
+            onBackPressed()
         }
 
 
-        return super.onOptionsItemSelected(item)
-
+         return true
     }
 
     fun hasLike() {

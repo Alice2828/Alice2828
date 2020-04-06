@@ -2,6 +2,7 @@ package com.example.movie
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
@@ -9,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.NavUtils
 import com.bumptech.glide.Glide
 import com.example.movie.api.RetrofitService
 import com.example.movie.model.FavResponse
@@ -108,7 +110,7 @@ class LikeDetailActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here.
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
 
         if (item.itemId == R.id.favourite) {
             // if (!hasLike()) {
@@ -123,6 +125,9 @@ class LikeDetailActivity : AppCompatActivity() {
             }
             //invalidateOptionsMenu()
             return true
+        }
+        if(item.itemId==android.R.id.home){
+
         }
 
 
