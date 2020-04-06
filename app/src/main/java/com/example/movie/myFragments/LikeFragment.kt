@@ -1,8 +1,6 @@
 package com.example.movie.myFragments
 
-import android.content.Intent
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,23 +13,20 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.bumptech.glide.Glide
 import com.example.movie.BuildConfig
-import com.example.movie.DetailActivity
 import com.example.movie.R
 import com.example.movie.adapter.LikeMoviesAdapter
-import com.example.movie.adapter.MoviesAdapter
 import com.example.movie.api.RetrofitService
 import com.example.movie.model.Movie
 import com.example.movie.model.MovieResponse
+import com.example.movie.model.Singleton
 import com.example.movie.model.User
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class LikeFragment : Fragment() {
-    private var relativeLayout: RelativeLayout? = null
-    private var a: Int = 0
+    lateinit var relativeLayout: RelativeLayout
     lateinit var commentsIc: ImageView
     lateinit var timeIc: ImageView
     lateinit var recyclerView: RecyclerView
@@ -44,8 +39,8 @@ class LikeFragment : Fragment() {
     lateinit var movieList: List<Movie>
     lateinit var movie: Movie
     private var rootView: View? = null
-   var session_id= User.getSession()
-   var account_id=User.getAccountId()
+   var session_id= Singleton.getSession()
+   var account_id=Singleton.getAccountId()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -59,17 +54,11 @@ class LikeFragment : Fragment() {
         bigPicCardIm = (rootView as ViewGroup).findViewById(R.id.main_big_pic)
         bigPictv = (rootView as ViewGroup).findViewById(R.id.main_big_tv)
         recyclerView = (rootView as ViewGroup).findViewById(R.id.recycler_view)
-
+        relativeLayout=(rootView as ViewGroup).findViewById(R.id.main_layout_pic)
+        relativeLayout?.visibility=View.INVISIBLE
+        relativeLayout?.visibility=View.GONE
         swipeRefreshLayout = (rootView as ViewGroup).findViewById(R.id.main_content)
         swipeRefreshLayout.setOnRefreshListener {
-//            if (swipeRefreshLayout.isRefreshing) {
-//                commentsIc.visibility = View.INVISIBLE
-//                timeIc.visibility = View.INVISIBLE
-//            }
-            //else {
-//                commentsIc.visibility = View.VISIBLE
-//                timeIc.visibility = View.VISIBLE
-//            }
             initViews()
         }
         initViews()

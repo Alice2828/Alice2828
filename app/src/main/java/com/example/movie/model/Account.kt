@@ -1,6 +1,7 @@
 package com.example.movie.model
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class MyAccount (
     @SerializedName("avatar")
@@ -17,7 +18,9 @@ data class MyAccount (
     val include_adult: Boolean,
     @SerializedName("username")
     val username: String
-)
+):Serializable
+{
+  }
 
 data class Avatar(
     @SerializedName("gravatar")
