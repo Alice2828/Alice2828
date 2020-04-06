@@ -80,6 +80,7 @@
     <Button
         android:layout_marginTop="20dp"
         android:layout_below="@+id/cv"
+        android:id="@+id/logout"
         android:text="Выход"
         android:background="@null"
         android:textColor="#000000"

@@ -43,6 +43,7 @@ interface PostApi {
     fun getPopularMovieList(@Query("api_key") apiKey: String): Call<MovieResponse>
 
 
+
     @GET("authentication/token/new")
     fun getRequestToken(@Query("api_key") apiKey: String): Call<RequestToken>
 
@@ -81,6 +82,12 @@ interface PostApi {
         @Query("api_key")apiKey:String,
         @Query("session_id") sessionId: String?
     ):Call<JsonObject>
+
+    @DELETE("authentication/session")
+    fun deleteSession(@Query("api_key") apiKey:String, @Query("session_id")session_id:Session):Call<BooleanResponse>
+
+//    @POST("authentication/session/new")
+//    fun getSession(@Query("api_key")apiKey:String,@Body body: JsonObject) : Call<JsonObject>
 //
 //    @POST("account/{account_id}/favorite")
 //    fun unrateMovie(
@@ -96,6 +103,5 @@ interface PostApi {
 //        @Body body: JsonObject
 //    ) : Deferred<Response<JsonObject>>
 
-//    @DELETE("authentication/session")
-//    fun deleteSession(@Query("api_key") apiKey:String, @Query("session_id")session_id:Session):Call<BooleanResponse>
+
 }

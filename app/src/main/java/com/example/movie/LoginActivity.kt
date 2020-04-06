@@ -64,6 +64,9 @@ class LoginActivity : AppCompatActivity() {
         login.setOnClickListener {
 
 
+
+
+
             val emailValue = email.getText().toString()
             val passwordValue = password.getText().toString()
 
@@ -207,15 +210,9 @@ class LoginActivity : AppCompatActivity() {
                                                                                         sessionId,
                                                                                         idAcc
                                                                                     )
-                                                                                val json1: String =
-                                                                                    gson!!.toJson(
-                                                                                        user
-                                                                                    )
-                                                                                preferences.edit()
-                                                                                    .putString(
-                                                                                        "user",
-                                                                                        json1
-                                                                                    )
+                                                                                val json1: String = gson!!.toJson(user)
+                                                                                preferences.edit().putString("user", json1)
+
 
                                                                                 val intent =
                                                                                     Intent(
