@@ -23,6 +23,7 @@ import com.google.gson.reflect.TypeToken
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.Exception
 import java.lang.reflect.Type
 import java.util.*
 
@@ -45,30 +46,34 @@ class LoginActivity : AppCompatActivity() {
         password = findViewById(R.id.password)
         login = findViewById(R.id.login)
         register = findViewById(R.id.register)
-        preferences = this@LoginActivity.getSharedPreferences("Username", 0)
-        //   preferences.edit().clear().commit()
-        var gsonGen =
-            Gson()
-        var json: String? = preferences.getString("user", null)
-        var type: Type = object : TypeToken<User>() {}.type
-        var user = gsonGen.fromJson<User>(json, type)
+        try {
+            preferences = this@LoginActivity.getSharedPreferences("Username", 0)
+            var gsonGen = Gson()
+            var json: String? = preferences.getString("user", null)
+            var type: Type = object : TypeToken<User>() {}.type
+            var user = gsonGen.fromJson<User>(json, type)
 
-        if (user.session_id != "") {
-            var singleton =
-                Singleton.create(
-                    user.username,
-                    user.session_id,
-                    user.account_id
-                )
-            val intent =
-                Intent(
-                    this@LoginActivity,
-                    MainActivity::class.java
+            if (user.session_id != "") {
+                var singleton =
+                    Singleton.create(
+                        user.username,
+                        user.session_id,
+                        user.account_id
+                    )
+                val intent =
+                    Intent(
+                        this@LoginActivity,
+                        MainActivity::class.java
+                    )
+
+                startActivity(
+                    intent
                 )
 
-            startActivity(
-                intent
-            )
+            }
+        }
+        catch(e:Exception)
+        {
 
         }
 
@@ -240,6 +245,7 @@ class LoginActivity : AppCompatActivity() {
                                                                                 gson!!.toJson(
                                                                                     user
                                                                                 )
+                                                                            preferences=this@LoginActivity.getSharedPreferences("Username", 0)
                                                                             preferences.edit()
                                                                                 .putString(
                                                                                     "user",

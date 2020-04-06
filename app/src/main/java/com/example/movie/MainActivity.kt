@@ -16,6 +16,7 @@ import com.example.movie.myFragments.MainFragment
 import com.example.movie.myFragments.ProfileFragment
 import com.example.movie.pager.LockableViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,11 +31,6 @@ class MainActivity : AppCompatActivity() {
     private var f2: Fragment = LikeFragment()
     private var f3: Fragment = ProfileFragment()
     private var list: MutableList<Fragment> = ArrayList()
-
-
-
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,5 +61,9 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+//    fun onClick()
+//    {
+//
+//    }
 
 }
