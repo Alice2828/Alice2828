@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.movie.R
+import com.example.movie.model.Singleton
 
 class ProfileFragment:Fragment() {
     lateinit var preferences: SharedPreferences
@@ -23,8 +24,8 @@ class ProfileFragment:Fragment() {
         preferences = activity?.getSharedPreferences("Userinfo", 0)!!
         nameInfo = rootView.findViewById(R.id.name)
         emailInfo = rootView.findViewById(R.id.email)
-        val authorizedName = preferences.getString("name", "")
-        val authorizedEmail = preferences.getString("email", "")
+        val authorizedName = Singleton.getUserName()
+       val authorizedEmail = Singleton.getUserName()+"@mail.ru"
         nameInfo.setText(authorizedName)
         emailInfo.setText(authorizedEmail)
         return rootView
