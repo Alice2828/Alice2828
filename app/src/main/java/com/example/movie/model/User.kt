@@ -8,9 +8,9 @@ data class User (
    @SerializedName("username")
     var username: String,
    @SerializedName("session_id")
-    var session_id: String,
+    var sessionId: String,
    @SerializedName("account_id")
-    var account_id: Int
+    var accountId: Int
 )
 
 

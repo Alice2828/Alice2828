@@ -19,8 +19,9 @@ class MoviesAdapter(
     var context: Context,
     var moviesList: List<Movie>? = null
 ) : RecyclerView.Adapter<MoviesAdapter.MovieViewHolder>() {
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): MovieViewHolder {
-        val view = LayoutInflater.from(p0.context).inflate(R.layout.movie_card, p0, false)
+
+    override fun onCreateViewHolder(parent: ViewGroup, i: Int): MovieViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.movie_card, parent, false)
         return MovieViewHolder(view)
     }
 
@@ -33,29 +34,28 @@ class MoviesAdapter(
 
     inner class MovieViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-        fun bind(post: Movie?) {
+        fun bind(movie: Movie?) {
             val title = view.findViewById<TextView>(R.id.title)
             val description = view.findViewById<TextView>(R.id.description)
             val thumbnail = view.findViewById<ImageView>(R.id.thumbnail)
 
 
-            title.text = post?.original_title
-            val vote = post?.overview
+            title.text = movie?.original_title
+            val vote = movie?.overview
             description.text = vote.toString()
 
             Glide.with(context)
-                .load(post?.getPosterPath())
+                .load(movie?.getPosterPath())
                 .into(thumbnail)
-            //                .placeholder(R.drawable.load)
 
             view.setOnClickListener {
                 val intent = Intent(context, DetailActivity::class.java)
-                intent.putExtra("movie_id", post?.id)
-                intent.putExtra("original_title", post?.original_title)
-                intent.putExtra("poster_path", post?.poster_path)
-                intent.putExtra("overview", post?.overview)
-                intent.putExtra("vote_average", (post?.vote_average).toString())
-                intent.putExtra("release_date", post?.release_date)
+                intent.putExtra("movie_id", movie?.id)
+                intent.putExtra("original_title", movie?.original_title)
+                intent.putExtra("poster_path", movie?.poster_path)
+                intent.putExtra("overview", movie?.overview)
+                intent.putExtra("vote_average", (movie?.vote_average).toString())
+                intent.putExtra("release_date", movie?.release_date)
                 view.context.startActivity(intent)
             }
         }

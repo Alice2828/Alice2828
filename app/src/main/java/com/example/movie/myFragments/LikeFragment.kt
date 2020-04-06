@@ -20,7 +20,6 @@ import com.example.movie.api.RetrofitService
 import com.example.movie.model.Movie
 import com.example.movie.model.MovieResponse
 import com.example.movie.model.Singleton
-import com.example.movie.model.User
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -39,25 +38,18 @@ class LikeFragment : Fragment() {
     lateinit var movieList: List<Movie>
     lateinit var movie: Movie
     private var rootView: View? = null
-   var session_id= Singleton.getSession()
-   var account_id=Singleton.getAccountId()
+    var session_id = Singleton.getSession()
+    var account_id = Singleton.getAccountId()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.activity_main, container, false) as ViewGroup
-        commentsIc = (rootView as ViewGroup).findViewById(R.id.ic_comments)
-        timeIc = (rootView as ViewGroup).findViewById(R.id.ic_times)
-        dateTv = (rootView as ViewGroup).findViewById(R.id.date_movie_info)
-        commentsTv = (rootView as ViewGroup).findViewById(R.id.comment_movie_info)
-        bigPicCardIm = (rootView as ViewGroup).findViewById(R.id.main_big_pic)
-        bigPictv = (rootView as ViewGroup).findViewById(R.id.main_big_tv)
-        recyclerView = (rootView as ViewGroup).findViewById(R.id.recycler_view)
-        relativeLayout=(rootView as ViewGroup).findViewById(R.id.main_layout_pic)
-        relativeLayout?.visibility=View.INVISIBLE
-        relativeLayout?.visibility=View.GONE
-        swipeRefreshLayout = (rootView as ViewGroup).findViewById(R.id.main_content)
+        bindView()
+        relativeLayout.visibility = View.INVISIBLE
+        relativeLayout.visibility = View.GONE
         swipeRefreshLayout.setOnRefreshListener {
             initViews()
         }
@@ -112,6 +104,19 @@ class LikeFragment : Fragment() {
             Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show()
         }
 
+
+    }
+    private fun bindView()
+    {
+        commentsIc = (rootView as ViewGroup).findViewById(R.id.ic_comments)
+        timeIc = (rootView as ViewGroup).findViewById(R.id.ic_times)
+        dateTv = (rootView as ViewGroup).findViewById(R.id.date_movie_info)
+        commentsTv = (rootView as ViewGroup).findViewById(R.id.comment_movie_info)
+        bigPicCardIm = (rootView as ViewGroup).findViewById(R.id.main_big_pic)
+        bigPictv = (rootView as ViewGroup).findViewById(R.id.main_big_tv)
+        recyclerView = (rootView as ViewGroup).findViewById(R.id.recycler_view)
+        relativeLayout = (rootView as ViewGroup).findViewById(R.id.main_layout_pic)
+        swipeRefreshLayout = (rootView as ViewGroup).findViewById(R.id.main_content)
 
     }
 

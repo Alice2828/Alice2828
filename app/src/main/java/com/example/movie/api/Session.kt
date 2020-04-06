@@ -2,10 +2,10 @@ package com.example.movie.api
 
 import com.google.gson.annotations.SerializedName
 
-data class Session (
+data class Session(
 
-    @SerializedName( "success")
+    @SerializedName("success")
     val success: Boolean,
     @SerializedName("session_id")
-    val session_id: String
+    val sessionId: String
 )

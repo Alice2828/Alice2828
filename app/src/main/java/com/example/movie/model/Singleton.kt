@@ -7,9 +7,9 @@ class Singleton  (
     @SerializedName("username")
     var username: String,
     @SerializedName("session_id")
-    var session_id: String,
+    var sessionId: String,
     @SerializedName("account_id")
-    var account_id: Int
+    var accountId: Int
 ) {
 
 
@@ -23,11 +23,11 @@ class Singleton  (
             INSTANCE ?: Singleton(username, session_id, account_id).also { INSTANCE = it }
 
         fun getSession(): String {
-            return INSTANCE!!.session_id
+            return INSTANCE!!.sessionId
         }
 
         fun getAccountId(): Int {
-            return INSTANCE!!.account_id
+            return INSTANCE!!.accountId
         }
 
         fun getUserName(): String {

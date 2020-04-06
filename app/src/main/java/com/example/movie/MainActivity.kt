@@ -1,31 +1,20 @@
 package com.example.movie
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.PagerAdapter
 import com.example.movie.adapter.SlidePagerAdapter
-import com.example.movie.api.RetrofitService
-import com.example.movie.model.Movie
-import com.example.movie.model.MovieResponse
-import com.example.movie.model.Singleton
-import com.example.movie.model.User
 import com.example.movie.myFragments.LikeFragment
 import com.example.movie.myFragments.MainFragment
 import com.example.movie.myFragments.ProfileFragment
 import com.example.movie.pager.LockableViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.gson.JsonObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var bottomNavigationView: BottomNavigationView
-       private lateinit var pager: LockableViewPager
+    private lateinit var pager: LockableViewPager
     private lateinit var pagerAdapter: PagerAdapter
     private var f1: Fragment = MainFragment()
     private var f2: Fragment = LikeFragment()
@@ -35,14 +24,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_page)
+        bindView()
         list.add(f1)
         list.add(f2)
         list.add(f3)
-        pager = findViewById(R.id.pager)
         pager.setSwipable(false)
         pagerAdapter = SlidePagerAdapter(supportFragmentManager, list)
         pager.adapter = pagerAdapter
-        bottomNavigationView = findViewById(R.id.bottom_navigation)
 
         bottomNavigationView.setOnNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
@@ -58,9 +46,14 @@ class MainActivity : AppCompatActivity() {
             }
             false
         }
+    }
 
+    fun bindView() {
+        pager = findViewById(R.id.pager)
+        bottomNavigationView = findViewById(R.id.bottom_navigation)
 
     }
+
 //    fun onClick()
 //    {
 //

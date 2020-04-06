@@ -37,7 +37,6 @@ class LikeMoviesAdapter (
             val description = view.findViewById<TextView>(R.id.description)
             val thumbnail = view.findViewById<ImageView>(R.id.thumbnail)
 
-
             title.text = post?.original_title
             val vote = post?.overview
             description.text = vote.toString()
@@ -45,7 +44,6 @@ class LikeMoviesAdapter (
             Glide.with(context)
                 .load(post?.getPosterPath())
                 .into(thumbnail)
-            //                .placeholder(R.drawable.load)
 
             view.setOnClickListener {
                 val intent = Intent(context, DetailActivity::class.java)

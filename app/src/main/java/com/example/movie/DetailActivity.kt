@@ -1,18 +1,14 @@
 package com.example.movie
 
-//import android.widget.Toolbar
-import android.content.Intent
+
 import android.graphics.drawable.Drawable
-import android.nfc.Tag
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
@@ -40,17 +36,52 @@ class DetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
+        bindView()
+        initIntents()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.detail_menu, menu)
+        hasLike()
+        return true
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here.
+        if (item.itemId == R.id.favourite) {
+
+            var drawable: Drawable = item.icon.current
+            if (drawable.constantState!!.equals(getDrawable(R.drawable.ic_favorite_border)?.constantState))
+            {
+                item.icon = getDrawable(R.drawable.ic_favorite_liked)
+                likeMovie(true)
+            } else
+            {
+                item.icon = getDrawable(R.drawable.ic_favorite_border)
+                likeMovie(false)
+            }
+        }
+        if (item.itemId == android.R.id.home) {
+            onBackPressed()
+        }
+        return true
+    }
+
+
+    private fun bindView() {
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         initCollapsingToolbar()
-
         imageView = findViewById(R.id.thumbnail_image_header)
         nameofMovie = findViewById(R.id.title)
         plotSynopsis = findViewById(R.id.plotsynopsis)
         userRating = findViewById(R.id.userrating)
         releaseDate = findViewById(R.id.releasedate)
+    }
 
+    private fun initIntents() {
         val intent = getIntent()
         if (intent.hasExtra("original_title")) {
             session_id = Singleton.getSession()
@@ -75,44 +106,9 @@ class DetailActivity : AppCompatActivity() {
         } else {
             Toast.makeText(this, "No API Data", Toast.LENGTH_SHORT).show()
         }
-
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.detail_menu, menu)
-        hasLike()
-        return true
-    }
-
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here.
-
-
-        if (item.itemId == R.id.favourite) {
-            var drawable: Drawable = item.icon.current
-            if (drawable.constantState!!.equals(getDrawable(R.drawable.ic_favorite_border)?.constantState)) {
-                item.icon = getDrawable(R.drawable.ic_favorite_liked)
-                // }
-                likeMovie(true)
-            } else {
-                item.icon = getDrawable(R.drawable.ic_favorite_border)
-                likeMovie(false)
-            }
-            //invalidateOptionsMenu()
-        }
-        if(item.itemId==android.R.id.home){
-            onBackPressed()
-        }
-
-
-         return true
-    }
-
-
-
-
-    fun hasLike() {
+    private fun hasLike() {
 
 
         RetrofitService.getPostApi()
@@ -133,9 +129,11 @@ class DetailActivity : AppCompatActivity() {
                             response.body(),
                             FavResponse::class.java
                         ).favorite
-                        if (like) toolbar.menu.findItem(R.id.favourite).icon =
+                        if (like)
+                            toolbar.menu.findItem(R.id.favourite).icon =
                             getDrawable(R.drawable.ic_favorite_liked)
-                        else toolbar.menu.findItem(R.id.favourite).icon =
+                        else
+                            toolbar.menu.findItem(R.id.favourite).icon =
                             getDrawable(R.drawable.ic_favorite_border)
                     }
 
@@ -144,7 +142,7 @@ class DetailActivity : AppCompatActivity() {
 
     }
 
-    fun likeMovie(favourite: Boolean) {
+    private fun likeMovie(favourite: Boolean) {
         val body = JsonObject().apply {
             addProperty("media_type", "movie")
             addProperty("media_id", movie_id)
@@ -183,9 +181,8 @@ class DetailActivity : AppCompatActivity() {
             })
     }
 
-    fun initCollapsingToolbar() {
-        val collapse: CollapsingToolbarLayout
-        collapse = findViewById(R.id.collapsing_toolbar)
+    private fun initCollapsingToolbar() {
+        val collapse: CollapsingToolbarLayout = findViewById(R.id.collapsing_toolbar)
         collapse.title = " "
         val appBarLayout: AppBarLayout = findViewById(R.id.appbar)
         appBarLayout.setExpanded(true)
@@ -199,10 +196,10 @@ class DetailActivity : AppCompatActivity() {
                     scrollRange = appBarLayout.totalScrollRange
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    collapse.setTitle(getString(R.string.movie_details))
+                    collapse.title = getString(R.string.movie_details)
                     isShow = true
                 } else if (isShow) {
-                    collapse.setTitle(" ")
+                    collapse.title = " "
                     isShow = false
                 }
 

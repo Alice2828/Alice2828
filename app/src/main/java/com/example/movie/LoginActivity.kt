@@ -1,11 +1,9 @@
 package com.example.movie
 
-import android.content.Context
+
 import android.content.Intent
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -16,7 +14,6 @@ import com.example.movie.api.Session
 import com.example.movie.model.MyAccount
 import com.example.movie.model.Singleton
 import com.example.movie.model.User
-import com.example.movie.myFragments.MainFragment
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
@@ -25,7 +22,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Exception
 import java.lang.reflect.Type
-import java.util.*
 
 class LoginActivity : AppCompatActivity() {
     lateinit var email: EditText
@@ -42,41 +38,8 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        email = findViewById(R.id.email)
-        password = findViewById(R.id.password)
-        login = findViewById(R.id.login)
-        register = findViewById(R.id.register)
-        try {
-            preferences = this@LoginActivity.getSharedPreferences("Username", 0)
-            var gsonGen = Gson()
-            var json: String? = preferences.getString("user", null)
-            var type: Type = object : TypeToken<User>() {}.type
-            var user = gsonGen.fromJson<User>(json, type)
-
-            if (user.session_id != "") {
-                var singleton =
-                    Singleton.create(
-                        user.username,
-                        user.session_id,
-                        user.account_id
-                    )
-                val intent =
-                    Intent(
-                        this@LoginActivity,
-                        MainActivity::class.java
-                    )
-
-                startActivity(
-                    intent
-                )
-
-            }
-        }
-        catch(e:Exception)
-        {
-
-        }
-
+        bindView()
+        stayLogged()
 
         login.setOnClickListener {
             login()
@@ -110,17 +73,14 @@ class LoginActivity : AppCompatActivity() {
 
                         if (response.isSuccessful) {
 
-                            requestToken = response.body()?.request_token!!
-                            Toast.makeText(
-                                this@LoginActivity,
-                                requestToken,
-                                Toast.LENGTH_LONG
-                            ).show()
+                            requestToken = response.body()?.requestToken!!
+
                             val body = JsonObject().apply {
                                 addProperty("username", emailValue)
                                 addProperty("password", passwordValue)
                                 addProperty("request_token", requestToken)
                             }
+
                             RetrofitService.getPostApi()
                                 .login(BuildConfig.THE_MOVIE_DB_API_TOKEN, body)
                                 .enqueue(object : Callback<JsonObject> {
@@ -143,12 +103,7 @@ class LoginActivity : AppCompatActivity() {
                                                 response.body(),
                                                 RequestToken::class.java
                                             )
-                                            newRequestToken = new_RequestToken.request_token
-                                            Toast.makeText(
-                                                this@LoginActivity,
-                                                newRequestToken,
-                                                Toast.LENGTH_LONG
-                                            ).show()
+                                            newRequestToken = new_RequestToken.requestToken
 
                                             RetrofitService.getPostApi()
                                                 .getSession(
@@ -178,13 +133,7 @@ class LoginActivity : AppCompatActivity() {
                                                                 )
 
                                                             val sessionId =
-                                                                new_session.session_id
-                                                            Toast.makeText(
-                                                                this@LoginActivity,
-                                                                sessionId,
-                                                                Toast.LENGTH_LONG
-                                                            ).show()
-
+                                                                new_session.sessionId
 
                                                             RetrofitService.getPostApi()
                                                                 .getAccount(
@@ -222,12 +171,6 @@ class LoginActivity : AppCompatActivity() {
                                                                             var idAcc =
                                                                                 new_idAcc.id
 
-                                                                            Toast.makeText(
-                                                                                this@LoginActivity,
-                                                                                "id Acc " + idAcc,
-                                                                                Toast.LENGTH_LONG
-                                                                            ).show()
-
 
                                                                             val user =
                                                                                 User(
@@ -242,10 +185,14 @@ class LoginActivity : AppCompatActivity() {
                                                                                     idAcc
                                                                                 )
                                                                             val json1: String =
-                                                                                gson!!.toJson(
+                                                                                gson.toJson(
                                                                                     user
                                                                                 )
-                                                                            preferences=this@LoginActivity.getSharedPreferences("Username", 0)
+                                                                            preferences =
+                                                                                this@LoginActivity.getSharedPreferences(
+                                                                                    "Username",
+                                                                                    0
+                                                                                )
                                                                             preferences.edit()
                                                                                 .putString(
                                                                                     "user",
@@ -290,4 +237,44 @@ class LoginActivity : AppCompatActivity() {
                 .show()
         }
     }
+
+    private fun bindView() {
+        email = findViewById(R.id.email)
+        password = findViewById(R.id.password)
+        login = findViewById(R.id.login)
+        register = findViewById(R.id.register)
+    }
+
+    private fun stayLogged() {
+        try {
+            preferences = this@LoginActivity.getSharedPreferences("Username", 0)
+            var gsonGen = Gson()
+            var json: String? = preferences.getString("user", null)
+            var type: Type = object : TypeToken<User>() {}.type
+            var user = gsonGen.fromJson<User>(json, type)
+
+            if (user.sessionId != "") {
+                var singleton =
+                    Singleton.create(
+                        user.username,
+                        user.sessionId,
+                        user.accountId
+                    )
+                val intent =
+                    Intent(
+                        this@LoginActivity,
+                        MainActivity::class.java
+                    )
+
+                startActivity(
+                    intent
+                )
+
+            }
+        } catch (e: Exception) {
+
+        }
+
+    }
 }
+
