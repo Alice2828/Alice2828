@@ -26,6 +26,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class LikeFragment : Fragment() {
+    lateinit var relativeLayout: RelativeLayout
     lateinit var commentsIc: ImageView
     lateinit var timeIc: ImageView
     lateinit var recyclerView: RecyclerView

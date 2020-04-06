@@ -110,9 +110,7 @@ class DetailActivity : AppCompatActivity() {
     }
 
 
-        return super.onOptionsItemSelected(item)
 
-    }
 
     fun hasLike() {
 
