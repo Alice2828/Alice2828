@@ -19,54 +19,49 @@ class MoviesAdapter(
     var context: Context,
     var moviesList: List<Movie>? = null
 ) : RecyclerView.Adapter<MoviesAdapter.MovieViewHolder>() {
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): MovieViewHolder {
-        val view = LayoutInflater.from(p0.context).inflate(R.layout.movie_card, p0, false)
+
+    override fun onCreateViewHolder(parent: ViewGroup, i: Int): MovieViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.movie_card, parent, false)
         return MovieViewHolder(view)
     }
 
     override fun getItemCount(): Int = moviesList?.size ?: 0
 
-    override fun onBindViewHolder(p0: MovieViewHolder, p1: Int) {
-        p0.bind(moviesList?.get(p1))
+    override fun onBindViewHolder(viewHolder: MovieViewHolder, i: Int) {
+        viewHolder.bind(moviesList?.get(i))
     }
 
-    fun clearAll() {
-        (moviesList as? ArrayList<Movie>)?.clear()
-        notifyDataSetChanged()
-    }
 
     inner class MovieViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-        fun bind(post: Movie?) {
+        fun bind(movie: Movie?) {
             val title = view.findViewById<TextView>(R.id.title)
-            val userrating = view.findViewById<TextView>(R.id.userrating)
+            val description = view.findViewById<TextView>(R.id.description)
             val thumbnail = view.findViewById<ImageView>(R.id.thumbnail)
 
 
-            title.text = post?.original_title
-            val vote = post?.vote_average
-            userrating.text = vote.toString()
+            title.text = movie?.original_title
+            val vote = movie?.overview
+            description.text = vote.toString()
 
             Glide.with(context)
-                .load(post?.getPosterPath())
+                .load(movie?.getPosterPath())
                 .into(thumbnail)
-            //                .placeholder(R.drawable.load)
 
             view.setOnClickListener {
-                val intent = Intent(view.context, DetailActivity::class.java)
-                intent.putExtra("original_title", post?.original_title)
-                intent.putExtra("poster_path", post?.poster_path)
-                intent.putExtra("overview", post?.overview)
-                intent.putExtra("vote_average", (post?.vote_average).toString())
-                intent.putExtra("relase_date", post?.release_date)
+                val intent = Intent(context, DetailActivity::class.java)
+                intent.putExtra("genre_ids", movie?.genre_ids)
+                intent.putExtra("movie_id", movie?.id)
+                intent.putExtra("original_title", movie?.original_title)
+                intent.putExtra("poster_path", movie?.poster_path)
+                intent.putExtra("overview", movie?.overview)
+                intent.putExtra("vote_average", (movie?.vote_average).toString())
+                intent.putExtra("release_date", movie?.release_date)
                 view.context.startActivity(intent)
             }
         }
     }
 
-    interface RecyclerViewItemClick {
 
-        fun itemClick(position: Int, item: Movie)
-    }
 }
 
