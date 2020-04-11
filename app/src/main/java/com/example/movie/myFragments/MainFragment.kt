@@ -82,6 +82,7 @@ class MainFragment : Fragment() {
         intent.putExtra("overview", movie.overview)
         intent.putExtra("vote_average", (movie.vote_average).toString())
         intent.putExtra("release_date", movie.release_date)
+        intent.putExtra("genre_ids", movie.genre_ids)
         view?.context?.startActivity(intent)
     }
 

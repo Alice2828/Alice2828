@@ -3,6 +3,7 @@ package com.example.movie.model
 
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
+import java.util.ArrayList
 
 data class Movie(
 
@@ -25,7 +26,7 @@ data class Movie(
     @SerializedName("original_title")
     val original_title: String,
     @SerializedName("genre_ids")
-    val genre_ids: List<Int>,
+    val genre_ids: ArrayList<Int>,
     @SerializedName("title")
     val title: String,
     @SerializedName("vote_average")
