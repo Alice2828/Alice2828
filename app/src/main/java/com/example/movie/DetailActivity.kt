@@ -21,6 +21,8 @@ import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.Exception
+import java.util.ArrayList
 
 class DetailActivity : AppCompatActivity() {
     lateinit var nameofMovie: TextView
@@ -29,9 +31,11 @@ class DetailActivity : AppCompatActivity() {
     lateinit var releaseDate: TextView
     lateinit var imageView: ImageView
     lateinit var toolbar: Toolbar
+    lateinit var genre: TextView
     var movie_id: Int? = null
     var account_id: Int? = null
     var session_id: String? = ""
+    lateinit var genresList: List<Genre>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,12 +56,10 @@ class DetailActivity : AppCompatActivity() {
         if (item.itemId == R.id.favourite) {
 
             var drawable: Drawable = item.icon.current
-            if (drawable.constantState!!.equals(getDrawable(R.drawable.ic_favorite_border)?.constantState))
-            {
+            if (drawable.constantState!!.equals(getDrawable(R.drawable.ic_favorite_border)?.constantState)) {
                 item.icon = getDrawable(R.drawable.ic_favorite_liked)
                 likeMovie(true)
-            } else
-            {
+            } else {
                 item.icon = getDrawable(R.drawable.ic_favorite_border)
                 likeMovie(false)
             }
@@ -79,6 +81,7 @@ class DetailActivity : AppCompatActivity() {
         plotSynopsis = findViewById(R.id.plotsynopsis)
         userRating = findViewById(R.id.userrating)
         releaseDate = findViewById(R.id.releasedate)
+        genre = findViewById(R.id.genre)
     }
 
     private fun initIntents() {
@@ -93,10 +96,13 @@ class DetailActivity : AppCompatActivity() {
             val synopsis = getIntent().getExtras()?.getString("overview")
             val rating = getIntent().getExtras()?.getString("vote_average")
             val sateOfRelease = getIntent().getExtras()?.getString("release_date")
+            val movieGenreId = getIntent().extras?.getIntegerArrayList("genre_ids")?.get(0)
 
             Glide.with(this)
                 .load(thumbnail)
                 .into(imageView)
+
+            genreFunc(movieGenreId)
 
             nameofMovie.text = movieName
             plotSynopsis.text = synopsis
@@ -106,6 +112,47 @@ class DetailActivity : AppCompatActivity() {
         } else {
             Toast.makeText(this, "No API Data", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    fun genreFunc(movieGenreId: Int?) {
+
+        Log.d("TAG", "1")
+        genre.text="экшен"
+        try {
+            RetrofitService.getPostApi().getGenres(BuildConfig.THE_MOVIE_DB_API_TOKEN)
+                .enqueue(object : Callback<List<Genre>> {
+                    override fun onFailure(call: Call<List<Genre>>, t: Throwable) {
+                    }
+
+                    override fun onResponse(
+                        call: Call<List<Genre>>,
+                        response: Response<List<Genre>>
+                    ) {
+                        if (response.isSuccessful) {
+//                            val gson=Gson()
+//                            var genresList=gson.fromJson<List<Genre>>(response.body(),Genre::class.java)
+                             genresList = response.body() as List<Genre>
+
+                            Log.d("TAG", "2")
+
+                            genresList.forEach {
+
+                                if (movieGenreId == it.id)
+                                    genre.text =it.name
+
+                            }
+
+
+                        }
+                    }
+                })
+        }
+        catch (e:Exception)
+        {
+
+        }
+
+
     }
 
     private fun hasLike() {
@@ -131,10 +178,10 @@ class DetailActivity : AppCompatActivity() {
                         ).favorite
                         if (like)
                             toolbar.menu.findItem(R.id.favourite).icon =
-                            getDrawable(R.drawable.ic_favorite_liked)
+                                getDrawable(R.drawable.ic_favorite_liked)
                         else
                             toolbar.menu.findItem(R.id.favourite).icon =
-                            getDrawable(R.drawable.ic_favorite_border)
+                                getDrawable(R.drawable.ic_favorite_border)
                     }
 
                 }

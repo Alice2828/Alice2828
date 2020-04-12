@@ -1,8 +1,10 @@
 package com.example.movie.api
 
+import com.example.movie.model.Genre
 import com.example.movie.model.MovieResponse
 import com.google.gson.JsonObject
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
@@ -25,7 +27,6 @@ interface PostApi {
     @GET("movie/popular")
     fun getPopularMovieList(@Query("api_key") apiKey: String): Call<MovieResponse>
 
-
     @GET("authentication/token/new")
     fun getRequestToken(@Query("api_key") apiKey: String): Call<RequestToken>
 
@@ -41,14 +42,6 @@ interface PostApi {
 
     @POST("account/{account_id}/favorite")
     fun rate(
-        @Path("account_id") accountId: Int?,
-        @Query("api_key") apiKey: String,
-        @Query("session_id") sessionId: String?,
-        @Body body: JsonObject
-    ): Call<JsonObject>
-
-    @POST("account/{account_id}/favorite")
-    fun unrate(
         @Path("account_id") accountId: Int?,
         @Query("api_key") apiKey: String,
         @Query("session_id") sessionId: String?,
@@ -72,4 +65,9 @@ interface PostApi {
     @DELETE("authentication/session")
     fun deleteSession(@Query("api_key") apiKey: String, @Body body: JsonObject): Call<JsonObject>
 
+    @DELETE("authentication/session")
+    suspend fun  deleteSessionCoroutine(@Query("api_key") apiKey: String, @Body body: JsonObject): Response<JsonObject>
+
+    @GET("genre/movie/list")
+    fun getGenres(@Query("api_key") apiKey: String): Call<List<Genre>>
 }
