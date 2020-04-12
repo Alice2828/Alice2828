@@ -20,11 +20,21 @@ import com.example.movie.api.RetrofitService
 import com.example.movie.model.Movie
 import com.example.movie.model.MovieResponse
 import com.example.movie.model.Singleton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.coroutines.CoroutineContext
 
-class LikeFragment : Fragment() {
+class LikeFragment : Fragment(), CoroutineScope {
+    private val job = Job()
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
+
     lateinit var relativeLayout: RelativeLayout
     lateinit var commentsIc: ImageView
     lateinit var timeIc: ImageView
@@ -54,12 +64,10 @@ class LikeFragment : Fragment() {
             initViews()
         }
         initViews()
-
         return rootView
     }
 
     fun initViews() {
-
         bigPicCardIm?.visibility = View.INVISIBLE
         movieList = ArrayList<Movie>()
         postAdapter = activity?.applicationContext?.let { LikeMoviesAdapter(it, movieList) }!!
@@ -68,46 +76,14 @@ class LikeFragment : Fragment() {
         recyclerView.adapter = postAdapter
         postAdapter?.notifyDataSetChanged()
         loadJSON()
-
-
     }
-
 
     fun loadJSON() {
-        try {
-            if (BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()) {
-                return;
-            }
-            RetrofitService.getPostApi()
-                .getFavoriteMovies(account_id, BuildConfig.THE_MOVIE_DB_API_TOKEN, session_id)
-                .enqueue(object : Callback<MovieResponse> {
-                    override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-                        swipeRefreshLayout.isRefreshing = false
-                    }
-
-                    override fun onResponse(
-                        call: Call<MovieResponse>,
-                        response: Response<MovieResponse>
-                    ) {
-
-                        if (response.isSuccessful) {
-                            val list = response.body()?.results
-                            postAdapter?.moviesList = list
-                            postAdapter?.notifyDataSetChanged()
-                        }
-                        swipeRefreshLayout.isRefreshing = false
-                    }
-                })
-
-
-        } catch (e: Exception) {
-            Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show()
-        }
-
+        getMovieLikesCoroutine()
 
     }
-    private fun bindView()
-    {
+
+    private fun bindView() {
         commentsIc = (rootView as ViewGroup).findViewById(R.id.ic_comments)
         timeIc = (rootView as ViewGroup).findViewById(R.id.ic_times)
         dateTv = (rootView as ViewGroup).findViewById(R.id.date_movie_info)
@@ -118,6 +94,36 @@ class LikeFragment : Fragment() {
         relativeLayout = (rootView as ViewGroup).findViewById(R.id.main_layout_pic)
         swipeRefreshLayout = (rootView as ViewGroup).findViewById(R.id.main_content)
 
+    }
+
+    private fun getMovieLikesCoroutine() {
+        try {
+            if (BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()) {
+                return;
+            }
+            launch {
+                swipeRefreshLayout.isRefreshing = false
+                val response = RetrofitService.getPostApi().getFavouriteMoviesCoroutine(
+                    account_id,
+                    BuildConfig.THE_MOVIE_DB_API_TOKEN,
+                    session_id
+                )
+                if (response.isSuccessful) {
+                    val list = response.body()?.results
+                    postAdapter?.moviesList = list
+                    postAdapter?.notifyDataSetChanged()
+
+                } else {
+                }
+            }
+        } catch (e: Exception) {
+            Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
     }
 
 }
