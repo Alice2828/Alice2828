@@ -27,18 +27,14 @@ interface PostApi {
     @GET("movie/popular")
     fun getPopularMovieList(@Query("api_key") apiKey: String): Call<MovieResponse>
 
-
-
     @GET("authentication/token/new")
     fun getRequestToken(@Query("api_key") apiKey: String): Call<RequestToken>
 
     @POST("authentication/token/validate_with_login")
     fun login(@Query("api_key") apiKey: String, @Body body: JsonObject): Call<JsonObject>
 
-
     @POST("authentication/session/new")
     fun getSession(@Query("api_key") apiKey: String, @Body body: JsonObject): Call<JsonObject>
-
 
     @GET("movie/{movie_id}/account_states")
     suspend fun hasLikeCoroutine(
