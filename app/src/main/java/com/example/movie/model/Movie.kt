@@ -35,8 +35,9 @@ data class Movie(
     @SerializedName("overview")
     val overview: String?=null,
     @SerializedName("release_date")
-    val release_date: String?=null
-
+    val release_date: String?=null,
+    @SerializedName("liked")
+    var liked: Int? = 0
 ) : Serializable {
 
     fun getPosterPath(): String {

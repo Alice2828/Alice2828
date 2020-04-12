@@ -17,6 +17,8 @@ import com.example.movie.BuildConfig
 import com.example.movie.R
 import com.example.movie.adapter.LikeMoviesAdapter
 import com.example.movie.api.RetrofitService
+import com.example.movie.database.MovieDao
+import com.example.movie.database.MovieDatabase
 import com.example.movie.model.Movie
 import com.example.movie.model.MovieResponse
 import com.example.movie.model.Singleton
@@ -47,11 +49,14 @@ class LikeFragment : Fragment(), CoroutineScope {
     private var rootView: View? = null
     var session_id = Singleton.getSession()
     var account_id = Singleton.getAccountId()
+    private var movieDao: MovieDao? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        movieDao = MovieDatabase.getDatabase(context!!).movieDao()
+
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.activity_main, container, false) as ViewGroup
         bindView()
@@ -94,36 +99,40 @@ class LikeFragment : Fragment(), CoroutineScope {
     }
 
     private fun getMovieLikesCoroutine() {
-        try {
-            if (BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()) {
-                return;
-            }
+
             launch {
                 swipeRefreshLayout.isRefreshing = false
                 val list = withContext(Dispatchers.IO) {
-                    val response = RetrofitService.getPostApi().getFavouriteMoviesCoroutine(
-                        account_id,
-                        BuildConfig.THE_MOVIE_DB_API_TOKEN,
-                        session_id
-                    )
-//                    if (response.isSuccessful) {
-//                        val result = response.body()?.results
-//                        if (!result.isNullOrEmpty()) {
-//                            movieDao?.insertAll(result)
-//                        }
-//                        result
-//                    } else {
-//                        movieDao?.getAll() ?: emptyList()
-//                    }
-
+                    try {
+                        val response = RetrofitService.getPostApi().getFavouriteMoviesCoroutine(
+                            account_id,
+                            BuildConfig.THE_MOVIE_DB_API_TOKEN,
+                            session_id
+                        )
+                        if (response.isSuccessful) {
+                            val result = response.body()?.results
+                            for(m in result!!)
+                            {
+                                m.liked = 1
+                            }
+                            if (!result.isNullOrEmpty()) {
+                                movieDao?.insertAll(result)
+                            }
+                            result
+                        } else {
+                            movieDao?.getAllLiked() ?: emptyList()
+                        }
+                    } catch (e: Exception) {
+                        movieDao?.getAllLiked() ?: emptyList()
+                    }
                 }
-               // postAdapter?.moviesList = list
+
+
+                postAdapter?.moviesList = list
                 postAdapter?.notifyDataSetChanged()
             }
-        } catch (e: Exception) {
-            Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show()
         }
-    }
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -131,3 +140,9 @@ class LikeFragment : Fragment(), CoroutineScope {
     }
 
 }
+
+
+
+
+
+

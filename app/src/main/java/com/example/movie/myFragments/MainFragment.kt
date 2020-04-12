@@ -37,7 +37,6 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
         get() = Dispatchers.Main + job
 
     private var relativeLayout: RelativeLayout? = null
-    private var a: Int = 0
     lateinit var commentsIc: ImageView
     lateinit var timeIc: ImageView
     lateinit var recyclerView: RecyclerView
@@ -140,25 +139,27 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
     }
 
     private fun getMovieCoroutine() {
-
-        a = 1
         launch {
             swipeRefreshLayout.isRefreshing = true
             val list = withContext(Dispatchers.IO)
             {
-                val response = RetrofitService.getPostApi()
-                    .getPopularMovieListCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN)
-                if (response.isSuccessful) {
-                    val result = response.body()?.results
+                try {
+                    val response = RetrofitService.getPostApi()
+                        .getPopularMovieListCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN)
+                    if (response.isSuccessful) {
+                        val result = response.body()?.results
 
-                    if (!result.isNullOrEmpty()) {
-                        movieDao?.insertAll(result)
+                        if (!result.isNullOrEmpty()) {
+                            movieDao?.insertAll(result)
+                        }
+                        result
+                    } else {
+                        movieDao?.getAll() ?: emptyList()
                     }
-                    result
-                } else {
+
+                } catch (e: Exception) {
                     movieDao?.getAll() ?: emptyList()
                 }
-
             }
             movie = list!!.first()
             dateTv?.text = "март 30, 2020"
@@ -180,19 +181,22 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
         launch {
              swipeRefreshLayout.isRefreshing = true
             val list = withContext(Dispatchers.IO) {
-                val response = RetrofitService.getPostApi()
-                    .getPopularMovieListCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN)
-                if (response.isSuccessful) {
-                    val result = response.body()?.results
-                    val result2 = result!!.subList(1, result.lastIndex)
-                    if (!result2.isNullOrEmpty()) {
-                        movieDao?.insertAll(result)
+                try {
+                    val response = RetrofitService.getPostApi()
+                        .getPopularMovieListCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN)
+                    if (response.isSuccessful) {
+                        val result = response.body()?.results
+                        val result2 = result!!.subList(1, result.lastIndex)
+                        if (!result2.isNullOrEmpty()) {
+                            movieDao?.insertAll(result)
+                        }
+                        result
+                    } else {
+                        movieDao?.getAll() ?: emptyList()
                     }
-                    result
-                } else {
+                } catch (e: Exception) {
                     movieDao?.getAll() ?: emptyList()
                 }
-
             }
             postAdapter?.moviesList = list
             postAdapter?.notifyDataSetChanged()
