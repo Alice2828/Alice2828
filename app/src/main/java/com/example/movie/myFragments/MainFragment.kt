@@ -20,21 +20,16 @@ import com.example.movie.DetailActivity
 import com.example.movie.R
 import com.example.movie.adapter.MoviesAdapter
 import com.example.movie.api.RetrofitService
-import com.example.movie.database.MovieDao
-import com.example.movie.database.MovieDatabase
 import com.example.movie.model.Movie
-import kotlinx.coroutines.*
-import kotlin.coroutines.CoroutineContext
+import com.example.movie.model.MovieResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 /**
  * A simple [Fragment] subclass.
  */
-class MainFragment : Fragment(), CoroutineScope by MainScope() {
-
-    private val job = Job()
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
+class MainFragment : Fragment() {
 
     private var relativeLayout: RelativeLayout? = null
     private var a: Int = 0
@@ -50,14 +45,13 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
     lateinit var movieList: List<Movie>
     lateinit var movie: Movie
     private var rootView: View? = null
-    private var movieDao: MovieDao? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        movieDao = context?.let { MovieDatabase.getDatabase(context = it).movieDao() }
+
         rootView = inflater.inflate(R.layout.activity_main, container, false) as ViewGroup
         bindViews()
 
@@ -88,7 +82,7 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
         intent.putExtra("overview", movie.overview)
         intent.putExtra("vote_average", (movie.vote_average).toString())
         intent.putExtra("release_date", movie.release_date)
-        //  intent.putExtra("genre_ids", movie.genre_ids)
+        intent.putExtra("genre_ids", movie.genre_ids)
         view?.context?.startActivity(intent)
     }
 
@@ -121,10 +115,52 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
         postAdapter?.notifyDataSetChanged()
         bigPicCard()
         loadJSON()
+
+
     }
 
     private fun bigPicCard() {
-        getMovieCoroutine()
+
+        try {
+            if (BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()) {
+                return;
+            }
+            RetrofitService.getPostApi().getPopularMovieList(BuildConfig.THE_MOVIE_DB_API_TOKEN)
+                .enqueue(object : Callback<MovieResponse> {
+                    override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
+                        swipeRefreshLayout.isRefreshing = false
+                        a = 1
+
+                    }
+
+                    override fun onResponse(
+                        call: Call<MovieResponse>,
+                        response: Response<MovieResponse>
+                    ) {
+                        //Log.d("My_post_list", response.body().toString())
+                        if (response.isSuccessful) {
+                            val list = response.body()?.results
+                            movie = list!!.first()
+                            dateTv?.text = "март 30, 2020"
+                            commentsTv?.text = "0"
+                            bigPictv?.text = movie.original_title
+                            bigPicCardIm?.visibility = View.VISIBLE
+                            Glide.with(rootView!!.context)
+                                .load(movie.getPosterPath())
+                                .into((rootView as ViewGroup).findViewById(R.id.main_big_pic))
+
+
+                        }
+                        swipeRefreshLayout.isRefreshing = false
+
+                    }
+                })
+
+
+        } catch (e: Exception) {
+            Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT)
+        }
+
         commentsIc.visibility = View.VISIBLE
         timeIc.visibility = View.VISIBLE
 
@@ -133,100 +169,36 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
 
     private fun loadJSON() {
         try {
-            getMovieListCoroutine()
+            if (BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()) {
+                return;
+            }
+            RetrofitService.getPostApi().getPopularMovieList(BuildConfig.THE_MOVIE_DB_API_TOKEN)
+                .enqueue(object : Callback<MovieResponse> {
+                    override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
+                        swipeRefreshLayout.isRefreshing = false
+                    }
+
+                    override fun onResponse(
+                        call: Call<MovieResponse>,
+                        response: Response<MovieResponse>
+                    ) {
+                        //Log.d("My_post_list", response.body().toString())
+                        if (response.isSuccessful) {
+                            val list = response.body()?.results
+                            val list2 = list!!.subList(1, list.lastIndex)
+                            postAdapter?.moviesList = list2
+                            postAdapter?.notifyDataSetChanged()
+                        }
+                        swipeRefreshLayout.isRefreshing = false
+                    }
+                })
+
+
         } catch (e: Exception) {
-            Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show()
+            Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show()
         }
 
-    }
-
-    private fun getMovieCoroutine() {
-
-        a = 1
-        launch {
-            swipeRefreshLayout.isRefreshing = true
-            val list = withContext(Dispatchers.IO)
-            {
-                val response = RetrofitService.getPostApi()
-                    .getPopularMovieListCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN)
-                if (response.isSuccessful) {
-                    val result = response.body()?.results
-                    movie = result!!.first()
-                    dateTv?.text = "март 30, 2020"
-                    commentsTv?.text = "0"
-                    bigPictv?.text = movie.original_title
-                    bigPicCardIm?.visibility = View.VISIBLE
-                    Glide.with(rootView!!.context)
-                        .load(movie.getPosterPath())
-                        .into((rootView as ViewGroup).findViewById(R.id.main_big_pic))
-                    if (!result.isNullOrEmpty()) {
-                        movieDao?.insertAll(result)
-                    }
-                    result
-                } else {
-                    movieDao?.getAll() ?: emptyList()
-                }
-
-            }
-            commentsIc.visibility = View.VISIBLE
-            timeIc.visibility = View.VISIBLE
-            swipeRefreshLayout.isRefreshing = false
-        }
-    }
-
-//                val response = RetrofitService.getPostApi()
-//                    .getPopularMovieListCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN)
-//                if (response.isSuccessful) {
-//                    val list = response.body()?.results
-//                    movie = list!!.first()
-//                    dateTv?.text = "март 30, 2020"
-//                    commentsTv?.text = "0"
-//                    bigPictv?.text = movie.original_title
-//                    bigPicCardIm?.visibility = View.VISIBLE
-//                    Glide.with(rootView!!.context)
-//                        .load(movie.getPosterPath())
-//                        .into((rootView as ViewGroup).findViewById(R.id.main_big_pic))
-//                }
-//
-//                swipeRefreshLayout.isRefreshing = false
-//            }
-//        } catch (e: Exception) {
-//            Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT)
-//        }
-
-
-
-
-
-    private fun getMovieListCoroutine() {
-
-        launch {
-            swipeRefreshLayout.isRefreshing = true
-            val list= withContext(Dispatchers.IO){
-                val response = RetrofitService.getPostApi()
-                    .getPopularMovieListCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN)
-                if (response.isSuccessful) {
-                    val result = response.body()?.results
-                    val result2 = result!!.subList(1, result.lastIndex)
-                    if (!result2.isNullOrEmpty()) {
-                        movieDao?.insertAll(result)
-                    }
-                    result
-                }
-                    else{
-                        movieDao?.getAll()?:emptyList()
-                    }
-
-            }
-            postAdapter?.moviesList = list
-            postAdapter?.notifyDataSetChanged()
-            swipeRefreshLayout.isRefreshing=false
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        job.cancel()
 
     }
+
 }
