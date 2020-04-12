@@ -114,8 +114,6 @@ class MainFragment : Fragment() {
         postAdapter?.notifyDataSetChanged()
         bigPicCard()
         loadJSON()
-
-
     }
 
     private fun bigPicCard() {
