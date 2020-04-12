@@ -26,6 +26,8 @@ interface PostApi {
 
     @GET("movie/popular")
     fun getPopularMovieList(@Query("api_key") apiKey: String): Call<MovieResponse>
+    @GET("movie/popular")
+    suspend fun getPopularMovieListCoroutine(@Query("api_key") apiKey: String): Response<MovieResponse>
 
     @GET("authentication/token/new")
     fun getRequestToken(@Query("api_key") apiKey: String): Call<RequestToken>

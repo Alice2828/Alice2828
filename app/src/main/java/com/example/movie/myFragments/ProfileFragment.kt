@@ -64,25 +64,7 @@ class ProfileFragment : Fragment(), CoroutineScope {
                     startActivity(intent)
                 }
             }
-            /*editor.clear().commit()
 
-            val body: JsonObject = JsonObject().apply {
-                addProperty("session_id", Singleton.getSession())
-            }
-            RetrofitService.getPostApi().deleteSession(BuildConfig.THE_MOVIE_DB_API_TOKEN, body)
-                .enqueue(object : Callback<JsonObject> {
-                    override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                    }
-                    override fun onResponse(
-                        call: Call<JsonObject>,
-                        response: Response<JsonObject>
-                    ) {
-                        if (response.isSuccessful) {
-                            val intent = Intent(activity, LoginActivity::class.java)
-                            startActivity(intent)
-                        }
-                    }
-                })*/
         }
     }
 
