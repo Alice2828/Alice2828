@@ -29,7 +29,9 @@ class RegistrationActivity : AppCompatActivity() {
         }
 
         login.setOnClickListener {
+
             onBackPressed()
+
         }
     }
 }

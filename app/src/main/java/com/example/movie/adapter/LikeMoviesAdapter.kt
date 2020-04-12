@@ -58,5 +58,7 @@ class LikeMoviesAdapter (
             }
         }
     }
+
+
 }
 
