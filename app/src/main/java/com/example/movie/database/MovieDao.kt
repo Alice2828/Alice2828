@@ -9,8 +9,8 @@ import com.example.movie.model.Movie
 @Dao
 interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(list:List<Movie>)
+    fun insertAll(list: List<Movie>)
 
-    @Query("SELECT*FROM movie_table")
-    fun getAll():List<Movie>
+    @Query("SELECT*FROM movies_table")
+    fun getAll(): List<Movie>
 }

@@ -20,10 +20,7 @@ import com.example.movie.api.RetrofitService
 import com.example.movie.model.Movie
 import com.example.movie.model.MovieResponse
 import com.example.movie.model.Singleton
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -103,18 +100,25 @@ class LikeFragment : Fragment(), CoroutineScope {
             }
             launch {
                 swipeRefreshLayout.isRefreshing = false
-                val response = RetrofitService.getPostApi().getFavouriteMoviesCoroutine(
-                    account_id,
-                    BuildConfig.THE_MOVIE_DB_API_TOKEN,
-                    session_id
-                )
-                if (response.isSuccessful) {
-                    val list = response.body()?.results
-                    postAdapter?.moviesList = list
-                    postAdapter?.notifyDataSetChanged()
+                val list = withContext(Dispatchers.IO) {
+                    val response = RetrofitService.getPostApi().getFavouriteMoviesCoroutine(
+                        account_id,
+                        BuildConfig.THE_MOVIE_DB_API_TOKEN,
+                        session_id
+                    )
+//                    if (response.isSuccessful) {
+//                        val result = response.body()?.results
+//                        if (!result.isNullOrEmpty()) {
+//                            movieDao?.insertAll(result)
+//                        }
+//                        result
+//                    } else {
+//                        movieDao?.getAll() ?: emptyList()
+//                    }
 
-                } else {
                 }
+               // postAdapter?.moviesList = list
+                postAdapter?.notifyDataSetChanged()
             }
         } catch (e: Exception) {
             Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show()
