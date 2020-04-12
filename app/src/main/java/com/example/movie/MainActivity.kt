@@ -36,12 +36,17 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.home -> {
                     pager.setCurrentItem(0, false)
+                    supportActionBar!!.title = "Кино ТВ - Онлайн Фильмы"
                 }
                 R.id.like_posts -> {
                     pager.setCurrentItem(1, false)
+                    supportActionBar!!.title = "Закладки"
+
                 }
                 R.id.about -> {
                     pager.setCurrentItem(2, false)
+                    supportActionBar!!.title = "Профиль"
+
                 }
             }
             false
