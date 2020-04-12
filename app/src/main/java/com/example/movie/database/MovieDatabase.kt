@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.movie.model.Movie
 
-@Database(entities = [Movie::class], version = 1)
+@Database(entities = [Movie::class], version = 1,exportSchema = false)
 abstract class MovieDatabase : RoomDatabase() {
 
     abstract fun movieDao(): MovieDao
@@ -20,7 +20,7 @@ abstract class MovieDatabase : RoomDatabase() {
                 INSTANCE = Room.databaseBuilder(
                     context.applicationContext,
                     MovieDatabase::class.java,
-                    "app_database.db"
+                    "movies_database.db"
                 ).build()
             }
             return INSTANCE!!
