@@ -13,18 +13,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
 import com.example.movie.api.RetrofitService
+import com.example.movie.database.MovieDao
+import com.example.movie.database.MovieDatabase
 import com.example.movie.model.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.lang.Exception
-import java.util.ArrayList
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
-class DetailActivity : AppCompatActivity() {
+class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     lateinit var nameofMovie: TextView
     lateinit var plotSynopsis: TextView
     lateinit var userRating: TextView
@@ -35,12 +34,16 @@ class DetailActivity : AppCompatActivity() {
     var movie_id: Int? = null
     var account_id: Int? = null
     var session_id: String? = ""
-    lateinit var genresList: List<Genre>
+    val job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
+    //    lateinit var genresList: List<Genre>
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
-        bindView()
+               bindView()
         initIntents()
     }
 
@@ -102,7 +105,6 @@ class DetailActivity : AppCompatActivity() {
                 .load(thumbnail)
                 .into(imageView)
 
-            genreFunc(movieGenreId)
 
             nameofMovie.text = movieName
             plotSynopsis.text = synopsis
@@ -114,118 +116,56 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
-    fun genreFunc(movieGenreId: Int?) {
-
-        Log.d("TAG", "1")
-        genre.text="экшен"
-        try {
-            RetrofitService.getPostApi().getGenres(BuildConfig.THE_MOVIE_DB_API_TOKEN)
-                .enqueue(object : Callback<List<Genre>> {
-                    override fun onFailure(call: Call<List<Genre>>, t: Throwable) {
-                    }
-
-                    override fun onResponse(
-                        call: Call<List<Genre>>,
-                        response: Response<List<Genre>>
-                    ) {
-                        if (response.isSuccessful) {
-//                            val gson=Gson()
-//                            var genresList=gson.fromJson<List<Genre>>(response.body(),Genre::class.java)
-                             genresList = response.body() as List<Genre>
-
-                            Log.d("TAG", "2")
-
-                            genresList.forEach {
-
-                                if (movieGenreId == it.id)
-                                    genre.text =it.name
-
-                            }
-
-
-                        }
-                    }
-                })
-        }
-        catch (e:Exception)
-        {
-
-        }
-
-
-    }
 
     private fun hasLike() {
 
+        launch {
+            val response = RetrofitService.getPostApi()
+                .hasLikeCoroutine(movie_id, BuildConfig.THE_MOVIE_DB_API_TOKEN, session_id)
+            Log.d("TAG", response.toString())
+            if (response.isSuccessful) {
+                val gson = Gson()
+                var like = gson.fromJson(
+                    response.body(),
+                    FavResponse::class.java
+                ).favorite
+                if (like)
+                    toolbar.menu.findItem(R.id.favourite).icon =
+                        getDrawable(R.drawable.ic_favorite_liked)
+                else
+                    toolbar.menu.findItem(R.id.favourite).icon =
+                        getDrawable(R.drawable.ic_favorite_border)
 
-        RetrofitService.getPostApi()
-            .hasLike(movie_id, BuildConfig.THE_MOVIE_DB_API_TOKEN, session_id)
-            .enqueue(object : Callback<JsonObject> {
-                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-
-                }
-
-                override fun onResponse(
-                    call: Call<JsonObject>,
-                    response: Response<JsonObject>
-                ) {
-                    Log.d("TAG", response.toString())
-                    if (response.isSuccessful) {
-                        val gson = Gson()
-                        var like = gson.fromJson(
-                            response.body(),
-                            FavResponse::class.java
-                        ).favorite
-                        if (like)
-                            toolbar.menu.findItem(R.id.favourite).icon =
-                                getDrawable(R.drawable.ic_favorite_liked)
-                        else
-                            toolbar.menu.findItem(R.id.favourite).icon =
-                                getDrawable(R.drawable.ic_favorite_border)
-                    }
-
-                }
-            })
+            }
+        }
 
     }
 
     private fun likeMovie(favourite: Boolean) {
-        val body = JsonObject().apply {
-            addProperty("media_type", "movie")
-            addProperty("media_id", movie_id)
-            addProperty("favorite", favourite)
+        launch {
+            val body = JsonObject().apply {
+                addProperty("media_type", "movie")
+                addProperty("media_id", movie_id)
+                addProperty("favorite", favourite)
+            }
+            val response = RetrofitService.getPostApi()
+                .rateCoroutine(account_id, BuildConfig.THE_MOVIE_DB_API_TOKEN, session_id, body)
+            if (response.isSuccessful) {
+                if (favourite)
+                    Toast.makeText(
+                        this@DetailActivity,
+                        "Movie has been added to favourites",
+                        Toast.LENGTH_LONG
+                    ).show()
+                else
+                    Toast.makeText(
+                        this@DetailActivity,
+                        "Movie has been removed from favourites",
+                        Toast.LENGTH_LONG
+                    ).show()
+            }
+
         }
-
-        RetrofitService.getPostApi()
-            .rate(account_id, BuildConfig.THE_MOVIE_DB_API_TOKEN, session_id, body)
-            .enqueue(object : Callback<JsonObject> {
-                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-
-                }
-
-                override fun onResponse(
-                    call: Call<JsonObject>,
-                    response: Response<JsonObject>
-                ) {
-
-                    if (response.isSuccessful) {
-                        if (favourite)
-                            Toast.makeText(
-                                this@DetailActivity,
-                                "Movie has been added to favourites",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        else
-                            Toast.makeText(
-                                this@DetailActivity,
-                                "Movie has been removed from favourites",
-                                Toast.LENGTH_LONG
-                            ).show()
-
-                    }
-
-                }
-            })
     }
 
     private fun initCollapsingToolbar() {

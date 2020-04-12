@@ -47,7 +47,7 @@ class LikeMoviesAdapter (
 
             view.setOnClickListener {
                 val intent = Intent(context, DetailActivity::class.java)
-                intent.putExtra("genre_ids", post?.genre_ids)
+              //  intent.putExtra("genre_ids", post?.genre_ids)
                 intent.putExtra("movie_id",post?.id)
                 intent.putExtra("original_title", post?.original_title)
                 intent.putExtra("poster_path", post?.poster_path)
