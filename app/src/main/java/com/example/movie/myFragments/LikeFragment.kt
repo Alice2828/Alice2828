@@ -68,8 +68,6 @@ class LikeFragment : Fragment() {
         recyclerView.adapter = postAdapter
         postAdapter?.notifyDataSetChanged()
         loadJSON()
-
-
     }
 
 
