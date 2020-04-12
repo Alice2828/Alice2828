@@ -1,5 +1,6 @@
 package com.example.movie.myFragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +18,8 @@ import com.example.movie.BuildConfig
 import com.example.movie.R
 import com.example.movie.adapter.LikeMoviesAdapter
 import com.example.movie.api.RetrofitService
+import com.example.movie.database.MovieDao
+import com.example.movie.database.MovieDatabase
 import com.example.movie.model.Movie
 import com.example.movie.model.MovieResponse
 import com.example.movie.model.Singleton
@@ -31,7 +34,7 @@ class LikeFragment : Fragment(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
-
+    private var movieDao: MovieDao? = null
     lateinit var relativeLayout: RelativeLayout
     lateinit var commentsIc: ImageView
     lateinit var timeIc: ImageView
@@ -55,6 +58,8 @@ class LikeFragment : Fragment(), CoroutineScope {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.activity_main, container, false) as ViewGroup
         bindView()
+        movieDao = MovieDatabase.getDatabase(activity as Context).movieDao()
+
         relativeLayout.visibility = View.INVISIBLE
         relativeLayout.visibility = View.GONE
         swipeRefreshLayout.setOnRefreshListener {
@@ -106,18 +111,27 @@ class LikeFragment : Fragment(), CoroutineScope {
                         BuildConfig.THE_MOVIE_DB_API_TOKEN,
                         session_id
                     )
-//                    if (response.isSuccessful) {
-//                        val result = response.body()?.results
-//                        if (!result.isNullOrEmpty()) {
-//                            movieDao?.insertAll(result)
+                    if (response.isSuccessful) {
+                        val result = response.body()?.results
+//                        lateinit var ids: ArrayList<Int?>
+//                        for(m in result!!)
+//                        {
+//                            ids.add(m.id!!)
 //                        }
-//                        result
-//                    } else {
-//                        movieDao?.getAll() ?: emptyList()
-//                    }
+                        for(m in result!!)
+                        {
+                         m.liked=true
+                        }
+                        if (!result.isNullOrEmpty()) {
+                            movieDao?.insertAll(result)
+                        }
+                        result
+                    } else {
+                        movieDao?.getLiked(true) ?: emptyList()
+                    }
 
                 }
-               // postAdapter?.moviesList = list
+                postAdapter?.moviesList = list
                 postAdapter?.notifyDataSetChanged()
             }
         } catch (e: Exception) {

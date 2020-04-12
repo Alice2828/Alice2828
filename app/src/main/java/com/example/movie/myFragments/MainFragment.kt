@@ -1,5 +1,6 @@
 package com.example.movie.myFragments
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -57,7 +58,7 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        movieDao = MovieDatabase.getDatabase(context!!).movieDao()
+        movieDao = MovieDatabase.getDatabase(activity as Context).movieDao()
         rootView = inflater.inflate(R.layout.activity_main, container, false) as ViewGroup
         bindViews()
 
@@ -204,4 +205,6 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
         super.onDestroy()
         job.cancel()
     }
+
+
 }
