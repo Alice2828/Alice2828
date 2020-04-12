@@ -82,7 +82,6 @@ class LikeFragment : Fragment(), CoroutineScope {
 
     fun loadJSON() {
         getMovieLikesCoroutine()
-
     }
 
     private fun bindView() {
@@ -126,8 +125,6 @@ class LikeFragment : Fragment(), CoroutineScope {
                         movieDao?.getAllLiked() ?: emptyList()
                     }
                 }
-
-
                 postAdapter?.moviesList = list
                 postAdapter?.notifyDataSetChanged()
             }
