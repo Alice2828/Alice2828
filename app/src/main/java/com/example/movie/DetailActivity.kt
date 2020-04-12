@@ -73,7 +73,6 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         return true
     }
 
-
     private fun bindView() {
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -105,7 +104,6 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 .load(thumbnail)
                 .into(imageView)
 
-
             nameofMovie.text = movieName
             plotSynopsis.text = synopsis
             userRating.text = rating
@@ -135,7 +133,6 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 else
                     toolbar.menu.findItem(R.id.favourite).icon =
                         getDrawable(R.drawable.ic_favorite_border)
-
             }
         }
 
@@ -164,7 +161,6 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                         Toast.LENGTH_LONG
                     ).show()
             }
-
         }
     }
 
@@ -189,9 +185,7 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     collapse.title = " "
                     isShow = false
                 }
-
             }
         })
-
     }
 }

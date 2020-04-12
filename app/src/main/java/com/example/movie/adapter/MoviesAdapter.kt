@@ -61,7 +61,5 @@ class MoviesAdapter(
             }
         }
     }
-
-
 }
 

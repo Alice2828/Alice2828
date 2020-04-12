@@ -22,20 +22,18 @@ import retrofit2.Callback
 import retrofit2.Response
 import kotlin.coroutines.CoroutineContext
 
-class ProfileFragment : Fragment(), CoroutineScope {
+class ProfileFragment : Fragment(), CoroutineScope by MainScope(){
 
 
     private val job = Job()
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
-
-
     lateinit var preferences: SharedPreferences
     lateinit var nameInfo: TextView
     lateinit var emailInfo: TextView
     lateinit var logout: Button
     lateinit var editor: SharedPreferences.Editor
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,6 +44,11 @@ class ProfileFragment : Fragment(), CoroutineScope {
         preferences = context?.getSharedPreferences("Username", 0)!!
         bindView(rootView)
         return rootView
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

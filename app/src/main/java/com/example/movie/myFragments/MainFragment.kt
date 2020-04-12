@@ -125,17 +125,15 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
         getMovieCoroutine()
         commentsIc.visibility = View.VISIBLE
         timeIc.visibility = View.VISIBLE
-
-
     }
 
     private fun loadJSON() {
         try {
             getMovieListCoroutine()
-        } catch (e: Exception) {
+        }
+        catch (e: Exception) {
             Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show()
         }
-
     }
 
     private fun getMovieCoroutine() {
@@ -174,7 +172,6 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
             swipeRefreshLayout.isRefreshing = false
         }
     }
-
 
     private fun getMovieListCoroutine() {
 
