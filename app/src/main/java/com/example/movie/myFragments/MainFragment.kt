@@ -23,6 +23,7 @@ import com.example.movie.api.RetrofitService
 import com.example.movie.database.MovieDao
 import com.example.movie.database.MovieDatabase
 import com.example.movie.model.Movie
+import com.example.movie.model.Singleton
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -50,6 +51,8 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
     lateinit var movie: Movie
     private var rootView: View? = null
     private var movieDao: MovieDao? = null
+    var account_id: Int? = null
+    var session_id: String? = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,6 +60,8 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
     ): View? {
         // Inflate the layout for this fragment
         movieDao = MovieDatabase.getDatabase(context!!).movieDao()
+        session_id = Singleton.getSession()
+        account_id = Singleton.getAccountId()
         rootView = inflater.inflate(R.layout.activity_main, container, false) as ViewGroup
         bindViews()
 
@@ -83,10 +88,11 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
         val intent = Intent(context, DetailActivity::class.java)
         intent.putExtra("movie_id", movie.id)
         intent.putExtra("original_title", movie.original_title)
-        intent.putExtra("poster_path", movie.poster_path)
+        intent.putExtra("poster_path", movie.getPosterPath())
         intent.putExtra("overview", movie.overview)
         intent.putExtra("vote_average", (movie.vote_average).toString())
         intent.putExtra("release_date", movie.release_date)
+        intent.putExtra("movie", movie)
         view?.context?.startActivity(intent)
     }
 
@@ -190,7 +196,22 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
                         if (!result2.isNullOrEmpty()) {
                             movieDao?.insertAll(result)
                         }
-                        result
+                        val response2 = RetrofitService.getPostApi().getFavouriteMoviesCoroutine(
+                            account_id,
+                            BuildConfig.THE_MOVIE_DB_API_TOKEN,
+                            session_id
+                        )
+                        if (response2.isSuccessful) {
+                            val result3 = response2.body()?.results
+                            for (m in result3!!) {
+                                m.liked = 1
+                            }
+                            if (!result3.isNullOrEmpty()) {
+                                movieDao?.insertAll(result3)
+                            }
+                        }
+
+                        result2
                     } else {
                         movieDao?.getAll() ?: emptyList()
                     }
@@ -202,6 +223,7 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
             postAdapter?.notifyDataSetChanged()
             swipeRefreshLayout.isRefreshing = false
         }
+
     }
 
     override fun onDestroy() {
