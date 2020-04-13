@@ -32,16 +32,15 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     lateinit var imageView: ImageView
     lateinit var toolbar: Toolbar
     lateinit var genre: TextView
-     var movie: Movie?=null
-    var movie_id: Int? = null
-    var account_id: Int? = null
-    var session_id: String? = ""
+    var movie: Movie? = null
+    var movieId: Int? = null
+    var accountId: Int? = null
+    var sessionId: String? = ""
     private var movieDao: MovieDao? = null
 
     val job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
-    //    lateinit var genresList: List<Genre>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +55,6 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         hasLike()
         return true
     }
-
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here.
@@ -94,9 +92,9 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     private fun initIntents() {
         val intent = getIntent()
         if (intent.hasExtra("original_title")) {
-            session_id = Singleton.getSession()
-            account_id = Singleton.getAccountId()
-            movie_id = getIntent().extras?.getInt("movie_id")
+            sessionId = Singleton.getSession()
+            accountId = Singleton.getAccountId()
+            movieId = getIntent().extras?.getInt("movie_id")
             movie = getIntent().extras?.getSerializable("movie") as Movie
 
             val thumbnail = getIntent().getExtras()?.getString("poster_path")
@@ -104,7 +102,6 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             val synopsis = getIntent().getExtras()?.getString("overview")
             val rating = getIntent().getExtras()?.getString("vote_average")
             val sateOfRelease = getIntent().getExtras()?.getString("release_date")
-
 
             try {
                 Glide.with(this)
@@ -118,7 +115,6 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     .load(R.drawable.loading)
                     .into(imageView)
             }
-
 
             nameofMovie.text = movieName
             plotSynopsis.text = synopsis
@@ -134,10 +130,10 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     private fun hasLike() {
 
         launch {
-            val likE = withContext(Dispatchers.IO) {
+            val likeInt = withContext(Dispatchers.IO) {
                 try {
                     val response = RetrofitService.getPostApi()
-                        .hasLikeCoroutine(movie_id, BuildConfig.THE_MOVIE_DB_API_TOKEN, session_id)
+                        .hasLikeCoroutine(movieId, BuildConfig.THE_MOVIE_DB_API_TOKEN, sessionId)
                     Log.d("TAG", response.toString())
                     if (response.isSuccessful) {
                         val gson = Gson()
@@ -145,28 +141,24 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                             response.body(),
                             FavResponse::class.java
                         ).favorite
-                        var likeInt = 0
                         if (like)
-                            likeInt = 1
-                        else likeInt = 0
-
-                        likeInt
+                            1
+                        else 0
                     } else {
-                        movieDao?.getLiked(movie_id) ?: 0
+                        movieDao?.getLiked(movieId) ?: 0
                     }
                 } catch (e: Exception) {
-                    movieDao?.getLiked(movie_id) ?: 0
+                    movieDao?.getLiked(movieId) ?: 0
                 }
             }
 
-            if (likE == 1)
+            if (likeInt == 1 || likeInt == 11)
                 toolbar.menu.findItem(R.id.favourite).icon =
                     getDrawable(R.drawable.ic_favorite_liked)
             else
                 toolbar.menu.findItem(R.id.favourite).icon =
                     getDrawable(R.drawable.ic_favorite_border)
         }
-
     }
 
     private fun likeMovie(favourite: Boolean) {
@@ -174,18 +166,16 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
             val body = JsonObject().apply {
                 addProperty("media_type", "movie")
-                addProperty("media_id", movie_id)
+                addProperty("media_id", movieId)
                 addProperty("favorite", favourite)
             }
             try {
-                val response = RetrofitService.getPostApi()
-                    .rateCoroutine(account_id, BuildConfig.THE_MOVIE_DB_API_TOKEN, session_id, body)
+                RetrofitService.getPostApi()
+                    .rateCoroutine(accountId, BuildConfig.THE_MOVIE_DB_API_TOKEN, sessionId, body)
             } catch (e: Exception) {
-
             }
-
             if (favourite) {
-                movie?.liked = 1
+                movie?.liked = 11
                 movieDao?.insert(movie)
                 Toast.makeText(
                     this@DetailActivity,
@@ -193,8 +183,8 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     Toast.LENGTH_LONG
                 ).show()
             } else {
-                movie?.liked = 0
-               movieDao?.insert(movie)
+                movie?.liked = 10
+                movieDao?.insert(movie)
                 Toast.makeText(
                     this@DetailActivity,
                     "Movie has been removed from favourites",
@@ -228,6 +218,5 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
             }
         })
-
     }
 }

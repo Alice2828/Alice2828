@@ -41,7 +41,7 @@ interface PostApi {
         @Path("movie_id") movieId: Int?,
         @Query("api_key") apiKey: String,
         @Query("session_id") sessionId: String?
-    ):Response<JsonObject>
+    ): Response<JsonObject>
 
     @POST("account/{account_id}/favorite")
     suspend fun rateCoroutine(
@@ -49,23 +49,23 @@ interface PostApi {
         @Query("api_key") apiKey: String,
         @Query("session_id") sessionId: String?,
         @Body body: JsonObject
-    ):Response<JsonObject>
+    ): Response<JsonObject>
 
     @GET("movie/popular")
     suspend fun getPopularMovieListCoroutine(@Query("api_key") apiKey: String): Response<MovieResponse>
 
     @GET("authentication/token/new")
-    suspend fun getRequestTokenCorountine(@Query("api_key")apiKey: String):Response<RequestToken>
+    suspend fun getRequestTokenCorountine(@Query("api_key") apiKey: String): Response<RequestToken>
 
 
     @POST("authentication/token/validate_with_login")
-    suspend fun loginCoroutune(@Query("api_key") apiKey: String,@Body body: JsonObject): Response<JsonObject>
+    suspend fun loginCoroutune(@Query("api_key") apiKey: String, @Body body: JsonObject): Response<JsonObject>
 
     @POST("authentication/session/new")
-    suspend fun getSessionCoroutine(@Query("api_key") apiKey: String,@Body body: JsonObject):Response<JsonObject>
+    suspend fun getSessionCoroutine(@Query("api_key") apiKey: String, @Body body: JsonObject): Response<JsonObject>
 
     @GET("account")
-    suspend fun getAccountCoroutine(@Query("api_key")apiKey: String,@Query("session_id") sessionId: String): Response<JsonObject>
+    suspend fun getAccountCoroutine(@Query("api_key") apiKey: String, @Query("session_id") sessionId: String): Response<JsonObject>
 
 
     @GET("account")
@@ -104,7 +104,7 @@ interface PostApi {
     fun deleteSession(@Query("api_key") apiKey: String, @Body body: JsonObject): Call<JsonObject>
 
     @DELETE("authentication/session")
-    suspend fun  deleteSessionCoroutine(@Query("api_key") apiKey: String, @Body body: JsonObject): Response<JsonObject>
+    suspend fun deleteSessionCoroutine(@Query("api_key") apiKey: String, @Body body: JsonObject): Response<JsonObject>
 
     @GET("genre/movie/list")
     fun getGenres(@Query("api_key") apiKey: String): Call<List<Genre>>

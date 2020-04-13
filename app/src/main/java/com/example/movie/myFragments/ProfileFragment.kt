@@ -23,19 +23,14 @@ import retrofit2.Response
 import kotlin.coroutines.CoroutineContext
 
 class ProfileFragment : Fragment(), CoroutineScope by MainScope() {
-
-
-    private val job = Job()
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
-
-
     lateinit var preferences: SharedPreferences
     lateinit var nameInfo: TextView
     lateinit var emailInfo: TextView
     lateinit var logout: Button
     lateinit var editor: SharedPreferences.Editor
+    private val job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,18 +48,17 @@ class ProfileFragment : Fragment(), CoroutineScope by MainScope() {
         initViews()
         logout.setOnClickListener {
             editor.clear().commit()
-
             launch {
                 val body: JsonObject = JsonObject().apply {
                     addProperty("session_id", Singleton.getSession())
                 }
-                val response = RetrofitService.getPostApi().deleteSessionCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN,body)
-                if(response.isSuccessful){
+                val response = RetrofitService.getPostApi()
+                    .deleteSessionCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN, body)
+                if (response.isSuccessful) {
                     val intent = Intent(activity, LoginActivity::class.java)
                     startActivity(intent)
                 }
             }
-
         }
     }
 

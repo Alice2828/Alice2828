@@ -59,9 +59,4 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-//    fun onClick()
-//    {
-//
-//    }
-
 }
