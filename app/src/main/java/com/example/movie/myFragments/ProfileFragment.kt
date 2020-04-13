@@ -15,16 +15,18 @@ import com.example.movie.R
 import com.example.movie.api.RetrofitService
 import com.example.movie.model.Singleton
 import com.google.gson.JsonObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
-class ProfileFragment : Fragment() {
-    lateinit var preferences: SharedPreferences
-    lateinit var nameInfo: TextView
-    lateinit var emailInfo: TextView
-    lateinit var logout: Button
-    lateinit var editor: SharedPreferences.Editor
+class ProfileFragment : Fragment(), CoroutineScope by MainScope() {
+    private lateinit var preferences: SharedPreferences
+    private lateinit var nameInfo: TextView
+    private lateinit var emailInfo: TextView
+    private lateinit var logout: Button
+    private lateinit var editor: SharedPreferences.Editor
+    private val job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,31 +47,25 @@ class ProfileFragment : Fragment() {
         logout.setOnClickListener {
 
             editor.clear().commit()
-
-            val body: JsonObject = JsonObject().apply {
-                addProperty("session_id", Singleton.getSession())
+            launch {
+                val body: JsonObject = JsonObject().apply {
+                    addProperty("session_id", Singleton.getSession())
+                }
+                val response = RetrofitService.getPostApi()
+                    .deleteSessionCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN, body)
+                if (response.isSuccessful) {
+                    val intent = Intent(activity, LoginActivity::class.java)
+                    startActivity(intent)
+                }
             }
-
-            RetrofitService.getPostApi().deleteSession(BuildConfig.THE_MOVIE_DB_API_TOKEN, body)
-                .enqueue(object : Callback<JsonObject> {
-                    override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-
-                    }
-
-                    override fun onResponse(
-                        call: Call<JsonObject>,
-                        response: Response<JsonObject>
-                    ) {
-
-                        if (response.isSuccessful) {
-                            val intent = Intent(activity, LoginActivity::class.java)
-                            startActivity(intent)
-                        }
-
-                    }
-                })
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
+    }
+
 
     private fun bindView(rootView: ViewGroup) {
         nameInfo = rootView.findViewById(R.id.name)
