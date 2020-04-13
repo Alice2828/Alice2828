@@ -32,7 +32,7 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     lateinit var imageView: ImageView
     lateinit var toolbar: Toolbar
     lateinit var genre: TextView
-    lateinit var movie: Movie
+     var movie: Movie?=null
     var movie_id: Int? = null
     var account_id: Int? = null
     var session_id: String? = ""
@@ -46,6 +46,7 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
+        movieDao = MovieDatabase.getDatabase(this).movieDao()
         bindView()
         initIntents()
     }
@@ -103,7 +104,7 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             val synopsis = getIntent().getExtras()?.getString("overview")
             val rating = getIntent().getExtras()?.getString("vote_average")
             val sateOfRelease = getIntent().getExtras()?.getString("release_date")
-            movieDao = MovieDatabase.getDatabase(this).movieDao()
+
 
             try {
                 Glide.with(this)
@@ -151,10 +152,10 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
                         likeInt
                     } else {
-                     movieDao?.getLiked(movie_id)?: 0
+                        movieDao?.getLiked(movie_id) ?: 0
                     }
                 } catch (e: Exception) {
-                    movieDao?.getLiked(movie_id)?: 0
+                    movieDao?.getLiked(movie_id) ?: 0
                 }
             }
 
@@ -169,38 +170,38 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     }
 
     private fun likeMovie(favourite: Boolean) {
-//        launch {
-//            val body = JsonObject().apply {
-//                addProperty("media_type", "movie")
-//                addProperty("media_id", movie_id)
-//                addProperty("favorite", favourite)
-//            }
-//            val answer = withContext(Dispatchers.IO) {
-//                val response = RetrofitService.getPostApi()
-//                    .rateCoroutine(account_id, BuildConfig.THE_MOVIE_DB_API_TOKEN, session_id, body)
-//                if (response.isSuccessful) {
-//                    response
-//                } else {
-//                    if (movie.liked == 0)
-//                        movie.liked = 1
-//                    else movie.liked = 0
-//                    response
-//
-//                }
-//            }
-//            if (favourite)
-//                Toast.makeText(
-//                    this@DetailActivity,
-//                    "Movie has been added to favourites",
-//                    Toast.LENGTH_LONG
-//                ).show()
-//            else
-//                Toast.makeText(
-//                    this@DetailActivity,
-//                    "Movie has been removed from favourites",
-//                    Toast.LENGTH_LONG
-//                ).show()
-//        }
+        launch {
+
+            val body = JsonObject().apply {
+                addProperty("media_type", "movie")
+                addProperty("media_id", movie_id)
+                addProperty("favorite", favourite)
+            }
+            try {
+                val response = RetrofitService.getPostApi()
+                    .rateCoroutine(account_id, BuildConfig.THE_MOVIE_DB_API_TOKEN, session_id, body)
+            } catch (e: Exception) {
+
+            }
+
+            if (favourite) {
+                movie?.liked = 1
+                movieDao?.insert(movie)
+                Toast.makeText(
+                    this@DetailActivity,
+                    "Movie has been added to favourites",
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
+                movie?.liked = 0
+               movieDao?.insert(movie)
+                Toast.makeText(
+                    this@DetailActivity,
+                    "Movie has been removed from favourites",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
     }
 
     private fun initCollapsingToolbar() {

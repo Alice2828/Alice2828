@@ -185,7 +185,7 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
     private fun getMovieListCoroutine() {
 
         launch {
-             swipeRefreshLayout.isRefreshing = true
+            swipeRefreshLayout.isRefreshing = true
             val list = withContext(Dispatchers.IO) {
                 try {
                     val response = RetrofitService.getPostApi()

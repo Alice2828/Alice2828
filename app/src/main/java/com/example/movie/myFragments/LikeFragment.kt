@@ -100,38 +100,37 @@ class LikeFragment : Fragment(), CoroutineScope {
 
     private fun getMovieLikesCoroutine() {
 
-            launch {
-                swipeRefreshLayout.isRefreshing = false
-                val list = withContext(Dispatchers.IO) {
-                    try {
-                        val response = RetrofitService.getPostApi().getFavouriteMoviesCoroutine(
-                            account_id,
-                            BuildConfig.THE_MOVIE_DB_API_TOKEN,
-                            session_id
-                        )
-                        if (response.isSuccessful) {
-                            val result = response.body()?.results
-                            for(m in result!!)
-                            {
-                                m.liked = 1
-                            }
-                            if (!result.isNullOrEmpty()) {
-                                movieDao?.insertAll(result)
-                            }
-                            result
-                        } else {
-                            movieDao?.getAllLiked() ?: emptyList()
+        launch {
+            swipeRefreshLayout.isRefreshing = false
+            val list = withContext(Dispatchers.IO) {
+                try {
+                    val response = RetrofitService.getPostApi().getFavouriteMoviesCoroutine(
+                        account_id,
+                        BuildConfig.THE_MOVIE_DB_API_TOKEN,
+                        session_id
+                    )
+                    if (response.isSuccessful) {
+                        val result = response.body()?.results
+                        for (m in result!!) {
+                            m.liked = 1
                         }
-                    } catch (e: Exception) {
+                        if (!result.isNullOrEmpty()) {
+                            movieDao?.insertAll(result)
+                        }
+                        result
+                    } else {
                         movieDao?.getAllLiked() ?: emptyList()
                     }
+                } catch (e: Exception) {
+                    movieDao?.getAllLiked() ?: emptyList()
                 }
-
-
-                postAdapter?.moviesList = list
-                postAdapter?.notifyDataSetChanged()
             }
+
+
+            postAdapter?.moviesList = list
+            postAdapter?.notifyDataSetChanged()
         }
+    }
 
 
     override fun onDestroy() {
