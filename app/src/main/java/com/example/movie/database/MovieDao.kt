@@ -11,6 +11,9 @@ interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(list: List<Movie>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(movie: Movie?)
+
     @Query("SELECT*FROM movies_table")
     fun getAll(): List<Movie>
 
@@ -19,6 +22,8 @@ interface MovieDao {
     fun getAllLiked(): List<Movie>
 
     @Query("SELECT liked FROM movies_table where id=:id")
-    fun getLiked(id:Int?): Int
+    fun getLiked(id: Int?): Int
+
+
 
 }
