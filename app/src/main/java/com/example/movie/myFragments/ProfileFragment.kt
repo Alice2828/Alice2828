@@ -22,7 +22,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import kotlin.coroutines.CoroutineContext
 
-class ProfileFragment : Fragment(), CoroutineScope {
+class ProfileFragment : Fragment(), CoroutineScope by MainScope() {
 
 
     private val job = Job()
@@ -66,6 +66,11 @@ class ProfileFragment : Fragment(), CoroutineScope {
             }
 
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
     }
 
 

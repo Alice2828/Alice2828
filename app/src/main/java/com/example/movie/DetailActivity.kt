@@ -43,7 +43,6 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         get() = Dispatchers.Main + job
     //    lateinit var genresList: List<Genre>
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
