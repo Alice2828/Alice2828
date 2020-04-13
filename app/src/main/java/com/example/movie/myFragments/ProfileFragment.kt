@@ -16,18 +16,14 @@ import com.example.movie.api.RetrofitService
 import com.example.movie.model.Singleton
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
-import okhttp3.internal.notify
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import kotlin.coroutines.CoroutineContext
 
 class ProfileFragment : Fragment(), CoroutineScope by MainScope() {
-    lateinit var preferences: SharedPreferences
-    lateinit var nameInfo: TextView
-    lateinit var emailInfo: TextView
-    lateinit var logout: Button
-    lateinit var editor: SharedPreferences.Editor
+    private lateinit var preferences: SharedPreferences
+    private lateinit var nameInfo: TextView
+    private lateinit var emailInfo: TextView
+    private lateinit var logout: Button
+    private lateinit var editor: SharedPreferences.Editor
     private val job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job

@@ -32,21 +32,21 @@ import kotlin.coroutines.CoroutineContext
  */
 class MainFragment : Fragment(), CoroutineScope by MainScope() {
     private var relativeLayout: RelativeLayout? = null
-    lateinit var commentsIc: ImageView
-    lateinit var timeIc: ImageView
-    lateinit var recyclerView: RecyclerView
+    private lateinit var commentsIc: ImageView
+    private lateinit var timeIc: ImageView
+    private lateinit var recyclerView: RecyclerView
     private var dateTv: TextView? = null
     private var commentsTv: TextView? = null
     private var bigPictv: TextView? = null
     private var bigPicCardIm: ImageView? = null
     private var postAdapter: MoviesAdapter? = null
-    lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    lateinit var movieList: List<Movie>
-    lateinit var movie: Movie
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var movieList: List<Movie>
+    private lateinit var movie: Movie
     private var rootView: View? = null
     private var movieDao: MovieDao? = null
-    var accountId: Int? = null
-    var sessionId: String? = ""
+    private var accountId: Int? = null
+    private var sessionId: String? = ""
     private val job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -115,7 +115,7 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
         commentsIc.setImageBitmap(null)
         timeIc.setImageBitmap(null)
         bigPicCardIm?.visibility = View.INVISIBLE
-        movieList = ArrayList<Movie>()
+        movieList = ArrayList()
         postAdapter = activity?.applicationContext?.let { MoviesAdapter(it, movieList) }!!
         recyclerView.layoutManager = GridLayoutManager(activity, 1)
         recyclerView.itemAnimator = DefaultItemAnimator()

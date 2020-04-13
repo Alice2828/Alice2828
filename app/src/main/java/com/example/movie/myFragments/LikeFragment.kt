@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,31 +19,27 @@ import com.example.movie.api.RetrofitService
 import com.example.movie.database.MovieDao
 import com.example.movie.database.MovieDatabase
 import com.example.movie.model.Movie
-import com.example.movie.model.MovieResponse
 import com.example.movie.model.Singleton
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import kotlin.coroutines.CoroutineContext
 
 class LikeFragment : Fragment(), CoroutineScope {
-    lateinit var relativeLayout: RelativeLayout
-    lateinit var commentsIc: ImageView
-    lateinit var timeIc: ImageView
-    lateinit var recyclerView: RecyclerView
+    private lateinit var relativeLayout: RelativeLayout
+    private lateinit var commentsIc: ImageView
+    private lateinit var timeIc: ImageView
+    private lateinit var recyclerView: RecyclerView
     private var dateTv: TextView? = null
     private var commentsTv: TextView? = null
     private var bigPictv: TextView? = null
     private var bigPicCardIm: ImageView? = null
     private var postAdapter: LikeMoviesAdapter? = null
-    lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    lateinit var movieList: List<Movie>
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var movieList: List<Movie>
     lateinit var movie: Movie
     private var rootView: View? = null
-    var sessionId = Singleton.getSession()
-    var accountId = Singleton.getAccountId()
+    private var sessionId = Singleton.getSession()
+    private var accountId = Singleton.getAccountId()
     private var movieDao: MovieDao? = null
     private val job = Job()
     override val coroutineContext: CoroutineContext
@@ -67,9 +62,9 @@ class LikeFragment : Fragment(), CoroutineScope {
         return rootView
     }
 
-    fun initViews() {
+    private fun initViews() {
         bigPicCardIm?.visibility = View.INVISIBLE
-        movieList = ArrayList<Movie>()
+        movieList = ArrayList()
         postAdapter = activity?.applicationContext?.let { LikeMoviesAdapter(it, movieList) }!!
         recyclerView.layoutManager = GridLayoutManager(activity, 1)
         recyclerView.itemAnimator = DefaultItemAnimator()
@@ -78,7 +73,7 @@ class LikeFragment : Fragment(), CoroutineScope {
         loadJSON()
     }
 
-    fun loadJSON() {
+    private fun loadJSON() {
         getMovieLikesCoroutine()
     }
 

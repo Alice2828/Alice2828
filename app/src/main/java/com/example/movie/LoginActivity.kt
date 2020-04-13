@@ -18,23 +18,20 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.lang.Exception
 import java.lang.reflect.Type
 import kotlin.coroutines.CoroutineContext
 
 class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
-    lateinit var email: EditText
-    lateinit var password: EditText
-    lateinit var login: Button
-    lateinit var register: Button
-    lateinit var preferences: SharedPreferences
-    lateinit var requestToken: String
-    lateinit var newRequestToken: String
-    lateinit var emailValue: String
-    lateinit var passwordValue: String
+    private lateinit var email: EditText
+    private lateinit var password: EditText
+    private lateinit var login: Button
+    private lateinit var register: Button
+    private lateinit var preferences: SharedPreferences
+    private lateinit var requestToken: String
+    private lateinit var newRequestToken: String
+    private lateinit var emailValue: String
+    private lateinit var passwordValue: String
     private val job = Job()
 
     override val coroutineContext: CoroutineContext

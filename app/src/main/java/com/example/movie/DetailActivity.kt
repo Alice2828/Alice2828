@@ -1,6 +1,5 @@
 package com.example.movie
 
-
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
@@ -25,20 +24,20 @@ import java.lang.Exception
 import kotlin.coroutines.CoroutineContext
 
 class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
-    lateinit var nameofMovie: TextView
-    lateinit var plotSynopsis: TextView
-    lateinit var userRating: TextView
-    lateinit var releaseDate: TextView
-    lateinit var imageView: ImageView
-    lateinit var toolbar: Toolbar
-    lateinit var genre: TextView
-    var movie: Movie? = null
-    var movieId: Int? = null
-    var accountId: Int? = null
-    var sessionId: String? = ""
+    private lateinit var nameofMovie: TextView
+    private lateinit var plotSynopsis: TextView
+    private lateinit var userRating: TextView
+    private lateinit var releaseDate: TextView
+    private lateinit var imageView: ImageView
+    private lateinit var toolbar: Toolbar
+    private lateinit var genre: TextView
+    private var movie: Movie? = null
+    private var movieId: Int? = null
+    private var accountId: Int? = null
+    private var sessionId: String? = ""
     private var movieDao: MovieDao? = null
 
-    val job = Job()
+    private val job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -61,7 +60,7 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         if (item.itemId == R.id.favourite) {
 
             var drawable: Drawable = item.icon.current
-            if (drawable.constantState!!.equals(getDrawable(R.drawable.ic_favorite_border)?.constantState)) {
+            if (drawable.constantState?.equals(getDrawable(R.drawable.ic_favorite_border)?.constantState)!!) {
                 item.icon = getDrawable(R.drawable.ic_favorite_liked)
                 likeMovie(true)
             } else {

@@ -26,7 +26,7 @@ abstract class MovieDatabase : RoomDatabase() {
                     context.applicationContext,
                     MovieDatabase::class.java,
                     "movies_database.db"
-                ).addMigrations(MovieDatabase.MIGRATION_1_2)
+                ).addMigrations(MIGRATION_1_2)
                     .allowMainThreadQueries()
                     .build()
             }

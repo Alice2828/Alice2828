@@ -13,7 +13,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var bottomNavigationView: BottomNavigationView
+    private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var pager: LockableViewPager
     private lateinit var pagerAdapter: PagerAdapter
     private var f1: Fragment = MainFragment()
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun bindView() {
+    private fun bindView() {
         pager = findViewById(R.id.pager)
         bottomNavigationView = findViewById(R.id.bottom_navigation)
 
