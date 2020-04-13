@@ -21,6 +21,7 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
+import java.lang.Exception
 import kotlin.coroutines.CoroutineContext
 
 class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
@@ -31,9 +32,12 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     lateinit var imageView: ImageView
     lateinit var toolbar: Toolbar
     lateinit var genre: TextView
+    lateinit var movie: Movie
     var movie_id: Int? = null
     var account_id: Int? = null
     var session_id: String? = ""
+    private var movieDao: MovieDao? = null
+
     val job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -43,7 +47,7 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
-               bindView()
+        bindView()
         initIntents()
     }
 
@@ -93,17 +97,27 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             session_id = Singleton.getSession()
             account_id = Singleton.getAccountId()
             movie_id = getIntent().extras?.getInt("movie_id")
-            val thumbnail =
-                "https://image.tmdb.org/t/p/w500" + getIntent().getExtras()?.getString("poster_path")
+            movie = getIntent().extras?.getSerializable("movie") as Movie
+
+            val thumbnail = getIntent().getExtras()?.getString("poster_path")
             val movieName = getIntent().getExtras()?.getString("original_title")
             val synopsis = getIntent().getExtras()?.getString("overview")
             val rating = getIntent().getExtras()?.getString("vote_average")
             val sateOfRelease = getIntent().getExtras()?.getString("release_date")
-            val movieGenreId = getIntent().extras?.getIntegerArrayList("genre_ids")?.get(0)
+            movieDao = MovieDatabase.getDatabase(this).movieDao()
 
-            Glide.with(this)
-                .load(thumbnail)
-                .into(imageView)
+            try {
+                Glide.with(this)
+                    .load(thumbnail)
+                    .placeholder(R.drawable.loading)
+                    .error(R.drawable.loading)
+                    .into(imageView)
+            } catch (e: Exception) {
+
+                Glide.with(this)
+                    .load(R.drawable.loading)
+                    .into(imageView)
+            }
 
 
             nameofMovie.text = movieName
@@ -120,52 +134,74 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     private fun hasLike() {
 
         launch {
-            val response = RetrofitService.getPostApi()
-                .hasLikeCoroutine(movie_id, BuildConfig.THE_MOVIE_DB_API_TOKEN, session_id)
-            Log.d("TAG", response.toString())
-            if (response.isSuccessful) {
-                val gson = Gson()
-                var like = gson.fromJson(
-                    response.body(),
-                    FavResponse::class.java
-                ).favorite
-                if (like)
-                    toolbar.menu.findItem(R.id.favourite).icon =
-                        getDrawable(R.drawable.ic_favorite_liked)
-                else
-                    toolbar.menu.findItem(R.id.favourite).icon =
-                        getDrawable(R.drawable.ic_favorite_border)
+            val likE = withContext(Dispatchers.IO) {
+                try {
+                    val response = RetrofitService.getPostApi()
+                        .hasLikeCoroutine(movie_id, BuildConfig.THE_MOVIE_DB_API_TOKEN, session_id)
+                    Log.d("TAG", response.toString())
+                    if (response.isSuccessful) {
+                        val gson = Gson()
+                        var like = gson.fromJson(
+                            response.body(),
+                            FavResponse::class.java
+                        ).favorite
+                        var likeInt = 0
+                        if (like)
+                            likeInt = 1
+                        else likeInt = 0
 
+                        likeInt
+                    } else {
+                     movieDao?.getLiked(movie_id)?: 0
+                    }
+                } catch (e: Exception) {
+                    movieDao?.getLiked(movie_id)?: 0
+                }
             }
+
+            if (likE == 1)
+                toolbar.menu.findItem(R.id.favourite).icon =
+                    getDrawable(R.drawable.ic_favorite_liked)
+            else
+                toolbar.menu.findItem(R.id.favourite).icon =
+                    getDrawable(R.drawable.ic_favorite_border)
         }
 
     }
 
     private fun likeMovie(favourite: Boolean) {
-        launch {
-            val body = JsonObject().apply {
-                addProperty("media_type", "movie")
-                addProperty("media_id", movie_id)
-                addProperty("favorite", favourite)
-            }
-            val response = RetrofitService.getPostApi()
-                .rateCoroutine(account_id, BuildConfig.THE_MOVIE_DB_API_TOKEN, session_id, body)
-            if (response.isSuccessful) {
-                if (favourite)
-                    Toast.makeText(
-                        this@DetailActivity,
-                        "Movie has been added to favourites",
-                        Toast.LENGTH_LONG
-                    ).show()
-                else
-                    Toast.makeText(
-                        this@DetailActivity,
-                        "Movie has been removed from favourites",
-                        Toast.LENGTH_LONG
-                    ).show()
-            }
-
-        }
+//        launch {
+//            val body = JsonObject().apply {
+//                addProperty("media_type", "movie")
+//                addProperty("media_id", movie_id)
+//                addProperty("favorite", favourite)
+//            }
+//            val answer = withContext(Dispatchers.IO) {
+//                val response = RetrofitService.getPostApi()
+//                    .rateCoroutine(account_id, BuildConfig.THE_MOVIE_DB_API_TOKEN, session_id, body)
+//                if (response.isSuccessful) {
+//                    response
+//                } else {
+//                    if (movie.liked == 0)
+//                        movie.liked = 1
+//                    else movie.liked = 0
+//                    response
+//
+//                }
+//            }
+//            if (favourite)
+//                Toast.makeText(
+//                    this@DetailActivity,
+//                    "Movie has been added to favourites",
+//                    Toast.LENGTH_LONG
+//                ).show()
+//            else
+//                Toast.makeText(
+//                    this@DetailActivity,
+//                    "Movie has been removed from favourites",
+//                    Toast.LENGTH_LONG
+//                ).show()
+//        }
     }
 
     private fun initCollapsingToolbar() {

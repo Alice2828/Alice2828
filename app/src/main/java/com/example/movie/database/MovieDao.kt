@@ -15,7 +15,10 @@ interface MovieDao {
     fun getAll(): List<Movie>
 
 
-
     @Query("SELECT*FROM movies_table where liked=1")
     fun getAllLiked(): List<Movie>
+
+    @Query("SELECT liked FROM movies_table where id=:id")
+    fun getLiked(id:Int?): Int
+
 }

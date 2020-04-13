@@ -48,16 +48,20 @@ class MoviesAdapter(
                 .load(movie?.getPosterPath())
                 .into(thumbnail)
 
+
             view.setOnClickListener {
+
                 val intent = Intent(context, DetailActivity::class.java)
-               // intent.putExtra("genre_ids", movie?.genre_ids)
                 intent.putExtra("movie_id", movie?.id)
                 intent.putExtra("original_title", movie?.original_title)
-                intent.putExtra("poster_path", movie?.poster_path)
+                intent.putExtra("movie", movie)
+                intent.putExtra("poster_path", movie?.getPosterPath())
                 intent.putExtra("overview", movie?.overview)
                 intent.putExtra("vote_average", (movie?.vote_average).toString())
                 intent.putExtra("release_date", movie?.release_date)
                 view.context.startActivity(intent)
+
+
             }
         }
     }
