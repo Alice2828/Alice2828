@@ -31,12 +31,6 @@ import kotlin.coroutines.CoroutineContext
  * A simple [Fragment] subclass.
  */
 class MainFragment : Fragment(), CoroutineScope by MainScope() {
-
-    private val job = Job()
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
-
     private var relativeLayout: RelativeLayout? = null
     lateinit var commentsIc: ImageView
     lateinit var timeIc: ImageView
@@ -51,8 +45,12 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
     lateinit var movie: Movie
     private var rootView: View? = null
     private var movieDao: MovieDao? = null
-    var account_id: Int? = null
-    var session_id: String? = ""
+    var accountId: Int? = null
+    var sessionId: String? = ""
+    private val job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,8 +58,8 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
     ): View? {
         // Inflate the layout for this fragment
         movieDao = MovieDatabase.getDatabase(context!!).movieDao()
-        session_id = Singleton.getSession()
-        account_id = Singleton.getAccountId()
+        sessionId = Singleton.getSession()
+        accountId = Singleton.getAccountId()
         rootView = inflater.inflate(R.layout.activity_main, container, false) as ViewGroup
         bindViews()
 
@@ -131,8 +129,6 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
         getMovieCoroutine()
         commentsIc.visibility = View.VISIBLE
         timeIc.visibility = View.VISIBLE
-
-
     }
 
     private fun loadJSON() {
@@ -141,7 +137,6 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
         } catch (e: Exception) {
             Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show()
         }
-
     }
 
     private fun getMovieCoroutine() {
@@ -181,9 +176,7 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
         }
     }
 
-
     private fun getMovieListCoroutine() {
-
         launch {
             swipeRefreshLayout.isRefreshing = true
             val list = withContext(Dispatchers.IO) {
@@ -197,9 +190,9 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
                             movieDao?.insertAll(result)
                         }
                         val response2 = RetrofitService.getPostApi().getFavouriteMoviesCoroutine(
-                            account_id,
+                            accountId,
                             BuildConfig.THE_MOVIE_DB_API_TOKEN,
-                            session_id
+                            sessionId
                         )
                         if (response2.isSuccessful) {
                             val result3 = response2.body()?.results
@@ -210,7 +203,6 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
                                 movieDao?.insertAll(result3)
                             }
                         }
-
                         result2
                     } else {
                         movieDao?.getAll() ?: emptyList()
@@ -223,7 +215,6 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
             postAdapter?.notifyDataSetChanged()
             swipeRefreshLayout.isRefreshing = false
         }
-
     }
 
     override fun onDestroy() {

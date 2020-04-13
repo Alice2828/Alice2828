@@ -35,7 +35,7 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     lateinit var newRequestToken: String
     lateinit var emailValue: String
     lateinit var passwordValue: String
-    val job = Job()
+    private val job = Job()
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -50,12 +50,9 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             loginCoroutine()
         }
 
-
         register.setOnClickListener {
-
             val intent = Intent(this, RegistrationActivity::class.java)
             startActivity(intent)
-
         }
     }
 
@@ -67,8 +64,6 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     private fun loginCoroutine() {
         emailValue = email.text.toString()
         passwordValue = password.text.toString()
-
-
         if (emailValue != "" && passwordValue != "") {
             launch {
                 val response = RetrofitService.getPostApi()
@@ -96,21 +91,21 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
                         if (responseSession.isSuccessful) {
                             var gson = Gson()
-                            var new_session =
+                            var newSession =
                                 gson.fromJson(
                                     responseSession.body(),
                                     Session::class.java
                                 )
-                            val sessionId = new_session.sessionId
+                            val sessionId = newSession.sessionId
                             val response = RetrofitService.getPostApi()
                                 .getAccountCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN, sessionId)
                             if (response.isSuccessful) {
                                 var gson = Gson()
-                                var new_idAcc =
+                                var newIdAcc =
                                     gson.fromJson(response.body(), MyAccount::class.java)
-                                var idAcc = new_idAcc.id
+                                var idAcc = newIdAcc.id
                                 var user = User(emailValue, sessionId, idAcc)
-                                var singleton = Singleton.create(emailValue, sessionId, idAcc)
+                                var MySingleton = Singleton.create(emailValue, sessionId, idAcc)
                                 val json1 = gson.toJson(user)
                                 preferences = this@LoginActivity.getSharedPreferences("Username", 0)
                                 preferences.edit().putString("user", json1).commit()
@@ -119,26 +114,19 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                             } else {
                                 Toast.makeText(
                                     this@LoginActivity,
-                                    "fail",
+                                    "Fail",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
                         }
                     }
                 }
-
             }
-
         } else {
-
             Toast.makeText(this@LoginActivity, "Empty email or password", Toast.LENGTH_LONG)
                 .show()
-
         }
-
     }
-
-
 
     private fun bindView() {
         email = findViewById(R.id.email)
@@ -156,7 +144,7 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             var user = gsonGen.fromJson<User>(json, type)
 
             if (user.sessionId != "") {
-                var singleton =
+                var MySingleton =
                     Singleton.create(
                         user.username,
                         user.sessionId,
@@ -174,7 +162,8 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
             }
         } catch (e: Exception) {
-
+            Toast.makeText(this@LoginActivity, "You need to log in", Toast.LENGTH_LONG)
+                .show()
         }
 
     }

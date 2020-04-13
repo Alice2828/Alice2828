@@ -6,7 +6,6 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 
 
-
 class RegistrationActivity : AppCompatActivity() {
     lateinit var email: EditText
     lateinit var password: EditText
@@ -24,14 +23,8 @@ class RegistrationActivity : AppCompatActivity() {
         register = findViewById(R.id.register)
         name = findViewById(R.id.name)
 
-        register.setOnClickListener {
-
-        }
-
         login.setOnClickListener {
-
             onBackPressed()
-
         }
     }
 }
