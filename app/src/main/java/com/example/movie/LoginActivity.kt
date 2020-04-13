@@ -65,7 +65,6 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope(){
     private fun loginCoroutine(){
         emailValue = email.text.toString()
         passwordValue=password.text.toString()
-
         if (emailValue != "" && passwordValue != ""){
             launch {
                 val response = RetrofitService.getPostApi().getRequestTokenCorountine(BuildConfig.THE_MOVIE_DB_API_TOKEN)
@@ -140,7 +139,6 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope(){
             var json: String? = preferences.getString("user", null)
             var type: Type = object : TypeToken<User>() {}.type
             var user = gsonGen.fromJson<User>(json, type)
-
             if (user.sessionId != "") {
                 var singleton =
                     Singleton.create(
