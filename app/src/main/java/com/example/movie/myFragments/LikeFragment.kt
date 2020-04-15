@@ -1,5 +1,6 @@
 package com.example.movie.myFragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -50,7 +51,7 @@ class LikeFragment : Fragment(), CoroutineScope {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        movieDao = MovieDatabase.getDatabase(context!!).movieDao()
+        movieDao = MovieDatabase.getDatabase(activity as Context).movieDao()
         rootView = inflater.inflate(R.layout.activity_main, container, false) as ViewGroup
         bindView()
         relativeLayout.visibility = View.INVISIBLE
