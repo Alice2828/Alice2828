@@ -1,5 +1,6 @@
 package com.example.movie.myFragments
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,6 +11,8 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,13 +27,15 @@ import com.example.movie.database.MovieDao
 import com.example.movie.database.MovieDatabase
 import com.example.movie.model.Movie
 import com.example.movie.model.Singleton
+import com.example.movie.view_model.MovieListViewModel
+import com.example.movie.view_model.ViewModelProviderFactory
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 /**
  * A simple [Fragment] subclass.
  */
-class MainFragment : Fragment(), CoroutineScope by MainScope() {
+class MainFragment : Fragment() {
     private var relativeLayout: RelativeLayout? = null
     private lateinit var commentsIc: ImageView
     private lateinit var timeIc: ImageView
@@ -42,31 +47,28 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
     private var postAdapter: MoviesAdapter? = null
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var movieList: List<Movie>
-    private lateinit var movie: Movie
+    private var movie: Movie? = null
     private var rootView: View? = null
-    private var movieDao: MovieDao? = null
     private var accountId: Int? = null
     private var sessionId: String? = ""
-    private val job = Job()
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
-
+    private lateinit var movieListViewModel: MovieListViewModel
+    private var newMovieList:List<Movie>?=null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        movieDao = MovieDatabase.getDatabase(context!!).movieDao()
         sessionId = Singleton.getSession()
         accountId = Singleton.getAccountId()
         rootView = inflater.inflate(R.layout.activity_main, container, false) as ViewGroup
         bindViews()
-
+        val viewModelProviderFactory = ViewModelProviderFactory(context = this.activity as Context)
+        movieListViewModel =
+            ViewModelProvider(this, viewModelProviderFactory).get(MovieListViewModel::class.java)
         relativeLayout?.setOnClickListener {
             intentFun()
         }
-
         swipeRefreshLayout.setOnRefreshListener {
             if (swipeRefreshLayout.isRefreshing) {
                 commentsIc.visibility = View.INVISIBLE
@@ -77,19 +79,27 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
             }
             initViews()
         }
-        bigPicCard()
         initViews()
+        swipeRefreshLayout.isRefreshing = true
+        movieListViewModel.liveData.observe(this, Observer { result ->
+            postAdapter?.moviesList = result.subList(1, result.size-1)
+            postAdapter?.notifyDataSetChanged()
+            newMovieList = movieListViewModel.liveData.value
+            bigPicCard()
+            swipeRefreshLayout.isRefreshing = false
+
+        })
         return rootView
     }
 
     private fun intentFun() {
         val intent = Intent(context, DetailActivity::class.java)
-        intent.putExtra("movie_id", movie.id)
-        intent.putExtra("original_title", movie.original_title)
-        intent.putExtra("poster_path", movie.getPosterPath())
-        intent.putExtra("overview", movie.overview)
-        intent.putExtra("vote_average", (movie.vote_average).toString())
-        intent.putExtra("release_date", movie.release_date)
+        intent.putExtra("movie_id", movie?.id)
+        intent.putExtra("original_title", movie?.original_title)
+        intent.putExtra("poster_path", movie?.getPosterPath())
+        intent.putExtra("overview", movie?.overview)
+        intent.putExtra("vote_average", (movie?.vote_average).toString())
+        intent.putExtra("release_date", movie?.release_date)
         intent.putExtra("movie", movie)
         view?.context?.startActivity(intent)
     }
@@ -121,104 +131,28 @@ class MainFragment : Fragment(), CoroutineScope by MainScope() {
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.adapter = postAdapter
         postAdapter?.notifyDataSetChanged()
-        bigPicCard()
         loadJSON()
     }
 
     private fun bigPicCard() {
-        getMovieCoroutine()
+        movie = newMovieList?.get(0)
+        dateTv?.text = "март 30, 2020"
+        commentsTv?.text = "0"
+        bigPictv?.text = movie?.original_title
+        bigPicCardIm?.visibility = View.VISIBLE
+        context?.let {
+            Glide.with(it)
+                .load(movie?.getPosterPath())
+                .into((rootView as ViewGroup).findViewById(R.id.main_big_pic))
+        }
+        commentsIc.visibility = View.VISIBLE
+        timeIc.visibility = View.VISIBLE
         commentsIc.visibility = View.VISIBLE
         timeIc.visibility = View.VISIBLE
     }
 
     private fun loadJSON() {
-        try {
-            getMovieListCoroutine()
-        } catch (e: Exception) {
-            Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun getMovieCoroutine() {
-        launch {
-            swipeRefreshLayout.isRefreshing = true
-            val list = withContext(Dispatchers.IO)
-            {
-                try {
-                    val response = RetrofitService.getPostApi()
-                        .getPopularMovieListCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN)
-                    if (response.isSuccessful) {
-                        val result = response.body()?.results
-
-                        if (!result.isNullOrEmpty()) {
-                            movieDao?.insertAll(result)
-                        }
-                        result
-                    } else {
-                        movieDao?.getAll() ?: emptyList()
-                    }
-
-                } catch (e: Exception) {
-                    movieDao?.getAll() ?: emptyList()
-                }
-            }
-            movie = list!!.first()
-            dateTv?.text = "март 30, 2020"
-            commentsTv?.text = "0"
-            bigPictv?.text = movie.original_title
-            bigPicCardIm?.visibility = View.VISIBLE
-            Glide.with(rootView!!.context)
-                .load(movie.getPosterPath())
-                .into((rootView as ViewGroup).findViewById(R.id.main_big_pic))
-            commentsIc.visibility = View.VISIBLE
-            timeIc.visibility = View.VISIBLE
-            swipeRefreshLayout.isRefreshing = false
-        }
-    }
-
-    private fun getMovieListCoroutine() {
-        launch {
-            swipeRefreshLayout.isRefreshing = true
-            val list = withContext(Dispatchers.IO) {
-                try {
-                    val response = RetrofitService.getPostApi()
-                        .getPopularMovieListCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN)
-                    if (response.isSuccessful) {
-                        val result = response.body()?.results
-                        val result2 = result!!.subList(1, result.lastIndex)
-                        if (!result2.isNullOrEmpty()) {
-                            movieDao?.insertAll(result)
-                        }
-                        val response2 = RetrofitService.getPostApi().getFavouriteMoviesCoroutine(
-                            accountId,
-                            BuildConfig.THE_MOVIE_DB_API_TOKEN,
-                            sessionId
-                        )
-                        if (response2.isSuccessful) {
-                            val result3 = response2.body()?.results
-                            for (m in result3!!) {
-                                m.liked = 1
-                            }
-                            if (!result3.isNullOrEmpty()) {
-                                movieDao?.insertAll(result3)
-                            }
-                        }
-                        result2
-                    } else {
-                        movieDao?.getAll() ?: emptyList()
-                    }
-                } catch (e: Exception) {
-                    movieDao?.getAll() ?: emptyList()
-                }
-            }
-            postAdapter?.moviesList = list
-            postAdapter?.notifyDataSetChanged()
-            swipeRefreshLayout.isRefreshing = false
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        job.cancel()
+        movieListViewModel.getMoviesList()
+        bigPicCard()
     }
 }
