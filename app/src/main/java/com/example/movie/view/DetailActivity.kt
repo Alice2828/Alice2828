@@ -1,5 +1,6 @@
 package com.example.movie.view
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +11,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.movie.BuildConfig
 import com.example.movie.R
@@ -17,6 +20,8 @@ import com.example.movie.api.RetrofitService
 import com.example.movie.database.MovieDao
 import com.example.movie.database.MovieDatabase
 import com.example.movie.model.*
+import com.example.movie.view_model.DetailViewModel
+import com.example.movie.view_model.ViewModelProviderFactory
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.gson.Gson
@@ -25,7 +30,7 @@ import kotlinx.coroutines.*
 import java.lang.Exception
 import kotlin.coroutines.CoroutineContext
 
-class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
+class DetailActivity : AppCompatActivity() {
     private lateinit var nameofMovie: TextView
     private lateinit var plotSynopsis: TextView
     private lateinit var userRating: TextView
@@ -33,20 +38,18 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     private lateinit var imageView: ImageView
     private lateinit var toolbar: Toolbar
     private lateinit var genre: TextView
+    private lateinit var detailViewModel: DetailViewModel
     private var movie: Movie? = null
     private var movieId: Int? = null
     private var accountId: Int? = null
     private var sessionId: String? = ""
-    private var movieDao: MovieDao? = null
 
-    private val job = Job()
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
-        movieDao = MovieDatabase.getDatabase(this).movieDao()
+        val viewModelProviderFactory = ViewModelProviderFactory(context = this)
+        detailViewModel=ViewModelProvider(this,viewModelProviderFactory).get(DetailViewModel::class.java)
         bindView()
         initIntents()
     }
@@ -129,72 +132,22 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
 
     private fun hasLike() {
-
-        launch {
-            val likeInt = withContext(Dispatchers.IO) {
-                try {
-                    val response = RetrofitService.getPostApi()
-                        .hasLikeCoroutine(movieId,
-                            BuildConfig.THE_MOVIE_DB_API_TOKEN, sessionId)
-                    Log.d("TAG", response.toString())
-                    if (response.isSuccessful) {
-                        val gson = Gson()
-                        var like = gson.fromJson(
-                            response.body(),
-                            FavResponse::class.java
-                        ).favorite
-                        if (like)
-                            1
-                        else 0
-                    } else {
-                        movieDao?.getLiked(movieId) ?: 0
-                    }
-                } catch (e: Exception) {
-                    movieDao?.getLiked(movieId) ?: 0
-                }
-            }
-
-            if (likeInt == 1 || likeInt == 11)
+        detailViewModel.haslike(movieId, sessionId)
+        detailViewModel.liveData.observe(this, Observer { result->
+            val likeInt = result
+            if (likeInt == 1 || likeInt == 11){
                 toolbar.menu.findItem(R.id.favourite).icon =
                     getDrawable(R.drawable.ic_favorite_liked)
-            else
+            }
+            else{
                 toolbar.menu.findItem(R.id.favourite).icon =
                     getDrawable(R.drawable.ic_favorite_border)
-        }
+            }
+        })
     }
 
     private fun likeMovie(favourite: Boolean) {
-        launch {
-
-            val body = JsonObject().apply {
-                addProperty("media_type", "movie")
-                addProperty("media_id", movieId)
-                addProperty("favorite", favourite)
-            }
-            try {
-                RetrofitService.getPostApi()
-                    .rateCoroutine(accountId,
-                        BuildConfig.THE_MOVIE_DB_API_TOKEN, sessionId, body)
-            } catch (e: Exception) {
-            }
-            if (favourite) {
-                movie?.liked = 11
-                movieDao?.insert(movie)
-                Toast.makeText(
-                    this@DetailActivity,
-                    "Movie has been added to favourites",
-                    Toast.LENGTH_LONG
-                ).show()
-            } else {
-                movie?.liked = 10
-                movieDao?.insert(movie)
-                Toast.makeText(
-                    this@DetailActivity,
-                    "Movie has been removed from favourites",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        }
+        detailViewModel.likeMovie(favourite, movie, movieId, accountId, sessionId)
     }
 
     private fun initCollapsingToolbar() {
@@ -218,7 +171,6 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     collapse.title = " "
                     isShow = false
                 }
-
             }
         })
     }
