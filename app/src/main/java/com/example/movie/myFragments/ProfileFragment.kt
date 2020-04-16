@@ -10,7 +10,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.movie.BuildConfig
-import com.example.movie.LoginActivity
+import com.example.movie.view.LoginActivity
 import com.example.movie.R
 import com.example.movie.api.RetrofitService
 import com.example.movie.model.Singleton

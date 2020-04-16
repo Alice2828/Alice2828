@@ -1,4 +1,4 @@
-package com.example.movie
+package com.example.movie.view
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -11,6 +11,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
+import com.example.movie.BuildConfig
+import com.example.movie.R
 import com.example.movie.api.RetrofitService
 import com.example.movie.database.MovieDao
 import com.example.movie.database.MovieDatabase
@@ -132,7 +134,8 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             val likeInt = withContext(Dispatchers.IO) {
                 try {
                     val response = RetrofitService.getPostApi()
-                        .hasLikeCoroutine(movieId, BuildConfig.THE_MOVIE_DB_API_TOKEN, sessionId)
+                        .hasLikeCoroutine(movieId,
+                            BuildConfig.THE_MOVIE_DB_API_TOKEN, sessionId)
                     Log.d("TAG", response.toString())
                     if (response.isSuccessful) {
                         val gson = Gson()
@@ -170,7 +173,8 @@ class DetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             }
             try {
                 RetrofitService.getPostApi()
-                    .rateCoroutine(accountId, BuildConfig.THE_MOVIE_DB_API_TOKEN, sessionId, body)
+                    .rateCoroutine(accountId,
+                        BuildConfig.THE_MOVIE_DB_API_TOKEN, sessionId, body)
             } catch (e: Exception) {
             }
             if (favourite) {

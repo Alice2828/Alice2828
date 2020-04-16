@@ -15,19 +15,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.movie.BuildConfig
 import com.example.movie.R
 import com.example.movie.adapter.LikeMoviesAdapter
-import com.example.movie.api.RetrofitService
-import com.example.movie.database.MovieDatabase
-import com.example.movie.database.MovieDao
 import com.example.movie.model.Movie
 import com.example.movie.model.Singleton
+import com.example.movie.view_model.LikeListViewModel
 import com.example.movie.view_model.MovieListViewModel
 import com.example.movie.view_model.ViewModelProviderFactory
-import com.google.gson.JsonObject
-import kotlinx.coroutines.*
-import kotlin.coroutines.CoroutineContext
 
 class LikeFragment : Fragment() {
     private lateinit var relativeLayout: RelativeLayout
@@ -42,7 +36,7 @@ class LikeFragment : Fragment() {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var movieList: List<Movie>
     lateinit var movie: Movie
-    private lateinit var movieListViewModel: MovieListViewModel
+    private lateinit var movieListViewModel: LikeListViewModel
     private var rootView: View? = null
     private var sessionId = Singleton.getSession()
     private var accountId = Singleton.getAccountId()
@@ -58,7 +52,7 @@ class LikeFragment : Fragment() {
         bindView()
         val viewModelProviderFactory = ViewModelProviderFactory(context = this.activity as Context)
         movieListViewModel =
-            ViewModelProvider(this, viewModelProviderFactory).get(MovieListViewModel::class.java)
+            ViewModelProvider(this, viewModelProviderFactory).get(LikeListViewModel::class.java)
         relativeLayout.visibility = View.INVISIBLE
         relativeLayout.visibility = View.GONE
         swipeRefreshLayout.setOnRefreshListener {

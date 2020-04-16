@@ -1,4 +1,4 @@
-package com.example.movie
+package com.example.movie.view
 
 
 import android.content.Intent
@@ -8,6 +8,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.movie.BuildConfig
+import com.example.movie.R
 import com.example.movie.api.RequestToken
 import com.example.movie.api.RetrofitService
 import com.example.movie.api.Session
