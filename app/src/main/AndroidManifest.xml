@@ -13,12 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".RegistrationActivity"
+            android:name=".view.RegistrationActivity"
             android:theme="@style/AppTheme.FullScreen" />
-        <activity android:name=".MainActivity"
+        <activity android:name=".view.MainActivity"
             android:label="@string/main_name"/>
         <activity
-            android:name=".LoginActivity"
+            android:name=".view.LoginActivity"
             android:theme="@style/AppTheme.FullScreen">
 
             <intent-filter>
@@ -29,13 +29,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DetailActivity"
+            android:name=".view.DetailActivity"
             android:label="Movies"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".view.MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".view.MainActivity" />
         </activity>
     </application>
 
