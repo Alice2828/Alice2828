@@ -15,19 +15,12 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.movie.BuildConfig
 import com.example.movie.R
 import com.example.movie.adapter.LikeMoviesAdapter
-import com.example.movie.api.RetrofitService
-import com.example.movie.database.MovieDatabase
-import com.example.movie.database.MovieDao
 import com.example.movie.model.Movie
 import com.example.movie.model.Singleton
 import com.example.movie.view_model.MovieListViewModel
 import com.example.movie.view_model.ViewModelProviderFactory
-import com.google.gson.JsonObject
-import kotlinx.coroutines.*
-import kotlin.coroutines.CoroutineContext
 
 class LikeFragment : Fragment() {
     private lateinit var relativeLayout: RelativeLayout
