@@ -9,6 +9,8 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,11 +23,13 @@ import com.example.movie.database.MovieDatabase
 import com.example.movie.database.MovieDao
 import com.example.movie.model.Movie
 import com.example.movie.model.Singleton
+import com.example.movie.view_model.MovieListViewModel
+import com.example.movie.view_model.ViewModelProviderFactory
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
-class LikeFragment : Fragment(), CoroutineScope {
+class LikeFragment : Fragment() {
     private lateinit var relativeLayout: RelativeLayout
     private lateinit var commentsIc: ImageView
     private lateinit var timeIc: ImageView
@@ -38,28 +42,36 @@ class LikeFragment : Fragment(), CoroutineScope {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var movieList: List<Movie>
     lateinit var movie: Movie
+    private lateinit var movieListViewModel: MovieListViewModel
     private var rootView: View? = null
     private var sessionId = Singleton.getSession()
     private var accountId = Singleton.getAccountId()
-    private var movieDao: MovieDao? = null
-    private val job = Job()
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        movieDao = MovieDatabase.getDatabase(activity as Context).movieDao()
+
         rootView = inflater.inflate(R.layout.activity_main, container, false) as ViewGroup
         bindView()
+        val viewModelProviderFactory = ViewModelProviderFactory(context = this.activity as Context)
+        movieListViewModel =
+            ViewModelProvider(this, viewModelProviderFactory).get(MovieListViewModel::class.java)
         relativeLayout.visibility = View.INVISIBLE
         relativeLayout.visibility = View.GONE
         swipeRefreshLayout.setOnRefreshListener {
             initViews()
         }
         initViews()
+        swipeRefreshLayout.isRefreshing = true
+        movieListViewModel.liveDataLike.observe(this, Observer { result ->
+            postAdapter?.moviesList = result
+            postAdapter?.notifyDataSetChanged()
+            swipeRefreshLayout.isRefreshing = false
+
+        })
         return rootView
     }
 
@@ -75,7 +87,7 @@ class LikeFragment : Fragment(), CoroutineScope {
     }
 
     private fun loadJSON() {
-        getMovieLikesCoroutine()
+        movieListViewModel.getMovieLike()
     }
 
     private fun bindView() {
@@ -88,98 +100,6 @@ class LikeFragment : Fragment(), CoroutineScope {
         recyclerView = (rootView as ViewGroup).findViewById(R.id.recycler_view)
         relativeLayout = (rootView as ViewGroup).findViewById(R.id.main_layout_pic)
         swipeRefreshLayout = (rootView as ViewGroup).findViewById(R.id.main_content)
-    }
-
-    private fun getMovieLikesCoroutine() {
-        launch {
-            swipeRefreshLayout.isRefreshing = true
-            val likesOffline = movieDao?.getLikedOffline(11)
-            if (likesOffline != null) {
-                for (i in likesOffline) {
-                    val body = JsonObject().apply {
-                        addProperty("media_type", "movie")
-                        addProperty("media_id", i)
-                        addProperty("favorite", true)
-                    }
-                    try {
-                        RetrofitService.getPostApi()
-                            .rateCoroutine(
-                                accountId,
-                                BuildConfig.THE_MOVIE_DB_API_TOKEN,
-                                sessionId,
-                                body
-                            )
-                    } catch (e: Exception) {
-
-                    }
-                }
-            }
-
-            val unLikesOffline = movieDao?.getLikedOffline(10)
-            if (unLikesOffline != null) {
-                for (i in unLikesOffline) {
-                    val body = JsonObject().apply {
-                        addProperty("media_type", "movie")
-                        addProperty("media_id", i)
-                        addProperty("favorite", false)
-                    }
-                    try {
-                        val response = RetrofitService.getPostApi()
-                            .rateCoroutine(
-                                accountId,
-                                BuildConfig.THE_MOVIE_DB_API_TOKEN,
-                                sessionId,
-                                body
-                            )
-                    } catch (e: Exception) {
-                    }
-                }
-            }
-
-            val unLikeMoviesOffline = movieDao?.getUnLikedOffline()
-            val newArray: ArrayList<Movie>? = null
-            if (unLikeMoviesOffline != null) {
-                for (movie in unLikeMoviesOffline) {
-                    movie.liked = 0
-                    newArray?.add(movie)
-                }
-            }
-            if (movieDao != null) newArray?.let { movieDao?.insertAll(it) }
-
-            val list = withContext(Dispatchers.IO) {
-                try {
-                    val response = RetrofitService.getPostApi().getFavouriteMoviesCoroutine(
-                        accountId,
-                        BuildConfig.THE_MOVIE_DB_API_TOKEN,
-                        sessionId
-                    )
-                    if (response.isSuccessful) {
-                        val result = response.body()?.results
-                        if (result != null) {
-                            for (m in result) {
-                                m.liked = 1
-                            }
-                        }
-                        if (!result.isNullOrEmpty()) {
-                            movieDao?.insertAll(result)
-                        }
-                        result
-                    } else {
-                        movieDao?.getAllLiked() ?: emptyList()
-                    }
-                } catch (e: Exception) {
-                    movieDao?.getAllLiked() ?: emptyList()
-                }
-            }
-            postAdapter?.moviesList = list
-            postAdapter?.notifyDataSetChanged()
-            swipeRefreshLayout.isRefreshing = false
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        job.cancel()
     }
 }
 
