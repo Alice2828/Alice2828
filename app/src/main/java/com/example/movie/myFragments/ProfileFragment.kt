@@ -11,7 +11,6 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.movie.LoginActivity
 import com.example.movie.BuildConfig
 import com.example.movie.view.LoginActivity
 import com.example.movie.R
@@ -29,8 +28,6 @@ class ProfileFragment : Fragment(){
     private lateinit var emailInfo: TextView
     private lateinit var logout: Button
     private lateinit var editor: SharedPreferences.Editor
-    private lateinit var profileViewModel: ProfileViewModel
-
     private lateinit var profileListViewModel: ProfileViewModel
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
