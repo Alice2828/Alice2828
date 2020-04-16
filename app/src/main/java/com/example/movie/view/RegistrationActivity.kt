@@ -1,9 +1,10 @@
-package com.example.movie
+package com.example.movie.view
 
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import com.example.movie.R
 
 
 class RegistrationActivity : AppCompatActivity() {

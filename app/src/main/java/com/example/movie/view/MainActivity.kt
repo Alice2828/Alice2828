@@ -1,9 +1,10 @@
-package com.example.movie
+package com.example.movie.view
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.PagerAdapter
+import com.example.movie.R
 import com.example.movie.adapter.SlidePagerAdapter
 import com.example.movie.myFragments.LikeFragment
 import com.example.movie.myFragments.MainFragment
