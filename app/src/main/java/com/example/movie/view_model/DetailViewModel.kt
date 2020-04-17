@@ -19,16 +19,13 @@ import kotlin.coroutines.CoroutineContext
 
 class DetailViewModel(private val context: Context) : ViewModel(), CoroutineScope {
     private var movieDao: MovieDao? = null
-
     val liveData = MutableLiveData<Int>()
-
-    init {
-        movieDao = MovieDatabase.getDatabase(context = context).movieDao()
-    }
-
     private val job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
+    init {
+        movieDao = MovieDatabase.getDatabase(context = context).movieDao()
+    }
 
     override fun onCleared() {
         super.onCleared()
