@@ -52,6 +52,17 @@ class DetailActivity : AppCompatActivity() {
         detailViewModel=ViewModelProvider(this,viewModelProviderFactory).get(DetailViewModel::class.java)
         bindView()
         initIntents()
+        detailViewModel.liveData.observe(this, Observer { result->
+            val likeInt = result
+            if (likeInt == 1 || likeInt == 11){
+                toolbar.menu.findItem(R.id.favourite).icon =
+                    getDrawable(R.drawable.ic_favorite_liked)
+            }
+            else{
+                toolbar.menu.findItem(R.id.favourite).icon =
+                    getDrawable(R.drawable.ic_favorite_border)
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -133,17 +144,7 @@ class DetailActivity : AppCompatActivity() {
 
     private fun hasLike() {
         detailViewModel.haslike(movieId, sessionId)
-        detailViewModel.liveData.observe(this, Observer { result->
-            val likeInt = result
-            if (likeInt == 1 || likeInt == 11){
-                toolbar.menu.findItem(R.id.favourite).icon =
-                    getDrawable(R.drawable.ic_favorite_liked)
-            }
-            else{
-                toolbar.menu.findItem(R.id.favourite).icon =
-                    getDrawable(R.drawable.ic_favorite_border)
-            }
-        })
+
     }
 
     private fun likeMovie(favourite: Boolean) {
