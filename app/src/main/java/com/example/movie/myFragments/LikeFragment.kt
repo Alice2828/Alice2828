@@ -1,6 +1,8 @@
 package com.example.movie.myFragments
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -43,7 +46,6 @@ class LikeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-
         rootView = inflater.inflate(R.layout.activity_main, container, false) as ViewGroup
         bindView()
         val viewModelProviderFactory = ViewModelProviderFactory(context = this.activity as Context)
@@ -91,6 +93,17 @@ class LikeFragment : Fragment() {
         recyclerView = (rootView as ViewGroup).findViewById(R.id.recycler_view)
         relativeLayout = (rootView as ViewGroup).findViewById(R.id.main_layout_pic)
         swipeRefreshLayout = (rootView as ViewGroup).findViewById(R.id.main_content)
+    }
+
+    override fun onResume() {
+        initViews()
+        swipeRefreshLayout.isRefreshing = true
+        likeListViewModel.liveDataLike.observe(this, Observer { result ->
+            postAdapter?.moviesList = result
+            postAdapter?.notifyDataSetChanged()
+            swipeRefreshLayout.isRefreshing = false
+        })
+        super.onResume()
     }
 }
 
