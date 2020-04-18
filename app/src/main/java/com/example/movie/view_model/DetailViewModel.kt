@@ -11,6 +11,7 @@ import com.example.movie.database.MovieDao
 import com.example.movie.database.MovieDatabase
 import com.example.movie.model.FavResponse
 import com.example.movie.model.Movie
+import com.example.movie.model.Singleton
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
@@ -20,6 +21,8 @@ import kotlin.coroutines.CoroutineContext
 class DetailViewModel(private val context: Context) : ViewModel(), CoroutineScope {
     private var movieDao: MovieDao? = null
     val liveData = MutableLiveData<Int>()
+    private val sessionId = Singleton.getSession()
+    private val accountId = Singleton.getAccountId()
     private val job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -32,7 +35,7 @@ class DetailViewModel(private val context: Context) : ViewModel(), CoroutineScop
         job.cancel()
     }
 
-    fun haslike(movieId: Int?,sessionId: String?) {
+    fun haslike(movieId: Int?) {
         launch {
             val likeInt = withContext(Dispatchers.IO) {
                 try {
@@ -62,7 +65,7 @@ class DetailViewModel(private val context: Context) : ViewModel(), CoroutineScop
         }
     }
 
-    fun likeMovie(favourite: Boolean, movie: Movie?, movieId: Int?, accountId: Int?, sessionId: String?) {
+    fun likeMovie(favourite: Boolean, movie: Movie?, movieId: Int?) {
         launch {
             val body = JsonObject().apply {
                 addProperty("media_type", "movie")
