@@ -120,7 +120,6 @@ class MainFragment : Fragment() {
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.adapter = postAdapter
         postAdapter?.notifyDataSetChanged()
-        movieListViewModel.fetchData()
         loadJSON()
     }
 
