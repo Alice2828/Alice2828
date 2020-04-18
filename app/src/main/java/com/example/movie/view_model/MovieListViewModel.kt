@@ -97,6 +97,7 @@ class MovieListViewModel(
     }
 
     fun getMoviesList() {
+        fetchData()
         launch {
             val list = withContext(Dispatchers.IO) {
                 try {
