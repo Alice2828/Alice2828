@@ -41,8 +41,7 @@ class DetailActivity : AppCompatActivity() {
         bindView()
         initIntents()
         detailViewModel.liveData.observe(this, Observer { result ->
-            val likeInt = result
-            if (likeInt == 1 || likeInt == 11) {
+            if (result == 1 || result == 11) {
                 toolbar.menu.findItem(R.id.favourite).icon =
                     getDrawable(R.drawable.ic_favorite_liked)
             } else {
@@ -62,7 +61,7 @@ class DetailActivity : AppCompatActivity() {
         // Handle action bar item clicks here.
         if (item.itemId == R.id.favourite) {
 
-            var drawable: Drawable = item.icon.current
+            val drawable: Drawable = item.icon.current
             if (drawable.constantState?.equals(getDrawable(R.drawable.ic_favorite_border)?.constantState)!!) {
                 item.icon = getDrawable(R.drawable.ic_favorite_liked)
                 likeMovie(true)
@@ -91,16 +90,16 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun initIntents() {
-        val intent = getIntent()
+        val intent = intent
         if (intent.hasExtra("original_title")) {
             movieId = getIntent().extras?.getInt("movie_id")
             movie = getIntent().extras?.getSerializable("movie") as Movie
 
-            val thumbnail = getIntent().getExtras()?.getString("poster_path")
-            val movieName = getIntent().getExtras()?.getString("original_title")
-            val synopsis = getIntent().getExtras()?.getString("overview")
-            val rating = getIntent().getExtras()?.getString("vote_average")
-            val sateOfRelease = getIntent().getExtras()?.getString("release_date")
+            val thumbnail = getIntent().extras?.getString("poster_path")
+            val movieName = getIntent().extras?.getString("original_title")
+            val synopsis = getIntent().extras?.getString("overview")
+            val rating = getIntent().extras?.getString("vote_average")
+            val sateOfRelease = getIntent().extras?.getString("release_date")
 
             try {
                 Glide.with(this)
@@ -127,7 +126,6 @@ class DetailActivity : AppCompatActivity() {
 
     private fun hasLike() {
         detailViewModel.haslike(movieId)
-
     }
 
     private fun likeMovie(favourite: Boolean) {

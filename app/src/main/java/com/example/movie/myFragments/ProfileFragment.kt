@@ -13,27 +13,23 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.movie.view.LoginActivity
 import com.example.movie.R
-import com.example.movie.api.RetrofitService
 import com.example.movie.model.Singleton
 import com.example.movie.view_model.ProfileViewModel
 import com.example.movie.view_model.ViewModelProviderFactory
-import com.google.gson.JsonObject
-import kotlinx.coroutines.*
-import kotlin.coroutines.CoroutineContext
 
-class ProfileFragment : Fragment(){
+class ProfileFragment : Fragment() {
     private lateinit var preferences: SharedPreferences
     private lateinit var nameInfo: TextView
     private lateinit var emailInfo: TextView
     private lateinit var logout: Button
     private lateinit var editor: SharedPreferences.Editor
-    private lateinit var profileViewModel: ProfileViewModel
-
     private lateinit var profileListViewModel: ProfileViewModel
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val viewModelProviderFactory = ViewModelProviderFactory(context = this.activity as Context)
-        profileListViewModel = ViewModelProvider(this , viewModelProviderFactory).get(ProfileViewModel::class.java)
+        profileListViewModel =
+            ViewModelProvider(this, viewModelProviderFactory).get(ProfileViewModel::class.java)
 
 
         val rootView = inflater.inflate(R.layout.activity_profile, container, false) as ViewGroup
@@ -47,9 +43,9 @@ class ProfileFragment : Fragment(){
         initViews()
         logout.setOnClickListener {
             editor.clear().commit()
-                profileListViewModel.deleteProfileInform()
-                val intent = Intent(activity, LoginActivity::class.java)
-                startActivity(intent)
+            profileListViewModel.deleteProfileInform()
+            val intent = Intent(activity, LoginActivity::class.java)
+            startActivity(intent)
 
         }
     }

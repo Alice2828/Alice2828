@@ -1,7 +1,5 @@
 package com.example.movie.view
 
-
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -11,24 +9,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.movie.BuildConfig
 import com.example.movie.R
-import com.example.movie.api.RequestToken
-import com.example.movie.api.RetrofitService
-import com.example.movie.api.Session
-import com.example.movie.model.MyAccount
 import com.example.movie.model.Singleton
 import com.example.movie.model.User
-import com.example.movie.view_model.LikeListViewModel
 import com.example.movie.view_model.LoginViewModel
 import com.example.movie.view_model.ViewModelProviderFactory
 import com.google.gson.Gson
-import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.*
 import java.lang.Exception
 import java.lang.reflect.Type
-import kotlin.coroutines.CoroutineContext
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var email: EditText
@@ -52,7 +41,6 @@ class LoginActivity : AppCompatActivity() {
         bindView()
         stayLogged()
 
-
         login.setOnClickListener {
             loginCoroutine()
         }
@@ -68,7 +56,6 @@ class LoginActivity : AppCompatActivity() {
 
         })
     }
-
 
     private fun loginCoroutine() {
         emailValue = email.text.toString()
@@ -108,10 +95,10 @@ class LoginActivity : AppCompatActivity() {
     private fun stayLogged() {
         try {
             preferences = this@LoginActivity.getSharedPreferences("Username", 0)
-            var gsonGen = Gson()
-            var json: String? = preferences.getString("user", null)
-            var type: Type = object : TypeToken<User>() {}.type
-            var user = gsonGen.fromJson<User>(json, type)
+            val gsonGen = Gson()
+            val json: String? = preferences.getString("user", null)
+            val type: Type = object : TypeToken<User>() {}.type
+            val user = gsonGen.fromJson<User>(json, type)
 
             if (user.sessionId != "") {
                 var MySingleton =
@@ -125,17 +112,14 @@ class LoginActivity : AppCompatActivity() {
                         this@LoginActivity,
                         MainActivity::class.java
                     )
-
                 startActivity(
                     intent
                 )
-
             }
         } catch (e: Exception) {
             Toast.makeText(this@LoginActivity, "You need to log in", Toast.LENGTH_LONG)
                 .show()
         }
-
     }
 }
 

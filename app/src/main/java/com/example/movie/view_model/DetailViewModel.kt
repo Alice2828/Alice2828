@@ -47,7 +47,7 @@ class DetailViewModel(private val context: Context) : ViewModel(), CoroutineScop
                     Log.d("TAG", response.toString())
                     if (response.isSuccessful) {
                         val gson = Gson()
-                        var like = gson.fromJson(
+                        val like = gson.fromJson(
                             response.body(),
                             FavResponse::class.java
                         ).favorite
