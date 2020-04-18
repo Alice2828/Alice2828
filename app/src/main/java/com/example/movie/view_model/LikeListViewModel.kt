@@ -8,6 +8,7 @@ import com.example.movie.api.RetrofitService
 import com.example.movie.database.MovieDao
 import com.example.movie.database.MovieDatabase
 import com.example.movie.model.Movie
+import com.example.movie.model.Singleton
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -15,8 +16,8 @@ import kotlin.coroutines.CoroutineContext
 class LikeListViewModel(private val context: Context) : ViewModel(), CoroutineScope {
     private val job = Job()
     private var movieDao: MovieDao
-    private var accountId: Int? = null
-    private var sessionId: String? = ""
+    private var sessionId = Singleton.getSession()
+    private var accountId = Singleton.getAccountId()
 
     val liveDataLike = MutableLiveData<List<Movie>>()
 
@@ -33,59 +34,7 @@ class LikeListViewModel(private val context: Context) : ViewModel(), CoroutineSc
     }
 
     fun getMovieLike() {
-
         launch {
-
-            val likesOffline = movieDao.getLikedOffline(11)
-
-            for (i in likesOffline) {
-                val body = JsonObject().apply {
-                    addProperty("media_type", "movie")
-                    addProperty("media_id", i)
-                    addProperty("favorite", true)
-                }
-                try {
-                    RetrofitService.getPostApi()
-                        .rateCoroutine(
-                            accountId,
-                            BuildConfig.THE_MOVIE_DB_API_TOKEN,
-                            sessionId,
-                            body
-                        )
-                } catch (e: Exception) {
-
-                }
-            }
-
-
-            val unLikesOffline = movieDao.getLikedOffline(10)
-
-            for (i in unLikesOffline) {
-                val body = JsonObject().apply {
-                    addProperty("media_type", "movie")
-                    addProperty("media_id", i)
-                    addProperty("favorite", false)
-                }
-                try {
-                    RetrofitService.getPostApi()
-                        .rateCoroutine(
-                            accountId,
-                            BuildConfig.THE_MOVIE_DB_API_TOKEN,
-                            sessionId,
-                            body
-                        )
-                } catch (e: Exception) {
-                }
-            }
-
-            val unLikeMoviesOffline = movieDao.getUnLikedOffline()
-            val newArray: ArrayList<Movie>? = null
-            for (movie in unLikeMoviesOffline) {
-                movie.liked = 0
-                newArray?.add(movie)
-            }
-            newArray?.let { movieDao.insertAll(it) }
-
             val list = withContext(Dispatchers.IO) {
                 try {
                     val response = RetrofitService.getPostApi().getFavouriteMoviesCoroutine(

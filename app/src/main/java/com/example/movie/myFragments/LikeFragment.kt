@@ -36,10 +36,8 @@ class LikeFragment : Fragment() {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var movieList: List<Movie>
     lateinit var movie: Movie
-    private lateinit var movieListViewModel: LikeListViewModel
+    private lateinit var likeListViewModel: LikeListViewModel
     private var rootView: View? = null
-    private var sessionId = Singleton.getSession()
-    private var accountId = Singleton.getAccountId()
 
 
     override fun onCreateView(
@@ -51,16 +49,17 @@ class LikeFragment : Fragment() {
         rootView = inflater.inflate(R.layout.activity_main, container, false) as ViewGroup
         bindView()
         val viewModelProviderFactory = ViewModelProviderFactory(context = this.activity as Context)
-        movieListViewModel =
+        likeListViewModel =
             ViewModelProvider(this, viewModelProviderFactory).get(LikeListViewModel::class.java)
         relativeLayout.visibility = View.INVISIBLE
         relativeLayout.visibility = View.GONE
+
         swipeRefreshLayout.setOnRefreshListener {
             initViews()
         }
         initViews()
         swipeRefreshLayout.isRefreshing = true
-        movieListViewModel.liveDataLike.observe(this, Observer { result ->
+        likeListViewModel.liveDataLike.observe(this, Observer { result ->
             postAdapter?.moviesList = result
             postAdapter?.notifyDataSetChanged()
             swipeRefreshLayout.isRefreshing = false
@@ -81,7 +80,7 @@ class LikeFragment : Fragment() {
     }
 
     private fun loadJSON() {
-        movieListViewModel.getMovieLike()
+        likeListViewModel.getMovieLike()
     }
 
     private fun bindView() {

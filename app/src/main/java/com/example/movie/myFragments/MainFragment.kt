@@ -45,20 +45,16 @@ class MainFragment : Fragment() {
     private var accountId: Int? = null
     private var sessionId: String? = ""
     private lateinit var movieListViewModel: MovieListViewModel
-    private var newMovieList:List<Movie>?=null
+    private var newMovieList: List<Movie>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        sessionId = Singleton.getSession()
-        accountId = Singleton.getAccountId()
         rootView = inflater.inflate(R.layout.activity_main, container, false) as ViewGroup
         bindViews()
-        val viewModelProviderFactory = ViewModelProviderFactory(context = this.activity as Context)
-        movieListViewModel =
-            ViewModelProvider(this, viewModelProviderFactory).get(MovieListViewModel::class.java)
+        initViewMod()
         relativeLayout?.setOnClickListener {
             intentFun()
         }
@@ -75,7 +71,7 @@ class MainFragment : Fragment() {
         initViews()
         swipeRefreshLayout.isRefreshing = true
         movieListViewModel.liveData.observe(this, Observer { result ->
-            postAdapter?.moviesList = result.subList(1, result.size-1)
+            postAdapter?.moviesList = result.subList(1, result.size - 1)
             postAdapter?.notifyDataSetChanged()
             newMovieList = movieListViewModel.liveData.value
             bigPicCard()
@@ -124,6 +120,7 @@ class MainFragment : Fragment() {
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.adapter = postAdapter
         postAdapter?.notifyDataSetChanged()
+        movieListViewModel.fetchData()
         loadJSON()
     }
 
@@ -147,5 +144,13 @@ class MainFragment : Fragment() {
     private fun loadJSON() {
         movieListViewModel.getMoviesList()
         bigPicCard()
+    }
+
+    private fun initViewMod() {
+        sessionId = Singleton.getSession()
+        accountId = Singleton.getAccountId()
+        val viewModelProviderFactory = ViewModelProviderFactory(context = this.activity as Context)
+        movieListViewModel =
+            ViewModelProvider(this, viewModelProviderFactory).get(MovieListViewModel::class.java)
     }
 }
