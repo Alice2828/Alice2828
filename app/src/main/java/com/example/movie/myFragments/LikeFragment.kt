@@ -18,9 +18,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.movie.R
 import com.example.movie.adapter.LikeMoviesAdapter
 import com.example.movie.model.Movie
-import com.example.movie.model.Singleton
 import com.example.movie.view_model.LikeListViewModel
-import com.example.movie.view_model.MovieListViewModel
 import com.example.movie.view_model.ViewModelProviderFactory
 
 class LikeFragment : Fragment() {

@@ -10,7 +10,6 @@ import com.example.movie.api.Session
 import com.example.movie.database.MovieDao
 import com.example.movie.database.MovieDatabase
 import com.example.movie.model.MyAccount
-import com.example.movie.model.Singleton
 import com.example.movie.model.User
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -26,7 +25,7 @@ class LoginViewModel(private val context: Context) : ViewModel(), CoroutineScope
     private lateinit var newRequestToken: String
     var liveDataLogin = MutableLiveData<List<String>>()
     private var dataLogin = ArrayList<String>()
-    var json1: String = ""
+    private var json1: String = ""
     private var movieDao: MovieDao
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -56,8 +55,8 @@ class LoginViewModel(private val context: Context) : ViewModel(), CoroutineScope
                     .loginCoroutune(BuildConfig.THE_MOVIE_DB_API_TOKEN, body)
 
                 if (responseLogin.isSuccessful) {
-                    var gson = Gson()
-                    var newRequesttoken = gson.fromJson(
+                    val gson = Gson()
+                    val newRequesttoken = gson.fromJson(
                         responseLogin.body(),
                         RequestToken::class.java
                     )
@@ -66,8 +65,8 @@ class LoginViewModel(private val context: Context) : ViewModel(), CoroutineScope
                         .getSessionCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN, body)
 
                     if (responseSession.isSuccessful) {
-                        var gson = Gson()
-                        var newSession =
+                        val gson = Gson()
+                        val newSession =
                             gson.fromJson(
                                 responseSession.body(),
                                 Session::class.java
@@ -76,11 +75,11 @@ class LoginViewModel(private val context: Context) : ViewModel(), CoroutineScope
                         val response = RetrofitService.getPostApi()
                             .getAccountCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN, sessionId)
                         if (response.isSuccessful) {
-                            var gson = Gson()
-                            var newIdAcc =
+                            val gson = Gson()
+                            val newIdAcc =
                                 gson.fromJson(response.body(), MyAccount::class.java)
-                            var idAcc = newIdAcc.id
-                            var user = User(emailValue, sessionId, idAcc)
+                            val idAcc = newIdAcc.id
+                            val user = User(emailValue, sessionId, idAcc)
 
                             json1 = gson.toJson(user)
                             dataLogin.add(json1)
