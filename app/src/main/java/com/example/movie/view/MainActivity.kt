@@ -13,7 +13,6 @@ import com.example.movie.pager.LockableViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var pager: LockableViewPager
     private lateinit var pagerAdapter: PagerAdapter
@@ -59,5 +58,4 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView = findViewById(R.id.bottom_navigation)
 
     }
-
 }

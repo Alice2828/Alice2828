@@ -1,9 +1,7 @@
 package com.example.movie.view
 
-import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
@@ -14,21 +12,13 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.example.movie.BuildConfig
 import com.example.movie.R
-import com.example.movie.api.RetrofitService
-import com.example.movie.database.MovieDao
-import com.example.movie.database.MovieDatabase
 import com.example.movie.model.*
 import com.example.movie.view_model.DetailViewModel
 import com.example.movie.view_model.ViewModelProviderFactory
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import kotlinx.coroutines.*
 import java.lang.Exception
-import kotlin.coroutines.CoroutineContext
 
 class DetailActivity : AppCompatActivity() {
     private lateinit var nameofMovie: TextView
@@ -41,24 +31,21 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var detailViewModel: DetailViewModel
     private var movie: Movie? = null
     private var movieId: Int? = null
-    private var accountId: Int? = null
-    private var sessionId: String? = ""
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
         val viewModelProviderFactory = ViewModelProviderFactory(context = this)
-        detailViewModel=ViewModelProvider(this,viewModelProviderFactory).get(DetailViewModel::class.java)
+        detailViewModel =
+            ViewModelProvider(this, viewModelProviderFactory).get(DetailViewModel::class.java)
         bindView()
         initIntents()
-        detailViewModel.liveData.observe(this, Observer { result->
+        detailViewModel.liveData.observe(this, Observer { result ->
             val likeInt = result
-            if (likeInt == 1 || likeInt == 11){
+            if (likeInt == 1 || likeInt == 11) {
                 toolbar.menu.findItem(R.id.favourite).icon =
                     getDrawable(R.drawable.ic_favorite_liked)
-            }
-            else{
+            } else {
                 toolbar.menu.findItem(R.id.favourite).icon =
                     getDrawable(R.drawable.ic_favorite_border)
             }
@@ -90,7 +77,6 @@ class DetailActivity : AppCompatActivity() {
         return true
     }
 
-
     private fun bindView() {
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -107,8 +93,6 @@ class DetailActivity : AppCompatActivity() {
     private fun initIntents() {
         val intent = getIntent()
         if (intent.hasExtra("original_title")) {
-            sessionId = Singleton.getSession()
-            accountId = Singleton.getAccountId()
             movieId = getIntent().extras?.getInt("movie_id")
             movie = getIntent().extras?.getSerializable("movie") as Movie
 
@@ -141,14 +125,13 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
-
     private fun hasLike() {
-        detailViewModel.haslike(movieId, sessionId)
+        detailViewModel.haslike(movieId)
 
     }
 
     private fun likeMovie(favourite: Boolean) {
-        detailViewModel.likeMovie(favourite, movie, movieId, accountId, sessionId)
+        detailViewModel.likeMovie(favourite, movie, movieId)
     }
 
     private fun initCollapsingToolbar() {

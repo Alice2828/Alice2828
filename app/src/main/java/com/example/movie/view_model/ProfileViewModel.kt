@@ -15,8 +15,7 @@ import kotlin.coroutines.CoroutineContext
 
 class ProfileViewModel(
     private val context: Context
-): ViewModel(), CoroutineScope {
-
+) : ViewModel(), CoroutineScope {
     private val job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -26,17 +25,13 @@ class ProfileViewModel(
         job.cancel()
     }
 
-    fun deleteProfileInform(){
+    fun deleteProfileInform() {
         launch {
             val body: JsonObject = JsonObject().apply {
                 addProperty("session_id", Singleton.getSession())
             }
-            val response = RetrofitService.getPostApi()
+            RetrofitService.getPostApi()
                 .deleteSessionCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN, body)
-            if (response.isSuccessful) {
-            }
         }
     }
-
-
 }
