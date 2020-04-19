@@ -74,7 +74,7 @@ class LikeFragment : Fragment() {
     private fun initViews() {
         bigPicCardIm?.visibility = View.INVISIBLE
         movieList = ArrayList()
-        postAdapter = activity?.applicationContext?.let { LikeMoviesAdapter(it, movieList) }!!
+        postAdapter = activity?.applicationContext?.let { LikeMoviesAdapter(it, movieList) }
         recyclerView.layoutManager = GridLayoutManager(activity, 1)
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.adapter = postAdapter

@@ -123,7 +123,7 @@ class MainFragment : Fragment() {
         timeIc.setImageBitmap(null)
         bigPicCardIm?.visibility = View.INVISIBLE
         movieList = ArrayList()
-        postAdapter = activity?.applicationContext?.let { MoviesAdapter(it, movieList) }!!
+        postAdapter = activity?.applicationContext?.let { MoviesAdapter(it, movieList) }
         recyclerView.layoutManager = GridLayoutManager(activity, 1)
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.adapter = postAdapter

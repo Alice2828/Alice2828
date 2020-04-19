@@ -95,7 +95,7 @@ class MovieListViewModel(
                     if (response.isSuccessful) {
                         Log.d("TAG", "")
                         val result = response.body()?.results
-                        val result2 = result!!.subList(1, result.lastIndex)
+                        val result2 = result?.subList(1, result.lastIndex)
                         if (!result2.isNullOrEmpty()) {
                             movieDao.insertAll(result)
                         }
