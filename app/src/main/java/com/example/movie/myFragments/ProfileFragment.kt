@@ -32,7 +32,7 @@ class ProfileFragment : Fragment() {
         profileListViewModel =
             ViewModelProvider(this, viewModelProviderFactory).get(ProfileViewModel::class.java)
         val rootView = inflater.inflate(R.layout.activity_profile, container, false) as ViewGroup
-        preferences = context?.getSharedPreferences("Username", 0)!!
+        preferences = context?.getSharedPreferences("Username", 0) as SharedPreferences
         bindView(rootView)
         return rootView
     }
