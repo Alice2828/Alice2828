@@ -20,7 +20,7 @@ import kotlin.coroutines.CoroutineContext
 
 class DetailViewModel(private val context: Context) : ViewModel(), CoroutineScope {
     private var movieDao: MovieDao? = null
-    val liveData = MutableLiveData<Int>()
+    val liveData = MutableLiveData<State>()
     private val sessionId = Singleton.getSession()
     private val accountId = Singleton.getAccountId()
     private val job = Job()
@@ -36,6 +36,7 @@ class DetailViewModel(private val context: Context) : ViewModel(), CoroutineScop
     }
 
     fun haslike(movieId: Int?) {
+        liveData.value=State.ShowLoading
         launch {
             val likeInt = withContext(Dispatchers.IO) {
                 try {
@@ -61,11 +62,14 @@ class DetailViewModel(private val context: Context) : ViewModel(), CoroutineScop
                     movieDao?.getLiked(movieId) ?: 0
                 }
             }
-            liveData.postValue(likeInt)
+            liveData.value=State.HideLoading
+            liveData.value=State.Result(likeInt)
+
         }
     }
 
     fun likeMovie(favourite: Boolean, movie: Movie?, movieId: Int?) {
+        liveData.value=State.ShowLoading
         launch {
             val body = JsonObject().apply {
                 addProperty("media_type", "movie")
@@ -98,5 +102,11 @@ class DetailViewModel(private val context: Context) : ViewModel(), CoroutineScop
                 ).show()
             }
         }
+        liveData.value=State.HideLoading
+    }
+    sealed class State {
+        object ShowLoading : State()
+        object HideLoading : State()
+        data class Result(val likeInt:Int?) : State()
     }
 }

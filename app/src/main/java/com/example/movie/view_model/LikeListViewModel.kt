@@ -20,7 +20,7 @@ class LikeListViewModel(private val context: Context) : ViewModel(), CoroutineSc
     private var movieDao: MovieDao
     private var sessionId = Singleton.getSession()
     private var accountId = Singleton.getAccountId()
-    val liveDataLike = MutableLiveData<List<Movie>>()
+    val liveDataLike = MutableLiveData<State>()
 
     init {
         movieDao = MovieDatabase.getDatabase(context = context).movieDao()
@@ -32,6 +32,7 @@ class LikeListViewModel(private val context: Context) : ViewModel(), CoroutineSc
     }
 
     fun getMovieLike() {
+        liveDataLike.value = State.ShowLoading
         launch {
             val likesOffline = movieDao.getIdOffline(11)
             for (i in likesOffline) {
@@ -110,7 +111,16 @@ class LikeListViewModel(private val context: Context) : ViewModel(), CoroutineSc
                     movieDao.getAllLiked()
                 }
             }
-            liveDataLike.postValue(list)
+            liveDataLike.value = State.HideLoading
+            liveDataLike.value = State.Result(list)
+
         }
     }
+
+    sealed class State {
+        object ShowLoading : State()
+        object HideLoading : State()
+        data class Result(val list: List<Movie>?) : State()
+    }
+
 }

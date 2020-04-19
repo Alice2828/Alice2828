@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.movie.view.LoginActivity
 import com.example.movie.R
 import com.example.movie.model.Singleton
+import com.example.movie.view_model.LoginViewModel
 import com.example.movie.view_model.ProfileViewModel
 import com.example.movie.view_model.ViewModelProviderFactory
 
@@ -24,14 +25,13 @@ class ProfileFragment : Fragment() {
     private lateinit var logout: Button
     private lateinit var editor: SharedPreferences.Editor
     private lateinit var profileListViewModel: ProfileViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val viewModelProviderFactory = ViewModelProviderFactory(context = this.activity as Context)
         profileListViewModel =
             ViewModelProvider(this, viewModelProviderFactory).get(ProfileViewModel::class.java)
-
-
         val rootView = inflater.inflate(R.layout.activity_profile, container, false) as ViewGroup
         preferences = context?.getSharedPreferences("Username", 0)!!
         bindView(rootView)

@@ -21,7 +21,7 @@ class MovieListViewModel(
     private var movieDao: MovieDao
     private var sessionId = Singleton.getSession()
     private var accountId = Singleton.getAccountId()
-    val liveData = MutableLiveData<List<Movie>>()
+    val liveData = MutableLiveData<State>()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -36,6 +36,7 @@ class MovieListViewModel(
 
     fun getMoviesList() {
         launch {
+            liveData.value=State.ShowLoading
             val likesOffline = movieDao.getIdOffline(11)
             for (i in likesOffline) {
                 val body = JsonObject().apply {
@@ -111,7 +112,14 @@ class MovieListViewModel(
                     movieDao.getAll()
                 }
             }
-            liveData.postValue(list)
+            liveData.value=State.HideLoading
+            liveData.value=State.Result(list)
         }
     }
+    sealed class State {
+        object ShowLoading : State()
+        object HideLoading : State()
+        data class Result(val list: List<Movie>?) : State()
+    }
 }
+

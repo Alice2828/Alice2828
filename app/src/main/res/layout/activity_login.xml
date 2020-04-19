@@ -7,6 +7,9 @@
     tools:context=".view.LoginActivity"
     android:orientation="vertical"
     android:background = "#ffffff">
+
+
+
     <View
         android:layout_width="match_parent"
         android:layout_height="180dp"
@@ -104,6 +107,7 @@
                 android:layout_marginRight="10dp"
                 android:textStyle="bold"
                 />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -135,105 +139,23 @@
 
 
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
 
-<!--    <ScrollView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_margin="20dp"-->
-<!--        android:layout_marginTop="-70dp"-->
-<!--        android:layout_below="@+id/bgHeader"-->
-
-
-<!--        >-->
-<!--        <RelativeLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:background = "#ffffff">-->
-
-<!--            <androidx.cardview.widget.CardView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_margin="15dp"-->
-<!--                app:cardCornerRadius="4dp">-->
-
-<!--                <LinearLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:orientation="vertical"-->
-<!--                    android:paddingBottom="50dp"-->
-<!--                    android:background = "#ffffff"-->
-<!--                   >-->
-
-<!--                    <TextView-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="29dp"-->
-<!--                        android:gravity="center"-->
-<!--                        android:textColor="#000000"-->
-<!--                        android:layout_marginTop="13dp"-->
-<!--                        android:textSize="20sp"-->
-<!--                        android:textStyle="bold"-->
-<!--                        android:text="Логин" />-->
-
-<!--                    <EditText-->
-<!--                        android:id="@+id/email"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginLeft="10dp"-->
-<!--                        android:layout_marginRight="10dp"-->
-<!--                        android:hint="Email"-->
-<!--                        android:inputType="textEmailAddress" />-->
-
-<!--                    <EditText-->
-<!--                        android:id="@+id/password"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:hint="Пароль"-->
-<!--                        android:layout_marginLeft="10dp"-->
-<!--                        android:layout_marginRight="10dp"-->
-<!--                        android:inputType="textPassword" />-->
-<!--                    <TextView-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:textStyle="bold"-->
-<!--                        android:text="Забыли пароль?" />-->
-
-<!--                    <Button-->
-<!--                        android:id="@+id/login"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:background="#4AAFFF"-->
-<!--                        android:text="Логин"-->
-<!--                        android:layout_marginLeft="10dp"-->
-<!--                        android:layout_marginRight="10dp"-->
-<!--                        android:textStyle="bold"-->
-<!--                        />-->
-
-<!--                    <Button-->
-<!--                        android:id="@+id/register"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:text="Регистрация"-->
-<!--                        android:background="#FFFFFF"-->
-<!--                        android:textStyle="bold"-->
-<!--                        />-->
-
-
-<!--                </LinearLayout>-->
-
-<!--            </androidx.cardview.widget.CardView>-->
-
-<!--        </RelativeLayout>-->
-
-
-<!--    </ScrollView>-->
-
-
-
-
-
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.839" />
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 </RelativeLayout>

@@ -16,18 +16,18 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var pager: LockableViewPager
     private lateinit var pagerAdapter: PagerAdapter
-    private var f1: Fragment = MainFragment()
-    private var f2: Fragment = LikeFragment()
-    private var f3: Fragment = ProfileFragment()
+    private var fragmentMain: Fragment = MainFragment()
+    private var fragmentLike: Fragment = LikeFragment()
+    private var fragmentProfile: Fragment = ProfileFragment()
     private var list: MutableList<Fragment> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_page)
         bindView()
-        list.add(f1)
-        list.add(f2)
-        list.add(f3)
+        list.add(fragmentMain)
+        list.add(fragmentLike)
+        list.add(fragmentProfile)
         pager.setSwipable(false)
         pagerAdapter = SlidePagerAdapter(supportFragmentManager, list)
         pager.adapter = pagerAdapter
@@ -36,16 +36,16 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.home -> {
                     pager.setCurrentItem(0, false)
-                    supportActionBar!!.title = "Кино ТВ - Онлайн Фильмы"
+                    supportActionBar?.title = "Кино ТВ - Онлайн Фильмы"
                 }
                 R.id.like_posts -> {
                     pager.setCurrentItem(1, false)
-                    supportActionBar!!.title = "Закладки"
+                    supportActionBar?.title = "Закладки"
 
                 }
                 R.id.about -> {
                     pager.setCurrentItem(2, false)
-                    supportActionBar!!.title = "Профиль"
+                    supportActionBar?.title = "Профиль"
 
                 }
             }
