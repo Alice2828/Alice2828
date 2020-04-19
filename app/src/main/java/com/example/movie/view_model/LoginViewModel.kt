@@ -1,7 +1,6 @@
 package com.example.movie.view_model
 
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.movie.BuildConfig
@@ -18,12 +17,9 @@ import kotlin.coroutines.CoroutineContext
 class LoginViewModel(private val context: Context) : ViewModel(), CoroutineScope {
     private val job = Job()
     var state = MutableLiveData<State>()
-
     private lateinit var requestToken: String
     private lateinit var newRequestToken: String
-
-    private var json1: String = ""
-    private lateinit var preferences: SharedPreferences
+    private var json: String = ""
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -41,12 +37,14 @@ class LoginViewModel(private val context: Context) : ViewModel(), CoroutineScope
             if (response.isSuccessful) {
                 requestToken = response.body()?.requestToken.toString()
                 responseToken(emailValue, passwordValue)
-            } else
+            } else {
                 state.value = State.BadResult
+                state.value = State.HideLoading
+            }
         }
     }
 
-    fun responseToken(emailValue: String, passwordValue: String) {
+    private fun responseToken(emailValue: String, passwordValue: String) {
         launch {
             val body = JsonObject().apply {
                 addProperty("username", emailValue)
@@ -64,12 +62,14 @@ class LoginViewModel(private val context: Context) : ViewModel(), CoroutineScope
                 newRequestToken = newRequesttoken.requestToken
                 getSession(emailValue, body)
 
-            } else
+            } else {
                 state.value = State.BadResult
+                state.value = State.HideLoading
+            }
         }
     }
 
-    fun getSession(emailValue: String, body: JsonObject) {
+    private fun getSession(emailValue: String, body: JsonObject) {
         launch {
             val responseSession = RetrofitService.getPostApi()
                 .getSessionCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN, body)
@@ -82,14 +82,15 @@ class LoginViewModel(private val context: Context) : ViewModel(), CoroutineScope
                     )
                 val sessionId = newSession.sessionId
                 getAccountId(emailValue, sessionId)
-            } else
+            } else {
                 state.value = State.BadResult
+                state.value = State.HideLoading
+            }
 
         }
-
     }
 
-    fun getAccountId(emailValue: String, sessionId: String) {
+    private fun getAccountId(emailValue: String, sessionId: String) {
         launch {
             val response = RetrofitService.getPostApi()
                 .getAccountCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN, sessionId)
@@ -98,10 +99,12 @@ class LoginViewModel(private val context: Context) : ViewModel(), CoroutineScope
                     Gson().fromJson(response.body(), MyAccount::class.java)
                 val idAcc = newIdAcc.id
                 val user = User(emailValue, sessionId, idAcc)
-                json1 = Gson().toJson(user)
-                state.value = State.Result(json1)
-            } else
+                json = Gson().toJson(user)
+                state.value = State.Result(json)
+            } else {
                 state.value = State.BadResult
+                state.value = State.HideLoading
+            }
         }
         state.value = State.HideLoading
     }
@@ -109,7 +112,7 @@ class LoginViewModel(private val context: Context) : ViewModel(), CoroutineScope
     sealed class State {
         object ShowLoading : State()
         object HideLoading : State()
-        data class Result(val json1: String?) : State()
+        data class Result(val json: String?) : State()
         object BadResult : State()
     }
 }

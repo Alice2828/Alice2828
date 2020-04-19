@@ -44,25 +44,23 @@ class DetailActivity : AppCompatActivity() {
         initIntents()
 
         detailViewModel.liveData.observe(this, Observer { result ->
-          when(result) {
-              is DetailViewModel.State.ShowLoading -> {
-                  progressBar.visibility = ProgressBar.VISIBLE
-
-              }
-              is DetailViewModel.State.HideLoading -> {
-                  progressBar.visibility = ProgressBar.INVISIBLE
-
-              }
-              is DetailViewModel.State.Result -> {
-                  if (result.likeInt == 1 || result.likeInt == 11) {
-                      toolbar.menu.findItem(R.id.favourite).icon =
-                          getDrawable(R.drawable.ic_favorite_liked)
-                  } else {
-                      toolbar.menu.findItem(R.id.favourite).icon =
-                          getDrawable(R.drawable.ic_favorite_border)
-                  }
-              }
-          }
+            when (result) {
+                is DetailViewModel.State.ShowLoading -> {
+                    progressBar.visibility = ProgressBar.VISIBLE
+                }
+                is DetailViewModel.State.HideLoading -> {
+                    progressBar.visibility = ProgressBar.INVISIBLE
+                }
+                is DetailViewModel.State.Result -> {
+                    if (result.likeInt == 1 || result.likeInt == 11) {
+                        toolbar.menu.findItem(R.id.favourite).icon =
+                            getDrawable(R.drawable.ic_favorite_liked)
+                    } else {
+                        toolbar.menu.findItem(R.id.favourite).icon =
+                            getDrawable(R.drawable.ic_favorite_border)
+                    }
+                }
+            }
         })
     }
 
@@ -77,7 +75,7 @@ class DetailActivity : AppCompatActivity() {
         if (item.itemId == R.id.favourite) {
 
             val drawable: Drawable = item.icon.current
-            if (drawable.constantState?.equals(getDrawable(R.drawable.ic_favorite_border)?.constantState)==true) {
+            if (drawable.constantState?.equals(getDrawable(R.drawable.ic_favorite_border)?.constantState) == true) {
                 item.icon = getDrawable(R.drawable.ic_favorite_liked)
                 likeMovie(true)
             } else {
@@ -102,7 +100,7 @@ class DetailActivity : AppCompatActivity() {
         userRating = findViewById(R.id.userrating)
         releaseDate = findViewById(R.id.releasedate)
         genre = findViewById(R.id.genre)
-        progressBar=findViewById(R.id.progressBar)
+        progressBar = findViewById(R.id.progressBar)
     }
 
     private fun initIntents() {

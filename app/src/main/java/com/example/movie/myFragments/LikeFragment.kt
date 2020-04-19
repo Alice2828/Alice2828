@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -37,7 +36,6 @@ class LikeFragment : Fragment() {
     lateinit var movie: Movie
     private lateinit var likeListViewModel: LikeListViewModel
     private var rootView: View? = null
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -14,7 +14,6 @@ class RegistrationActivity : AppCompatActivity() {
     private lateinit var login: Button
     private lateinit var register: Button
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registration)

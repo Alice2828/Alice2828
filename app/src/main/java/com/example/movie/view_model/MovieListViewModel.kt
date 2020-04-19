@@ -36,7 +36,7 @@ class MovieListViewModel(
 
     fun getMoviesList() {
         launch {
-            liveData.value=State.ShowLoading
+            liveData.value = State.ShowLoading
             val likesOffline = movieDao.getIdOffline(11)
             for (i in likesOffline) {
                 val body = JsonObject().apply {
@@ -58,14 +58,12 @@ class MovieListViewModel(
                             movie.liked = 1
                             movieDao.insert(movie)
                         }
-
                     }
                 } catch (e: Exception) {
                 }
             }
 
             val unLikesOffline = movieDao.getIdOffline(10)
-
             for (i in unLikesOffline) {
                 val body = JsonObject().apply {
                     addProperty("media_type", "movie")
@@ -87,7 +85,6 @@ class MovieListViewModel(
                             movieDao.insert(movie)
                         }
                     }
-
                 } catch (e: Exception) {
                 }
             }
@@ -112,10 +109,11 @@ class MovieListViewModel(
                     movieDao.getAll()
                 }
             }
-            liveData.value=State.HideLoading
-            liveData.value=State.Result(list)
+            liveData.value = State.HideLoading
+            liveData.value = State.Result(list)
         }
     }
+
     sealed class State {
         object ShowLoading : State()
         object HideLoading : State()

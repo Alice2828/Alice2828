@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.movie.view.LoginActivity
 import com.example.movie.R
 import com.example.movie.model.Singleton
-import com.example.movie.view_model.LoginViewModel
 import com.example.movie.view_model.ProfileViewModel
 import com.example.movie.view_model.ViewModelProviderFactory
 
@@ -46,7 +45,6 @@ class ProfileFragment : Fragment() {
             profileListViewModel.deleteProfileInform()
             val intent = Intent(activity, LoginActivity::class.java)
             startActivity(intent)
-
         }
     }
 
@@ -63,6 +61,4 @@ class ProfileFragment : Fragment() {
         nameInfo.text = authorizedName
         emailInfo.text = authorizedEmail
     }
-
-
 }
