@@ -69,14 +69,22 @@ class MainFragment : Fragment() {
             initViews()
         }
         initViews()
-        swipeRefreshLayout.isRefreshing = true
-        movieListViewModel.liveData.observe(this, Observer { result ->
-            postAdapter?.moviesList = result.subList(1, result.size - 1)
-            postAdapter?.notifyDataSetChanged()
-            newMovieList = movieListViewModel.liveData.value
-            bigPicCard()
-            swipeRefreshLayout.isRefreshing = false
 
+        movieListViewModel.liveData.observe(this, Observer { result ->
+            when (result) {
+                is MovieListViewModel.State.ShowLoading -> {
+                    swipeRefreshLayout.isRefreshing = true
+                }
+                is MovieListViewModel.State.HideLoading -> {
+                    swipeRefreshLayout.isRefreshing = false
+                }
+                is MovieListViewModel.State.Result -> {
+                    postAdapter?.moviesList = result.list?.subList(1, result.list.size - 1)
+                    postAdapter?.notifyDataSetChanged()
+                    newMovieList = result.list
+                    bigPicCard()
+                }
+            }
         })
         return rootView
     }

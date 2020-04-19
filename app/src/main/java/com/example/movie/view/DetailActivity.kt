@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -29,6 +30,7 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var toolbar: Toolbar
     private lateinit var genre: TextView
     private lateinit var detailViewModel: DetailViewModel
+    private lateinit var progressBar: ProgressBar
     private var movie: Movie? = null
     private var movieId: Int? = null
 
@@ -40,13 +42,24 @@ class DetailActivity : AppCompatActivity() {
             ViewModelProvider(this, viewModelProviderFactory).get(DetailViewModel::class.java)
         bindView()
         initIntents()
+
         detailViewModel.liveData.observe(this, Observer { result ->
-            if (result == 1 || result == 11) {
-                toolbar.menu.findItem(R.id.favourite).icon =
-                    getDrawable(R.drawable.ic_favorite_liked)
-            } else {
-                toolbar.menu.findItem(R.id.favourite).icon =
-                    getDrawable(R.drawable.ic_favorite_border)
+            when (result) {
+                is DetailViewModel.State.ShowLoading -> {
+                    progressBar.visibility = ProgressBar.VISIBLE
+                }
+                is DetailViewModel.State.HideLoading -> {
+                    progressBar.visibility = ProgressBar.INVISIBLE
+                }
+                is DetailViewModel.State.Result -> {
+                    if (result.likeInt == 1 || result.likeInt == 11) {
+                        toolbar.menu.findItem(R.id.favourite).icon =
+                            getDrawable(R.drawable.ic_favorite_liked)
+                    } else {
+                        toolbar.menu.findItem(R.id.favourite).icon =
+                            getDrawable(R.drawable.ic_favorite_border)
+                    }
+                }
             }
         })
     }
@@ -62,7 +75,7 @@ class DetailActivity : AppCompatActivity() {
         if (item.itemId == R.id.favourite) {
 
             val drawable: Drawable = item.icon.current
-            if (drawable.constantState?.equals(getDrawable(R.drawable.ic_favorite_border)?.constantState)!!) {
+            if (drawable.constantState?.equals(getDrawable(R.drawable.ic_favorite_border)?.constantState) == true) {
                 item.icon = getDrawable(R.drawable.ic_favorite_liked)
                 likeMovie(true)
             } else {
@@ -87,6 +100,7 @@ class DetailActivity : AppCompatActivity() {
         userRating = findViewById(R.id.userrating)
         releaseDate = findViewById(R.id.releasedate)
         genre = findViewById(R.id.genre)
+        progressBar = findViewById(R.id.progressBar)
     }
 
     private fun initIntents() {

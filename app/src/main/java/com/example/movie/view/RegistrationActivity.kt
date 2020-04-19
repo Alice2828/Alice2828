@@ -10,10 +10,9 @@ import com.example.movie.R
 class RegistrationActivity : AppCompatActivity() {
     private lateinit var email: EditText
     private lateinit var password: EditText
-    lateinit var name: EditText
+    private lateinit var name: EditText
     private lateinit var login: Button
     private lateinit var register: Button
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
