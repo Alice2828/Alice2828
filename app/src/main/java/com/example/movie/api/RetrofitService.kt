@@ -58,17 +58,29 @@ interface PostApi {
 
 
     @POST("authentication/token/validate_with_login")
-    suspend fun loginCoroutune(@Query("api_key") apiKey: String, @Body body: JsonObject): Response<JsonObject>
+    suspend fun loginCoroutune(
+        @Query("api_key") apiKey: String,
+        @Body body: JsonObject
+    ): Response<JsonObject>
 
     @POST("authentication/session/new")
-    suspend fun getSessionCoroutine(@Query("api_key") apiKey: String, @Body body: JsonObject): Response<JsonObject>
+    suspend fun getSessionCoroutine(
+        @Query("api_key") apiKey: String,
+        @Body body: JsonObject
+    ): Response<JsonObject>
 
     @GET("account")
-    suspend fun getAccountCoroutine(@Query("api_key") apiKey: String, @Query("session_id") sessionId: String): Response<JsonObject>
+    suspend fun getAccountCoroutine(
+        @Query("api_key") apiKey: String,
+        @Query("session_id") sessionId: String
+    ): Response<JsonObject>
 
 
     @GET("account")
-    fun getAccount(@Query("api_key") apiKey: String, @Query("session_id") sessionId: String): Call<JsonObject>
+    fun getAccount(
+        @Query("api_key") apiKey: String,
+        @Query("session_id") sessionId: String
+    ): Call<JsonObject>
 
     @POST("account/{account_id}/favorite")
     fun rate(
@@ -102,6 +114,10 @@ interface PostApi {
     @DELETE("authentication/session")
     fun deleteSession(@Query("api_key") apiKey: String, @Body body: JsonObject): Call<JsonObject>
 
-    @DELETE("authentication/session")
-    suspend fun deleteSessionCoroutine(@Query("api_key") apiKey: String, @Body body: JsonObject): Response<JsonObject>
+    @HTTP(method = "DELETE", path = "authentication/session", hasBody = true)
+    suspend fun deleteSessionCoroutine(
+        @Query("api_key") apiKey: String,
+        @Body body: JsonObject
+    ): Response<JsonObject>
+
 }
