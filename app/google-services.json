@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "313819241273",
+    "firebase_url": "https://movie-tv-b33e8.firebaseio.com",
+    "project_id": "movie-tv-b33e8",
+    "storage_bucket": "movie-tv-b33e8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:313819241273:android:1fda53086d98c23fa8e6e8",
+        "android_client_info": {
+          "package_name": "com.example.movie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "313819241273-mjkhr5hnop431v6tqbarlvqho98l97na.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.movie",
+            "certificate_hash": "43331c1eda54b658a65e04c6c3e40ba076f68562"
+          }
+        },
+        {
+          "client_id": "313819241273-ur2oldcls1s8lr8vb0uqmrdrmtl0mik3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQSrFlwPtI4Dy5kgMNfM8loPVNfFM4tdA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "313819241273-ur2oldcls1s8lr8vb0uqmrdrmtl0mik3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
