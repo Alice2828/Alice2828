@@ -34,12 +34,18 @@ class ProfileViewModel(
             val body: JsonObject = JsonObject().apply {
                 addProperty("session_id", Singleton.getSession())
             }
-            val response = RetrofitService.getPostApi()
-                .deleteSessionCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN, body)
-            if (response.isSuccessful) {
-                liveData.value = State.HideLoading
-                liveData.value = State.Result
-            } else {
+            try {
+                val response = RetrofitService.getPostApi()
+                    .deleteSessionCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN, body)
+                if (response.isSuccessful) {
+                    liveData.value = State.HideLoading
+                    liveData.value = State.Result
+                } else {
+                    liveData.value = State.HideLoading
+                    liveData.value = State.BadResult
+                }
+            }
+            catch(e:Exception){
                 liveData.value = State.HideLoading
                 liveData.value = State.BadResult
             }
