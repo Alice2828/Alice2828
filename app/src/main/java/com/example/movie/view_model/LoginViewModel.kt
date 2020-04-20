@@ -32,12 +32,19 @@ class LoginViewModel(private val context: Context) : ViewModel(), CoroutineScope
     fun makeToken(emailValue: String, passwordValue: String) {
         state.value = State.ShowLoading
         launch {
-            val response = RetrofitService.getPostApi()
-                .getRequestTokenCorountine(BuildConfig.THE_MOVIE_DB_API_TOKEN)
-            if (response.isSuccessful) {
-                requestToken = response.body()?.requestToken.toString()
-                responseToken(emailValue, passwordValue)
-            } else {
+            try {
+                val response = RetrofitService.getPostApi()
+
+                    .getRequestTokenCorountine(BuildConfig.THE_MOVIE_DB_API_TOKEN)
+                if (response.isSuccessful) {
+                    requestToken = response.body()?.requestToken.toString()
+                    responseToken(emailValue, passwordValue)
+                } else {
+                    state.value = State.BadResult
+                    state.value = State.HideLoading
+                }
+            }
+            catch(e:Exception){
                 state.value = State.BadResult
                 state.value = State.HideLoading
             }
