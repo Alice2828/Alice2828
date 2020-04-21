@@ -71,14 +71,4 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), CoroutineScope {
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(0, notificationBuilder.build())
     }
-
-//    fun getUploaded() {
-//        launch {
-//            val response = RetrofitService.getPostApi()
-//                .getUpComing(BuildConfig.THE_MOVIE_DB_API_TOKEN)
-//            if (response.isSuccessful) {
-//                movie = response.body()?.results?.get(0)
-//            } else Log.d("wwwww", "wwwww")
-//        }
-//    }
 }
