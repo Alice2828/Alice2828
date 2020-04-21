@@ -109,6 +109,7 @@ class MovieListViewModel(
                     movieDao.getAll()
                 }
             }
+            list?.get(0)?.let { Singleton.setMovie(it) }
             liveData.value = State.HideLoading
             liveData.value = State.Result(list)
         }

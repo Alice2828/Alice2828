@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_page)
+
         bindView()
         list.add(fragmentMain)
         list.add(fragmentLike)
@@ -41,12 +42,10 @@ class MainActivity : AppCompatActivity() {
                 R.id.like_posts -> {
                     pager.setCurrentItem(1, false)
                     supportActionBar?.title = "Закладки"
-
                 }
                 R.id.about -> {
                     pager.setCurrentItem(2, false)
                     supportActionBar?.title = "Профиль"
-
                 }
             }
             false

@@ -10,6 +10,8 @@ class Singleton(
     @SerializedName("account_id")
     var accountId: Int
 ) {
+    @SerializedName("moviePremier")
+    var moviePremier: Movie? = null
 
     companion object Factory {
         @Volatile
@@ -30,6 +32,14 @@ class Singleton(
 
         fun getUserName(): String {
             return INSTANCE!!.username
+        }
+        fun getMovie(): Movie? {
+            return INSTANCE!!.moviePremier
+        }
+
+
+        fun setMovie(movie:Movie){
+            INSTANCE?.moviePremier=movie
         }
 
     }
