@@ -39,7 +39,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".view.MainActivity" />
         </activity>
-
         <service
             android:name=".service.MyFirebaseMessagingService"
             android:exported="false">
