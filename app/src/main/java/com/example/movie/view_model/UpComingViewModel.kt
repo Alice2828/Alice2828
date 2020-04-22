@@ -2,7 +2,6 @@ package com.example.movie.view_model
 
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.movie.BuildConfig
@@ -11,7 +10,6 @@ import com.example.movie.database.MovieDao
 import com.example.movie.database.MovieDatabase
 import com.example.movie.model.Movie
 import com.example.movie.model.Singleton
-import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -20,8 +18,6 @@ class UpComingViewModel(
 ) : ViewModel(), CoroutineScope {
     private val job = Job()
     private var movieDao: MovieDao
-    private var sessionId = Singleton.getSession()
-    private var accountId = Singleton.getAccountId()
     val liveData = MutableLiveData<Movie>()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -43,6 +39,7 @@ class UpComingViewModel(
                 if (response.isSuccessful) {
                     val result = response.body()?.results?.get(0)
                     liveData.value = result
+                    movieDao.insert(result)
                 } else {
                     liveData.value = movieDao.getAll()[0]
                 }

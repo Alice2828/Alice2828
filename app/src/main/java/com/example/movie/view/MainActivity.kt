@@ -117,7 +117,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showNotification(title: String?, message: String?) {
-        val intent = Intent(this, DetailActivity::class.java)
+        val intent = Intent(applicationContext, DetailActivity::class.java)
         intent.putExtra("movie_id", movie?.id)
         intent.putExtra("original_title", movie?.original_title)
         intent.putExtra("movie", movie)
@@ -128,12 +128,12 @@ class MainActivity : AppCompatActivity() {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
         val pendingIntent = PendingIntent.getActivity(
-            this, 0, intent,
-            PendingIntent.FLAG_ONE_SHOT
+            applicationContext, 0, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val notificationBuilder = NotificationCompat.Builder(this)
+        val notificationBuilder = NotificationCompat.Builder(applicationContext)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setWhen(System.currentTimeMillis())
             .setContentTitle(title)
