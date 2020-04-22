@@ -62,12 +62,8 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
         login.setOnClickListener {
-//            var connectivity = application.getSystemService(
-//                Context.CONNECTIVITY_SERVICE
-//            )as ConnectivityManager
-//            if (connectivity) {
-                loginViewModel.makeToken(email.text.toString(), password.text.toString())
-           // }
+            loginViewModel.makeToken(email.text.toString(), password.text.toString())
+
         }
 
     }

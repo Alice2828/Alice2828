@@ -24,11 +24,7 @@ import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 @SuppressLint("MissingFirebaseInstanceTokenRefresh")
-class MyFirebaseMessagingService : FirebaseMessagingService(), CoroutineScope {
-    private val job = Job()
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
-
+class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onNewToken(s: String) {
         Log.e("NEW_TOKEN", s)
     }
@@ -48,34 +44,4 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), CoroutineScope {
         pushNotification.putExtra("message", body)
         LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification)
     }
-//    private fun showNotification(title: String?, body: String?) {
-//        val intent = Intent(this, DetailActivity::class.java)
-//        intent.putExtra("movie_id", movie?.id)
-//        intent.putExtra("original_title", movie?.original_title)
-//        intent.putExtra("movie", movie)
-//        intent.putExtra("poster_path", movie?.getPosterPath())
-//        intent.putExtra("overview", movie?.overview)
-//        intent.putExtra("vote_average", (movie?.vote_average).toString())
-//        intent.putExtra("release_date", movie?.release_date)
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-//        val pendingIntent = PendingIntent.getActivity(
-//            this, 0, intent,
-//            PendingIntent.FLAG_ONE_SHOT
-//        )
-//
-//        val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-//        val notificationBuilder = NotificationCompat.Builder(this)
-//            .setSmallIcon(R.mipmap.ic_launcher)
-//            .setWhen(System.currentTimeMillis())
-//            .setContentTitle(title)
-//            .setContentText(body)
-//            .setAutoCancel(true)
-//            .setSound(soundUri)
-//            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-//            .setContentIntent(pendingIntent)
-//
-//        val notificationManager =
-//            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//        notificationManager.notify(0, notificationBuilder.build())
-//    }
 }

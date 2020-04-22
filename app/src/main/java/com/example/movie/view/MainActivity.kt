@@ -11,6 +11,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.PagerAdapter
 import com.example.movie.R
@@ -21,6 +23,8 @@ import com.example.movie.myFragments.LikeFragment
 import com.example.movie.myFragments.MainFragment
 import com.example.movie.myFragments.ProfileFragment
 import com.example.movie.pager.LockableViewPager
+import com.example.movie.view_model.UpComingViewModel
+import com.example.movie.view_model.ViewModelProviderFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -31,7 +35,9 @@ class MainActivity : AppCompatActivity() {
     private var fragmentLike: Fragment = LikeFragment()
     private var fragmentProfile: Fragment = ProfileFragment()
     private var list: MutableList<Fragment> = ArrayList()
-    private var movie: Movie? = Singleton.getMovie()
+
+    private var movie: Movie? = null
+    private lateinit var upComingViewModel: UpComingViewModel
 
     private var mRegistrationBroadcastReceiver: BroadcastReceiver? = null
     override fun onPause() {
@@ -71,6 +77,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         bindView()
+        upComingViewModel.getMovie()
         list.add(fragmentMain)
         list.add(fragmentLike)
         list.add(fragmentProfile)
@@ -95,11 +102,17 @@ class MainActivity : AppCompatActivity() {
             }
             false
         }
+        upComingViewModel.liveData.observe(this, Observer { result ->
+            movie = result
+        })
     }
 
     private fun bindView() {
         pager = findViewById(R.id.pager)
         bottomNavigationView = findViewById(R.id.bottom_navigation)
+        val viewModelProviderFactory = ViewModelProviderFactory(context = applicationContext)
+        upComingViewModel =
+            ViewModelProvider(this, viewModelProviderFactory).get(UpComingViewModel::class.java)
 
     }
 
