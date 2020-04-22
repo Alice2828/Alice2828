@@ -8,6 +8,7 @@
     <string name="release">Release Date</string>
     <string name="main_name">Кино ТВ-Онлайн Фильмы</string>
     <string name="profile_name">Профиль</string>
+    <string name="title_activity_maps">Map</string>
 
 
 </resources>
