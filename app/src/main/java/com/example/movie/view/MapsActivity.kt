@@ -36,11 +36,11 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
+        mMap.uiSettings.isZoomControlsEnabled = true
         // Add a marker in Sydney and move the camera
         val sydney = LatLng(-34.0, 151.0)
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
 
 
         val location1 = LatLng(43.240248,76.9061647)
@@ -60,4 +60,5 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
 //        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location4,10))
 
     }
+
 }
