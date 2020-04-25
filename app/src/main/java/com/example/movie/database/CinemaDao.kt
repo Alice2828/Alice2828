@@ -10,9 +10,12 @@ import com.example.movie.model.Cinema
 @Dao
 interface CinemaDao {
     @Query("SELECT * FROM cinema_table")
-    fun getAll(): LiveData<List<Cinema>>
+    fun getAllCinemas(): List<Cinema>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(cinema: Cinema?)
+    fun insertCinema(cinema: Cinema?)
+
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    suspend fun insertAllCinema(list: List<Cinema>)
 }
 

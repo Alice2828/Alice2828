@@ -1,11 +1,14 @@
 package com.example.movie.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModelProvider
 import com.example.movie.R
-
-import com.google.android.gms.maps.CameraUpdateFactory
+import com.example.movie.database.CinemaDao
+import com.example.movie.database.CinemaDatabase
+import com.example.movie.model.Cinema
+import com.example.movie.view_model.CinemaMapViewModel
+import com.example.movie.view_model.ViewModelProviderFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
@@ -15,6 +18,13 @@ import com.google.android.gms.maps.model.MarkerOptions
 class MapsActivity : FragmentActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
+    private var cinemaDao:CinemaDao? = null
+    private lateinit var cinemaMapViewModel: CinemaMapViewModel
+    private lateinit var cinemaList: List<Cinema>
+
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +33,11 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+        val viewModelProviderFactory = ViewModelProviderFactory(context = this)
+        cinemaMapViewModel =
+            ViewModelProvider(this, viewModelProviderFactory).get(CinemaMapViewModel::class.java)
+
+        cinemaList = cinemaMapViewModel.getCinemaList()
     }
 
     /**
@@ -37,27 +52,35 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.uiSettings.isZoomControlsEnabled = true
+
+        for(cinema in cinemaList){
+            val position = LatLng(cinema.latitude, cinema.longitude)
+            mMap.addMarker(MarkerOptions().position(position).title(cinema.name))
+
+        }
+
+
         // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
-
-
-        val location1 = LatLng(43.240248,76.9061647)
-        googleMap.addMarker(MarkerOptions().position(location1).title("Bekmambetov Cinema"))
-//        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location1))
-
-        val location2 = LatLng(43.262044,76.941684)
-        googleMap.addMarker(MarkerOptions().position(location2).title("Lumiera Cinema"))
-//        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location2,10f))
-
-        val location3 = LatLng(43.232963,76.955780)
-        googleMap.addMarker(MarkerOptions().position(location3).title("CINEMAX Dostyk Multiplex"))
-//        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location3,10f))
-
-        val location4 = LatLng(43.225303,76.907712)
-        googleMap.addMarker(MarkerOptions().position(location4).title("Kinopark 5 Atakent"))
-//        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location4,10))
+//        val sydney = LatLng(-34.0, 151.0)
+//        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+////        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+//
+//
+//        val location1 = LatLng(43.240248,76.9061647)
+//        googleMap.addMarker(MarkerOptions().position(location1).title("Bekmambetov Cinema"))
+////        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location1))
+//
+//        val location2 = LatLng(43.262044,76.941684)
+//        googleMap.addMarker(MarkerOptions().position(location2).title("Lumiera Cinema"))
+////        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location2,10f))
+//
+//        val location3 = LatLng(43.232963,76.955780)
+//        googleMap.addMarker(MarkerOptions().position(location3).title("CINEMAX Dostyk Multiplex"))
+////        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location3,10f))
+//
+//        val location4 = LatLng(43.225303,76.907712)
+//        googleMap.addMarker(MarkerOptions().position(location4).title("Kinopark 5 Atakent"))
+////        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location4,10))
 
     }
 
