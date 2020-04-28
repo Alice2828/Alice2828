@@ -1,31 +1,31 @@
 package com.example.movie.view
 
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.annotation.SuppressLint
+import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.media.RingtoneManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.PagerAdapter
 import com.example.movie.R
 import com.example.movie.adapter.SlidePagerAdapter
 import com.example.movie.model.Movie
-import com.example.movie.model.Singleton
 import com.example.movie.myFragments.LikeFragment
 import com.example.movie.myFragments.MainFragment
 import com.example.movie.myFragments.ProfileFragment
 import com.example.movie.pager.LockableViewPager
-import com.example.movie.view_model.UpComingViewModel
-import com.example.movie.view_model.ViewModelProviderFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigationView: BottomNavigationView
@@ -35,23 +35,22 @@ class MainActivity : AppCompatActivity() {
     private var fragmentLike: Fragment = LikeFragment()
     private var fragmentProfile: Fragment = ProfileFragment()
     private var list: MutableList<Fragment> = ArrayList()
-
-    private var movie: Movie? = null
-    private lateinit var upComingViewModel: UpComingViewModel
-
+    private lateinit var movie: Movie
     private var mRegistrationBroadcastReceiver: BroadcastReceiver? = null
+
     override fun onPause() {
         this.mRegistrationBroadcastReceiver?.let {
-            LocalBroadcastManager.getInstance(this).unregisterReceiver(
-                it
-            )
+            LocalBroadcastManager.getInstance(this)
+                .unregisterReceiver(it)
         }
-
         super.onPause()
     }
 
     override fun onResume() {
+        Log.d("RESUME", "RESUME")
+
         super.onResume()
+
         this.mRegistrationBroadcastReceiver?.let {
             LocalBroadcastManager.getInstance(this).registerReceiver(
                 it, IntentFilter(
@@ -59,25 +58,31 @@ class MainActivity : AppCompatActivity() {
                 )
             )
         }
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_page)
-
+        FirebaseMessaging.getInstance().subscribeToTopic("weather")
+            .addOnCompleteListener { task ->
+                var msg = "Subscribed"
+                if (!task.isSuccessful) {
+                    msg = "Not subscribed"
+                }
+                Log.d("TAGGG", msg)
+            }
         mRegistrationBroadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 if (intent?.action == "push") {
                     val message = intent.getStringExtra("message")
                     val title = intent.getStringExtra("title")
-                    showNotification(title, message)
+                    movie = intent.getSerializableExtra("movie") as Movie
+                    showNotification(title, message, movie)
+
                 }
             }
         }
-
         bindView()
-        upComingViewModel.getMovie()
         list.add(fragmentMain)
         list.add(fragmentLike)
         list.add(fragmentProfile)
@@ -102,49 +107,65 @@ class MainActivity : AppCompatActivity() {
             }
             false
         }
-        upComingViewModel.liveData.observe(this, Observer { result ->
-            movie = result
-        })
     }
 
     private fun bindView() {
         pager = findViewById(R.id.pager)
         bottomNavigationView = findViewById(R.id.bottom_navigation)
-        val viewModelProviderFactory = ViewModelProviderFactory(context = applicationContext)
-        upComingViewModel =
-            ViewModelProvider(this, viewModelProviderFactory).get(UpComingViewModel::class.java)
-
     }
 
-    private fun showNotification(title: String?, message: String?) {
-        val intent = Intent(applicationContext, DetailActivity::class.java)
-        intent.putExtra("movie_id", movie?.id)
-        intent.putExtra("original_title", movie?.original_title)
-        intent.putExtra("movie", movie)
-        intent.putExtra("poster_path", movie?.getPosterPath())
-        intent.putExtra("overview", movie?.overview)
-        intent.putExtra("vote_average", (movie?.vote_average).toString())
-        intent.putExtra("release_date", movie?.release_date)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+    @SuppressLint("WrongConstant")
+    private fun showNotification(title: String?, message: String?, movie: Movie) {
+        val resultIntent = Intent(this, DetailActivity::class.java)
+        resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        resultIntent.putExtra("movie", movie)
 
-        val pendingIntent = PendingIntent.getActivity(
-            applicationContext, 0, intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
 
-        val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val notificationBuilder = NotificationCompat.Builder(applicationContext)
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setWhen(System.currentTimeMillis())
-            .setContentTitle(title)
-            .setContentText(message)
-            .setAutoCancel(true)
-            .setSound(soundUri)
-            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .setContentIntent(pendingIntent)
+        val stackBuilder: TaskStackBuilder = TaskStackBuilder.create(this)
+        stackBuilder.addParentStack(DetailActivity::class.java)
+        stackBuilder.addNextIntent(resultIntent)
 
+        val pendingIntent: PendingIntent =
+            stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+
+//        val pendingIntent =
+//            PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_ONE_SHOT)
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(0, notificationBuilder.build())
+
+        val channelId = "Channel"
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel =
+                NotificationChannel(channelId, "FCM", NotificationManager.IMPORTANCE_MAX)
+            notificationChannel.setDescription("title")
+            notificationChannel.enableLights(true)
+            notificationChannel.setLightColor(Color.RED)
+            notificationChannel.enableVibration(true)
+
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
+        val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        val longText = "To have a notification appear in an expanded view, " +
+                "first create a NotificationCompat.Builder object " +
+                "with the normal view options you want. " +
+                "Next, call Builder.setStyle() with an " +
+                "expanded layout object as its argument.";
+
+        val notificationBuilder = NotificationCompat.Builder(this, channelId)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
+            .setWhen(System.currentTimeMillis())
+            .setAutoCancel(true)
+            .setSound(soundUri)
+            .setOnlyAlertOnce(true)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setPriority(Notification.PRIORITY_MAX)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(longText))
+            .setContentIntent(pendingIntent)
+
+
+        notificationManager.notify(1, notificationBuilder.build())
     }
 }

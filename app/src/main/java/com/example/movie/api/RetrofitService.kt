@@ -119,10 +119,4 @@ interface PostApi {
         @Query("api_key") apiKey: String,
         @Body body: JsonObject
     ): Response<JsonObject>
-
-    @GET("movie/upcoming")
-    suspend fun getUpComing(
-        @Query("api_key") apiKey: String
-    ): Response<MovieResponse>
-
 }

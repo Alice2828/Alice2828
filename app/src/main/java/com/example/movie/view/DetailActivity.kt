@@ -1,9 +1,13 @@
 package com.example.movie.view
 
+import android.app.KeyguardManager
+import android.content.Context
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -14,12 +18,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.movie.R
-import com.example.movie.model.*
+import com.example.movie.model.Movie
 import com.example.movie.view_model.DetailViewModel
 import com.example.movie.view_model.ViewModelProviderFactory
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
-import java.lang.Exception
+
 
 class DetailActivity : AppCompatActivity() {
     private lateinit var nameofMovie: TextView
@@ -37,6 +41,7 @@ class DetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
+
         val viewModelProviderFactory = ViewModelProviderFactory(context = this)
         detailViewModel =
             ViewModelProvider(this, viewModelProviderFactory).get(DetailViewModel::class.java)
@@ -105,15 +110,14 @@ class DetailActivity : AppCompatActivity() {
 
     private fun initIntents() {
         val intent = intent
-        if (intent.hasExtra("original_title")) {
-            movieId = getIntent().extras?.getInt("movie_id")
+        try {
             movie = getIntent().extras?.getSerializable("movie") as Movie
-
-            val thumbnail = getIntent().extras?.getString("poster_path")
-            val movieName = getIntent().extras?.getString("original_title")
-            val synopsis = getIntent().extras?.getString("overview")
-            val rating = getIntent().extras?.getString("vote_average")
-            val sateOfRelease = getIntent().extras?.getString("release_date")
+            movieId = movie?.id
+            val thumbnail = movie?.getPosterPath()
+            val movieName = movie?.original_title
+            val synopsis = movie?.overview
+            val rating = movie?.vote_average.toString()
+            val sateOfRelease = movie?.release_date
 
             try {
                 Glide.with(this)
@@ -133,7 +137,7 @@ class DetailActivity : AppCompatActivity() {
             userRating.text = rating
             releaseDate.text = sateOfRelease
 
-        } else {
+        } catch (e: Exception) {
             Toast.makeText(this, "No API Data", Toast.LENGTH_SHORT).show()
         }
     }

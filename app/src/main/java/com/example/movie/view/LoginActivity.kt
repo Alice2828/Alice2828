@@ -1,9 +1,7 @@
 package com.example.movie.view
 
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -19,7 +17,6 @@ import com.example.movie.view_model.LoginViewModel
 import com.example.movie.view_model.ViewModelProviderFactory
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.invoke
 import java.lang.reflect.Type
 import kotlin.Exception
 
@@ -63,9 +60,7 @@ class LoginActivity : AppCompatActivity() {
         }
         login.setOnClickListener {
             loginViewModel.makeToken(email.text.toString(), password.text.toString())
-
         }
-
     }
 
     private fun check() {
