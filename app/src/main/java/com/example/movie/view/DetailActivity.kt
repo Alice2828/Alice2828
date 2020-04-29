@@ -19,6 +19,7 @@ import com.example.movie.view_model.DetailViewModel
 import com.example.movie.view_model.ViewModelProviderFactory
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.firebase.analytics.FirebaseAnalytics
 import java.lang.Exception
 
 class DetailActivity : AppCompatActivity() {
@@ -33,10 +34,12 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private var movie: Movie? = null
     private var movieId: Int? = null
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
         val viewModelProviderFactory = ViewModelProviderFactory(context = this)
         detailViewModel =
             ViewModelProvider(this, viewModelProviderFactory).get(DetailViewModel::class.java)
@@ -55,6 +58,9 @@ class DetailActivity : AppCompatActivity() {
                     if (result.likeInt == 1 || result.likeInt == 11) {
                         toolbar.menu.findItem(R.id.favourite).icon =
                             getDrawable(R.drawable.ic_favorite_liked)
+                        val bundle = Bundle()
+                        bundle.putString("my_message", R.id.favourite.toString())
+                        firebaseAnalytics.logEvent("countOfLike", bundle)
                     } else {
                         toolbar.menu.findItem(R.id.favourite).icon =
                             getDrawable(R.drawable.ic_favorite_border)
