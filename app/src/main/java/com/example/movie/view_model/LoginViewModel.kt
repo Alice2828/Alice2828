@@ -34,7 +34,6 @@ class LoginViewModel(private val context: Context) : ViewModel(), CoroutineScope
         launch {
             try {
                 val response = RetrofitService.getPostApi()
-
                     .getRequestTokenCorountine(BuildConfig.THE_MOVIE_DB_API_TOKEN)
                 if (response.isSuccessful) {
                     requestToken = response.body()?.requestToken.toString()

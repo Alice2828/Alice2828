@@ -37,9 +37,7 @@ class MainActivity : AppCompatActivity() {
     private var fragmentLike: Fragment = LikeFragment()
     private var fragmentProfile: Fragment = ProfileFragment()
     private var list: MutableList<Fragment> = ArrayList()
-
-    private  lateinit var firebaseAnalytics:FirebaseAnalytics
-
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
     private lateinit var movie: Movie
     private var mRegistrationBroadcastReceiver: BroadcastReceiver? = null
 
@@ -65,7 +63,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_page)
@@ -85,11 +82,6 @@ class MainActivity : AppCompatActivity() {
                     movie = Singleton.getMovie() as Movie
                     showNotification(title, message, movie)
 
-                }
-                if (intent?.hasExtra("movie") as Boolean) {
-                    val intentDetail = Intent(applicationContext, DetailActivity::class.java)
-                    intentDetail.putExtra("movie", intent.extras?.getSerializable("movie") as Movie)
-                    startActivity(intentDetail)
                 }
             }
         }
