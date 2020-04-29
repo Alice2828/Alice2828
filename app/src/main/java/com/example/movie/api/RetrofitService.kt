@@ -119,5 +119,4 @@ interface PostApi {
         @Query("api_key") apiKey: String,
         @Body body: JsonObject
     ): Response<JsonObject>
-
 }
