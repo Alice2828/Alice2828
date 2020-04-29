@@ -73,7 +73,6 @@ class LoginActivity : AppCompatActivity() {
             firebaseAnalytics.logEvent("Login_button", param)
             loginViewModel.makeToken(email.text.toString(), password.text.toString())
         }
-
     }
 
     private fun check() {
