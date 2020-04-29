@@ -148,7 +148,6 @@ class MainActivity : AppCompatActivity() {
 
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
         val channelId = "Channel"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel =
@@ -159,7 +158,6 @@ class MainActivity : AppCompatActivity() {
             notificationChannel.enableVibration(true)
             notificationChannel.setShowBadge(true)
             notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-
             notificationManager.createNotificationChannel(notificationChannel)
         }
         val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
@@ -188,7 +186,6 @@ class MainActivity : AppCompatActivity() {
     fun getExpandedDesign(): RemoteViews {
         val remoteViews =
             RemoteViews(applicationContext.packageName, R.layout.notification_exp)
-
         val resultIntent = Intent(this, DetailActivity::class.java)
         resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         resultIntent.putExtra("movie", movie)
@@ -199,7 +196,6 @@ class MainActivity : AppCompatActivity() {
 
         val pendingIntent: PendingIntent =
             stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
-
         remoteViews.setOnClickPendingIntent(R.id.messageExp, pendingIntent)
         return remoteViews
     }
