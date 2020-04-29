@@ -45,6 +45,7 @@ class ProfileFragment : Fragment() {
     private var selectedPhotoFile: File? = null
     val REQUEST_TAKE_PHOTO=1
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
