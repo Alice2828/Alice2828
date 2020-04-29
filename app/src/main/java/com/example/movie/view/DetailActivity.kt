@@ -1,13 +1,9 @@
 package com.example.movie.view
 
-import android.app.KeyguardManager
-import android.content.Context
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -114,7 +110,7 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun initIntents() {
-        val intent = intent
+      //  val intent = intent
         try {
             movie = getIntent().extras?.getSerializable("movie") as Movie
             movieId = movie?.id

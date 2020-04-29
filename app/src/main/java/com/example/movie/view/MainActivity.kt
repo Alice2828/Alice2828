@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.RingtoneManager
 import android.os.Build
@@ -170,7 +169,8 @@ class MainActivity : AppCompatActivity() {
             .setSound(soundUri)
             .setContentTitle(title)
             .setContentText(message)
-            .setCustomContentView(getCollapsedDesign(title, message))
+            .setCustomContentView(getDesign(title, message))
+            .setCustomBigContentView(getExpandedDesign())
             .setContentIntent(pendingIntent)
             .setOngoing(true)
             .setAutoCancel(true)
@@ -178,10 +178,29 @@ class MainActivity : AppCompatActivity() {
         notificationManager.notify(1, notificationBuilder.build())
     }
 
-    private fun getCollapsedDesign(title: String?, message: String?): RemoteViews {
+    private fun getDesign(title: String?, message: String?): RemoteViews {
         val remoteViews = RemoteViews(applicationContext.packageName, R.layout.notification_small)
         remoteViews.setTextViewText(R.id.title, title)
         remoteViews.setTextViewText(R.id.message, message)
+        return remoteViews
+    }
+
+    fun getExpandedDesign(): RemoteViews {
+        val remoteViews =
+            RemoteViews(applicationContext.packageName, R.layout.notification_exp)
+
+        val resultIntent = Intent(this, DetailActivity::class.java)
+        resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        resultIntent.putExtra("movie", movie)
+
+        val stackBuilder: TaskStackBuilder = TaskStackBuilder.create(this)
+        stackBuilder.addParentStack(DetailActivity::class.java)
+        stackBuilder.addNextIntent(resultIntent)
+
+        val pendingIntent: PendingIntent =
+            stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        remoteViews.setOnClickPendingIntent(R.id.messageExp, pendingIntent)
         return remoteViews
     }
 }
