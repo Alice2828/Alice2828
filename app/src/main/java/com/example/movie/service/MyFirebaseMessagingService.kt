@@ -9,7 +9,6 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
-    private var movie: Movie? = Singleton.getMovie()
     override fun onNewToken(s: String) {
         Log.e("NEW_TOKEN", s)
     }
@@ -27,7 +26,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val pushNotification = Intent("push")
         pushNotification.putExtra("title", title)
         pushNotification.putExtra("message", body)
-        pushNotification.putExtra("movie", movie)
         LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification)
     }
 }

@@ -12,6 +12,7 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.RemoteViews
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.fragment.app.Fragment
@@ -20,6 +21,7 @@ import androidx.viewpager.widget.PagerAdapter
 import com.example.movie.R
 import com.example.movie.adapter.SlidePagerAdapter
 import com.example.movie.model.Movie
+import com.example.movie.model.Singleton
 import com.example.movie.myFragments.LikeFragment
 import com.example.movie.myFragments.MainFragment
 import com.example.movie.myFragments.ProfileFragment
@@ -76,9 +78,14 @@ class MainActivity : AppCompatActivity() {
                 if (intent?.action == "push") {
                     val message = intent.getStringExtra("message")
                     val title = intent.getStringExtra("title")
-                    movie = intent.getSerializableExtra("movie") as Movie
+                    movie = Singleton.getMovie() as Movie
                     showNotification(title, message, movie)
 
+                }
+                if (intent?.hasExtra("movie") as Boolean) {
+                    val intentDetail = Intent(applicationContext, DetailActivity::class.java)
+                    intentDetail.putExtra("movie", intent.extras?.getSerializable("movie") as Movie)
+                    startActivity(intentDetail)
                 }
             }
         }
@@ -107,6 +114,7 @@ class MainActivity : AppCompatActivity() {
             }
             false
         }
+
     }
 
     private fun bindView() {
@@ -116,10 +124,10 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("WrongConstant")
     private fun showNotification(title: String?, message: String?, movie: Movie) {
+
         val resultIntent = Intent(this, DetailActivity::class.java)
         resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         resultIntent.putExtra("movie", movie)
-
 
         val stackBuilder: TaskStackBuilder = TaskStackBuilder.create(this)
         stackBuilder.addParentStack(DetailActivity::class.java)
@@ -128,8 +136,6 @@ class MainActivity : AppCompatActivity() {
         val pendingIntent: PendingIntent =
             stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
 
-//        val pendingIntent =
-//            PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_ONE_SHOT)
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -137,35 +143,34 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel =
                 NotificationChannel(channelId, "FCM", NotificationManager.IMPORTANCE_MAX)
-            notificationChannel.setDescription("title")
+            notificationChannel.description = "title"
             notificationChannel.enableLights(true)
-            notificationChannel.setLightColor(Color.RED)
+            notificationChannel.lightColor = Color.RED
             notificationChannel.enableVibration(true)
+            notificationChannel.setShowBadge(true)
+            notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
 
             notificationManager.createNotificationChannel(notificationChannel)
         }
         val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val longText = "To have a notification appear in an expanded view, " +
-                "first create a NotificationCompat.Builder object " +
-                "with the normal view options you want. " +
-                "Next, call Builder.setStyle() with an " +
-                "expanded layout object as its argument.";
 
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSound(soundUri)
             .setContentTitle(title)
             .setContentText(message)
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
-            .setWhen(System.currentTimeMillis())
-            .setAutoCancel(true)
-            .setSound(soundUri)
-            .setOnlyAlertOnce(true)
-            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .setPriority(Notification.PRIORITY_MAX)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(longText))
+            .setCustomContentView(getCollapsedDesign(title, message))
             .setContentIntent(pendingIntent)
-
+            .setOngoing(true)
+            .setAutoCancel(true)
 
         notificationManager.notify(1, notificationBuilder.build())
+    }
+
+    private fun getCollapsedDesign(title: String?, message: String?): RemoteViews {
+        val remoteViews = RemoteViews(applicationContext.packageName, R.layout.notification_small)
+        remoteViews.setTextViewText(R.id.title, title)
+        remoteViews.setTextViewText(R.id.message, message)
+        return remoteViews
     }
 }

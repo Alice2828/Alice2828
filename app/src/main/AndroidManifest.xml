@@ -35,7 +35,7 @@
         <activity
             android:name=".view.MapsActivity"
             android:label="@string/title_activity_maps"
-            android:theme="@style/AppTheme.FullScreen" ></activity>
+            android:theme="@style/AppTheme.FullScreen" />
         <activity
             android:name=".view.RegistrationActivity"
             android:theme="@style/AppTheme.FullScreen" />
@@ -49,12 +49,11 @@
             </intent-filter>
 
         </activity>
-        <activity
-            android:name=".view.MainActivity"
-            android:label="@string/main_name" />
+
         <activity
             android:name=".view.LoginActivity"
-            android:theme="@style/AppTheme.FullScreen">
+            android:theme="@style/AppTheme.FullScreen"
+            android:noHistory="true" >
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -81,9 +80,9 @@
             </intent-filter>
         </service>
 
-<!--        <meta-data-->
-<!--            android:name="firebase_messaging_auto_init_enabled"-->
-<!--            android:value="false" />-->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/icon" />
         <meta-data
             android:name="firebase_analytics_collection_enabled"
             android:value="false" />
