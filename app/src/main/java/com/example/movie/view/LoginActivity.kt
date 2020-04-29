@@ -17,6 +17,7 @@ import com.example.movie.model.Singleton
 import com.example.movie.model.User
 import com.example.movie.view_model.LoginViewModel
 import com.example.movie.view_model.ViewModelProviderFactory
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.invoke
@@ -32,10 +33,13 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var preferences: SharedPreferences
     private var data: String? = null
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
         val viewModelProviderFactory = ViewModelProviderFactory(context = this)
         loginViewModel =
             ViewModelProvider(this, viewModelProviderFactory).get(LoginViewModel::class.java)
@@ -58,6 +62,7 @@ class LoginActivity : AppCompatActivity() {
             }
         })
         register.setOnClickListener {
+
             val intent = Intent(this, RegistrationActivity::class.java)
             startActivity(intent)
         }
@@ -66,7 +71,10 @@ class LoginActivity : AppCompatActivity() {
 //                Context.CONNECTIVITY_SERVICE
 //            )as ConnectivityManager
 //            if (connectivity) {
-                loginViewModel.makeToken(email.text.toString(), password.text.toString())
+            val bundle = Bundle()
+            bundle.putString("my_message", stayLogged().toString())
+            firebaseAnalytics.logEvent("login_click_event", bundle)
+            loginViewModel.makeToken(email.text.toString(), password.text.toString())
            // }
         }
 
@@ -109,8 +117,8 @@ class LoginActivity : AppCompatActivity() {
             val json: String? = preferences.getString("user", null)
             val type: Type = object : TypeToken<User>() {}.type
             val user = gsonGen.fromJson<User>(json, type)
-
             openApp(user)
+
         } catch (e: Exception) {
         }
     }

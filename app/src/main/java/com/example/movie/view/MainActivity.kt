@@ -11,6 +11,7 @@ import com.example.movie.myFragments.MainFragment
 import com.example.movie.myFragments.ProfileFragment
 import com.example.movie.pager.LockableViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.analytics.FirebaseAnalytics
 
 class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigationView: BottomNavigationView
@@ -20,11 +21,13 @@ class MainActivity : AppCompatActivity() {
     private var fragmentLike: Fragment = LikeFragment()
     private var fragmentProfile: Fragment = ProfileFragment()
     private var list: MutableList<Fragment> = ArrayList()
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_page)
         bindView()
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
         list.add(fragmentMain)
         list.add(fragmentLike)
         list.add(fragmentProfile)
@@ -37,20 +40,29 @@ class MainActivity : AppCompatActivity() {
                 R.id.home -> {
                     pager.setCurrentItem(0, false)
                     supportActionBar?.title = "Кино ТВ - Онлайн Фильмы"
+                    val bundle = Bundle()
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, R.id.home.toString())
+                    firebaseAnalytics.logEvent("homeFragment", bundle)
                 }
                 R.id.like_posts -> {
                     pager.setCurrentItem(1, false)
                     supportActionBar?.title = "Закладки"
-
+                    val bundle = Bundle()
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, R.id.like_posts.toString())
+                    firebaseAnalytics.logEvent("likeFragment", bundle)
                 }
                 R.id.about -> {
                     pager.setCurrentItem(2, false)
                     supportActionBar?.title = "Профиль"
-
+                    val bundle = Bundle()
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, R.id.about.toString())
+                    firebaseAnalytics.logEvent("profileFragment", bundle)
                 }
             }
             false
         }
+
+
     }
 
     private fun bindView() {
@@ -58,4 +70,5 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView = findViewById(R.id.bottom_navigation)
 
     }
+
 }
