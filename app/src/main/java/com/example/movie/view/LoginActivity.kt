@@ -1,9 +1,7 @@
 package com.example.movie.view
 
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -22,7 +20,6 @@ import com.example.movie.view_model.ViewModelProviderFactory
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.invoke
 import java.lang.reflect.Type
 import kotlin.Exception
 
@@ -35,11 +32,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var preferences: SharedPreferences
     private var data: String? = null
-
     private lateinit var firebaseAnalytics: FirebaseAnalytics
-
     private lateinit var cinemaMapViewModel: CinemaMapViewModel
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,15 +68,10 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
         login.setOnClickListener {
-//            var connectivity = application.getSystemService(
-//                Context.CONNECTIVITY_SERVICE
-//            )as ConnectivityManager
-//            if (connectivity) {
             val param = Bundle()
             param.putString(FirebaseAnalytics.Param.METHOD, "google")
             firebaseAnalytics.logEvent("Login_button", param)
             loginViewModel.makeToken(email.text.toString(), password.text.toString())
-           // }
         }
     }
 
@@ -123,8 +112,8 @@ class LoginActivity : AppCompatActivity() {
             val json: String? = preferences.getString("user", null)
             val type: Type = object : TypeToken<User>() {}.type
             val user = gsonGen.fromJson<User>(json, type)
-            openApp(user)
 
+            openApp(user)
         } catch (e: Exception) {
         }
     }
@@ -182,7 +171,7 @@ class LoginActivity : AppCompatActivity() {
         )
         list.add(cinema)
         cinema = Cinema(
-            5,
+            6,
             "LUMIERA Cinema",
             "г. Алматы, пр. Абылай хана, 62, «Арбат»",
             43.262118,
