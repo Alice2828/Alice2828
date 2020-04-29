@@ -13,8 +13,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.movie.R
+import com.example.movie.model.Cinema
 import com.example.movie.model.Singleton
 import com.example.movie.model.User
+import com.example.movie.view_model.CinemaMapViewModel
 import com.example.movie.view_model.LoginViewModel
 import com.example.movie.view_model.ViewModelProviderFactory
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -33,7 +35,10 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var preferences: SharedPreferences
     private var data: String? = null
+
     private lateinit var firebaseAnalytics: FirebaseAnalytics
+
+    private lateinit var cinemaMapViewModel: CinemaMapViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +46,8 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
         val viewModelProviderFactory = ViewModelProviderFactory(context = this)
+        cinemaMapViewModel = ViewModelProvider(this, viewModelProviderFactory).get(CinemaMapViewModel::class.java)
+        cinemaMapViewModel.addCinemaListToRoom(generateList())
         loginViewModel =
             ViewModelProvider(this, viewModelProviderFactory).get(LoginViewModel::class.java)
         bindView()
@@ -139,6 +146,90 @@ class LoginActivity : AppCompatActivity() {
                 intent
             )
         }
+    }
+    fun generateList():List<Cinema>{
+        val list: MutableList<Cinema> = ArrayList()
+        var cinema = Cinema(
+            1,
+            "Kinopark 11 IMAX Esentai",
+            "проспект Аль-Фараби, 77/8 Esentai Mall, Алматы 050040",
+            43.2184733,
+            76.92785965209825
+        )
+        list.add(cinema)
+        cinema = Cinema(
+            2,
+            "Chaplin Mega Alma-Ata",
+            "г. Алматы, Розыбакиева, 263, ТРЦ MEGA Alma-Ata, 2 этаж",
+            43.264039,
+            76.929475
+        )
+        list.add(cinema)
+        cinema = Cinema(
+            3,
+            "Bekmambetov Cinema",
+            "г. Алматы пр. Абая, 109, МФК «Globus»",
+            43.240263,
+            76.905654
+        )
+        list.add(cinema)
+        cinema = Cinema(
+            4,
+            "Киноцентр Арман (ТРЦ Asia Park)",
+            "г. Алматы, пр. Райымбека 514а, уг. ул. Саина, Торгово-развлекательный центр «Asia Park»",
+            43.242221,
+            76.957644
+        )
+        list.add(cinema)
+        cinema = Cinema(
+            5,
+            "LUMIERA Cinema",
+            "г. Алматы, пр. Абылай хана, 62, «Арбат»",
+            43.262118,
+            76.941373
+        )
+        list.add(cinema)
+        cinema = Cinema(
+            6,
+            "CINEMAX Dostyk Multiplex / Dolby Atmos 3D",
+            "г. Алматы, Самал-2, пр. Достык 111, уг. ул. Жолдасбекова, ТРЦ Dostyk Plaza",
+            43.233015,
+            76.955765
+        )
+        list.add(cinema)
+        cinema = Cinema(
+            7,
+            "Кинотеатр Kinoplexx Sary Arka 3D (г. Алматы)",
+            "г. Алматы, ул. Алтынсарина, 24",
+            43.228496,
+            76.857868
+        )
+        list.add(cinema)
+        cinema = Cinema(
+            8,
+            "ТТИ «Алатау» 3D (г. Алматы)",
+            "г. Алматы, микрорайон Нұркент, 6.",
+            43.260613,
+            76.820057
+        )
+        list.add(cinema)
+        cinema = Cinema(
+            9,
+            "Kinopark 8 Moskva (г. Алматы)",
+            "г. Алматы, пр. Абая, уг. Алтынсарина, ТРЦ MOSKVA Metropolitan",
+            43.226886,
+            76.864135
+        )
+        list.add(cinema)
+        cinema = Cinema(
+            10,
+            "Кинотеатр «Цезарь 3D»",
+            "г. Алматы, ул. Фурманова, 50, уг. ул. Гоголя",
+            43.261020,
+            76.946446
+        )
+        list.add(cinema)
+        return list
     }
 }
 
