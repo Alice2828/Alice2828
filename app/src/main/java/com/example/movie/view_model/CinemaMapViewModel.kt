@@ -27,6 +27,8 @@ class CinemaMapViewModel(context:Context
     fun addCinema(cinema: Cinema){
         cinemaDao.insert(cinema)
     }
+
+
 }
 
 
