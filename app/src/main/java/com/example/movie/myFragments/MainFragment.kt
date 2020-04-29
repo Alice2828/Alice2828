@@ -54,7 +54,7 @@ class MainFragment : Fragment() {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.activity_main, container, false) as ViewGroup
         bindViews()
-        initViewMod()
+        initViewModel()
         relativeLayout?.setOnClickListener {
             intentFun()
         }
@@ -155,7 +155,7 @@ class MainFragment : Fragment() {
         bigPicCard()
     }
 
-    private fun initViewMod() {
+    private fun initViewModel() {
         sessionId = Singleton.getSession()
         accountId = Singleton.getAccountId()
         val viewModelProviderFactory = ViewModelProviderFactory(context = this.activity as Context)

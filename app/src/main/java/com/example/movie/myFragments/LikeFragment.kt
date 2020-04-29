@@ -109,7 +109,6 @@ class LikeFragment : Fragment() {
             when (result) {
                 is LikeListViewModel.State.ShowLoading -> {
                     swipeRefreshLayout.isRefreshing = true
-
                 }
                 is LikeListViewModel.State.HideLoading -> {
                 }

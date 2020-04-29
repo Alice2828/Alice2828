@@ -9,7 +9,7 @@ import retrofit2.http.*
 
 object RetrofitService {
 
-    const val BASE_URL = "https://api.themoviedb.org/3/"
+    private const val BASE_URL = "https://api.themoviedb.org/3/"
 
     fun getPostApi(): PostApi {
         val retrofit = Retrofit.Builder()
@@ -57,17 +57,29 @@ interface PostApi {
 
 
     @POST("authentication/token/validate_with_login")
-    suspend fun loginCoroutune(@Query("api_key") apiKey: String, @Body body: JsonObject): Response<JsonObject>
+    suspend fun loginCoroutune(
+        @Query("api_key") apiKey: String,
+        @Body body: JsonObject
+    ): Response<JsonObject>
 
     @POST("authentication/session/new")
-    suspend fun getSessionCoroutine(@Query("api_key") apiKey: String, @Body body: JsonObject): Response<JsonObject>
+    suspend fun getSessionCoroutine(
+        @Query("api_key") apiKey: String,
+        @Body body: JsonObject
+    ): Response<JsonObject>
 
     @GET("account")
-    suspend fun getAccountCoroutine(@Query("api_key") apiKey: String, @Query("session_id") sessionId: String): Response<JsonObject>
+    suspend fun getAccountCoroutine(
+        @Query("api_key") apiKey: String,
+        @Query("session_id") sessionId: String
+    ): Response<JsonObject>
 
 
     @GET("account")
-    fun getAccount(@Query("api_key") apiKey: String, @Query("session_id") sessionId: String): Call<JsonObject>
+    fun getAccount(
+        @Query("api_key") apiKey: String,
+        @Query("session_id") sessionId: String
+    ): Call<JsonObject>
 
     @POST("account/{account_id}/favorite")
     fun rate(
@@ -93,6 +105,9 @@ interface PostApi {
 
     
 
-    @DELETE("authentication/session")
-    suspend fun deleteSessionCoroutine(@Query("api_key") apiKey: String, @Body body: JsonObject): Response<JsonObject>
+    @HTTP(method = "DELETE", path = "authentication/session", hasBody = true)
+    suspend fun deleteSessionCoroutine(
+        @Query("api_key") apiKey: String,
+        @Body body: JsonObject
+    ): Response<JsonObject>
 }

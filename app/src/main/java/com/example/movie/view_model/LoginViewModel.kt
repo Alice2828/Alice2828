@@ -7,6 +7,9 @@ import com.example.movie.BuildConfig
 import com.example.movie.api.RequestToken
 import com.example.movie.api.RetrofitService
 import com.example.movie.api.Session
+import com.example.movie.database.CinemaDao
+import com.example.movie.database.CinemaDatabase
+import com.example.movie.model.Cinema
 import com.example.movie.model.MyAccount
 import com.example.movie.model.User
 import com.google.gson.Gson
@@ -17,6 +20,7 @@ import kotlin.coroutines.CoroutineContext
 class LoginViewModel(private val context: Context) : ViewModel(), CoroutineScope {
     private val job = Job()
     var state = MutableLiveData<State>()
+    private val cinemaDao: CinemaDao = CinemaDatabase.getDatabase(context).cinemaDao()
     private lateinit var requestToken: String
     private lateinit var newRequestToken: String
     private var json: String = ""
@@ -32,12 +36,18 @@ class LoginViewModel(private val context: Context) : ViewModel(), CoroutineScope
     fun makeToken(emailValue: String, passwordValue: String) {
         state.value = State.ShowLoading
         launch {
-            val response = RetrofitService.getPostApi()
-                .getRequestTokenCorountine(BuildConfig.THE_MOVIE_DB_API_TOKEN)
-            if (response.isSuccessful) {
-                requestToken = response.body()?.requestToken.toString()
-                responseToken(emailValue, passwordValue)
-            } else {
+            try {
+                val response = RetrofitService.getPostApi()
+
+                    .getRequestTokenCorountine(BuildConfig.THE_MOVIE_DB_API_TOKEN)
+                if (response.isSuccessful) {
+                    requestToken = response.body()?.requestToken.toString()
+                    responseToken(emailValue, passwordValue)
+                } else {
+                    state.value = State.BadResult
+                    state.value = State.HideLoading
+                }
+            } catch (e: Exception) {
                 state.value = State.BadResult
                 state.value = State.HideLoading
             }
@@ -107,6 +117,14 @@ class LoginViewModel(private val context: Context) : ViewModel(), CoroutineScope
             }
         }
         state.value = State.HideLoading
+    }
+
+    fun getCinemaList(): List<Cinema> {
+        return cinemaDao.getAllCinemas()
+    }
+
+    fun addCinemaListToRoom(list: List<Cinema>) {
+        cinemaDao.insertAllCinemas(list)
     }
 
     sealed class State {

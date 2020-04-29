@@ -14,11 +14,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.movie.R
-import com.example.movie.model.*
+import com.example.movie.model.Movie
 import com.example.movie.view_model.DetailViewModel
 import com.example.movie.view_model.ViewModelProviderFactory
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.firebase.analytics.FirebaseAnalytics
 import java.lang.Exception
 
 class DetailActivity : AppCompatActivity() {
@@ -33,10 +34,12 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private var movie: Movie? = null
     private var movieId: Int? = null
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
         val viewModelProviderFactory = ViewModelProviderFactory(context = this)
         detailViewModel =
             ViewModelProvider(this, viewModelProviderFactory).get(DetailViewModel::class.java)
@@ -73,11 +76,13 @@ class DetailActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here.
         if (item.itemId == R.id.favourite) {
-
             val drawable: Drawable = item.icon.current
             if (drawable.constantState?.equals(getDrawable(R.drawable.ic_favorite_border)?.constantState) == true) {
                 item.icon = getDrawable(R.drawable.ic_favorite_liked)
                 likeMovie(true)
+                val bundle = Bundle()
+                bundle.putString("my_message", "movieLike")
+                firebaseAnalytics.logEvent("countOfLike", bundle)
             } else {
                 item.icon = getDrawable(R.drawable.ic_favorite_border)
                 likeMovie(false)
@@ -104,16 +109,15 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun initIntents() {
-        val intent = intent
-        if (intent.hasExtra("original_title")) {
-            movieId = getIntent().extras?.getInt("movie_id")
-            movie = getIntent().extras?.getSerializable("movie") as Movie
-
-            val thumbnail = getIntent().extras?.getString("poster_path")
-            val movieName = getIntent().extras?.getString("original_title")
-            val synopsis = getIntent().extras?.getString("overview")
-            val rating = getIntent().extras?.getString("vote_average")
-            val sateOfRelease = getIntent().extras?.getString("release_date")
+        //  val intent = intent
+        try {
+            movie = intent.extras?.getSerializable("movie") as Movie
+            movieId = movie?.id
+            val thumbnail = movie?.getPosterPath()
+            val movieName = movie?.original_title
+            val synopsis = movie?.overview
+            val rating = movie?.vote_average.toString()
+            val sateOfRelease = movie?.release_date
 
             try {
                 Glide.with(this)
@@ -122,7 +126,6 @@ class DetailActivity : AppCompatActivity() {
                     .error(R.drawable.loading)
                     .into(imageView)
             } catch (e: Exception) {
-
                 Glide.with(this)
                     .load(R.drawable.loading)
                     .into(imageView)
@@ -133,7 +136,7 @@ class DetailActivity : AppCompatActivity() {
             userRating.text = rating
             releaseDate.text = sateOfRelease
 
-        } else {
+        } catch (e: Exception) {
             Toast.makeText(this, "No API Data", Toast.LENGTH_SHORT).show()
         }
     }
@@ -151,7 +154,6 @@ class DetailActivity : AppCompatActivity() {
         collapse.title = " "
         val appBarLayout: AppBarLayout = findViewById(R.id.appbar)
         appBarLayout.setExpanded(true)
-
         appBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var isShow = false
             var scrollRange = -1
