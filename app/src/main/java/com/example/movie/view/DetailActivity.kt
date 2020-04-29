@@ -14,12 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.movie.R
-
-import com.example.movie.adapter.LikeMoviesAdapter
-import com.example.movie.model.*
-
 import com.example.movie.model.Movie
-
 import com.example.movie.view_model.DetailViewModel
 import com.example.movie.view_model.ViewModelProviderFactory
 import com.google.android.material.appbar.AppBarLayout
@@ -63,8 +58,7 @@ class DetailActivity : AppCompatActivity() {
                     if (result.likeInt == 1 || result.likeInt == 11) {
                         toolbar.menu.findItem(R.id.favourite).icon =
                             getDrawable(R.drawable.ic_favorite_liked)
-                    }
-                    else {
+                    } else {
                         toolbar.menu.findItem(R.id.favourite).icon =
                             getDrawable(R.drawable.ic_favorite_border)
                     }
@@ -115,9 +109,9 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun initIntents() {
-      //  val intent = intent
+        //  val intent = intent
         try {
-            movie = getIntent().extras?.getSerializable("movie") as Movie
+            movie = intent.extras?.getSerializable("movie") as Movie
             movieId = movie?.id
             val thumbnail = movie?.getPosterPath()
             val movieName = movie?.original_title

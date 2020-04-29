@@ -14,7 +14,6 @@ import com.example.movie.R
 import com.example.movie.model.Cinema
 import com.example.movie.model.Singleton
 import com.example.movie.model.User
-import com.example.movie.view_model.CinemaMapViewModel
 import com.example.movie.view_model.LoginViewModel
 import com.example.movie.view_model.ViewModelProviderFactory
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -33,17 +32,18 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var preferences: SharedPreferences
     private var data: String? = null
     private lateinit var firebaseAnalytics: FirebaseAnalytics
-    private lateinit var cinemaMapViewModel: CinemaMapViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
         val viewModelProviderFactory = ViewModelProviderFactory(context = this)
-        cinemaMapViewModel = ViewModelProvider(this, viewModelProviderFactory).get(CinemaMapViewModel::class.java)
-        cinemaMapViewModel.addCinemaListToRoom(generateList())
+
         loginViewModel =
             ViewModelProvider(this, viewModelProviderFactory).get(LoginViewModel::class.java)
+
+        loginViewModel.addCinemaListToRoom(generateList())
         bindView()
         stayLogged()
         loginViewModel.state.observe(this, Observer {
@@ -136,7 +136,8 @@ class LoginActivity : AppCompatActivity() {
             )
         }
     }
-    fun generateList():List<Cinema>{
+
+    private fun generateList(): List<Cinema> {
         val list: MutableList<Cinema> = ArrayList()
         var cinema = Cinema(
             1,
