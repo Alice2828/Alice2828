@@ -173,7 +173,7 @@ class LoginActivity : AppCompatActivity() {
         )
         list.add(cinema)
         cinema = Cinema(
-            6,
+            5,
             "LUMIERA Cinema",
             "г. Алматы, пр. Абылай хана, 62, «Арбат»",
             43.262118,
