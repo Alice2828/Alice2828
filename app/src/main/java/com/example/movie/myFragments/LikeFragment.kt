@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -21,7 +20,6 @@ import com.example.movie.adapter.LikeMoviesAdapter
 import com.example.movie.model.Movie
 import com.example.movie.view_model.LikeListViewModel
 import com.example.movie.view_model.ViewModelProviderFactory
-import com.google.firebase.analytics.FirebaseAnalytics
 
 class LikeFragment : Fragment() {
     private lateinit var relativeLayout: RelativeLayout
@@ -38,8 +36,6 @@ class LikeFragment : Fragment() {
     lateinit var movie: Movie
     private lateinit var likeListViewModel: LikeListViewModel
     private var rootView: View? = null
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

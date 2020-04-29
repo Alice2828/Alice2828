@@ -2,11 +2,9 @@ package com.example.movie.view_model
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
-
 import androidx.lifecycle.ViewModel
 import com.example.movie.BuildConfig
 import com.example.movie.api.RetrofitService
-import com.example.movie.model.Movie
 import com.example.movie.model.Singleton
 import com.google.gson.JsonObject
 import kotlinx.coroutines.CoroutineScope
@@ -44,8 +42,7 @@ class ProfileViewModel(
                     liveData.value = State.HideLoading
                     liveData.value = State.BadResult
                 }
-            }
-            catch(e:Exception){
+            } catch (e: Exception) {
                 liveData.value = State.HideLoading
                 liveData.value = State.BadResult
             }

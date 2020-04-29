@@ -87,19 +87,9 @@ class DetailViewModel(private val context: Context) : ViewModel(), CoroutineScop
             if (favourite) {
                 movie?.liked = 11
                 movieDao?.insert(movie)
-                Toast.makeText(
-                    context,
-                    "Movie has been added to favourites",
-                    Toast.LENGTH_LONG
-                ).show()
             } else {
                 movie?.liked = 10
                 movieDao?.insert(movie)
-                Toast.makeText(
-                    context,
-                    "Movie has been removed from favourites",
-                    Toast.LENGTH_LONG
-                ).show()
             }
         }
         liveData.value = State.HideLoading

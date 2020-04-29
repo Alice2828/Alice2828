@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     private var fragmentProfile: Fragment = ProfileFragment()
     private var list: MutableList<Fragment> = ArrayList()
 
-    private  lateinit var firebaseAnalytics:FirebaseAnalytics
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     private lateinit var movie: Movie
     private var mRegistrationBroadcastReceiver: BroadcastReceiver? = null
@@ -69,6 +69,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_page)
+
         FirebaseMessaging.getInstance().subscribeToTopic("weather")
             .addOnCompleteListener { task ->
                 var msg = "Subscribed"
@@ -85,11 +86,6 @@ class MainActivity : AppCompatActivity() {
                     movie = Singleton.getMovie() as Movie
                     showNotification(title, message, movie)
 
-                }
-                if (intent?.hasExtra("movie") as Boolean) {
-                    val intentDetail = Intent(applicationContext, DetailActivity::class.java)
-                    intentDetail.putExtra("movie", intent.extras?.getSerializable("movie") as Movie)
-                    startActivity(intentDetail)
                 }
             }
         }
@@ -186,7 +182,7 @@ class MainActivity : AppCompatActivity() {
         return remoteViews
     }
 
-    fun getExpandedDesign(): RemoteViews {
+    private fun getExpandedDesign(): RemoteViews {
         val remoteViews =
             RemoteViews(applicationContext.packageName, R.layout.notification_exp)
         val resultIntent = Intent(this, DetailActivity::class.java)

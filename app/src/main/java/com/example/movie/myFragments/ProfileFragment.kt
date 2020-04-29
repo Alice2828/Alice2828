@@ -41,8 +41,7 @@ class ProfileFragment : Fragment() {
     private lateinit var changeAvatarPhoto: Button
     private lateinit var avatarIm: ImageView
     private var photoPath: String? = null
-    val REQUEST_TAKE_PHOTO = 1
-
+    private val REQUEST_TAKE_PHOTO = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -76,6 +75,7 @@ class ProfileFragment : Fragment() {
         initViews()
         logout.setOnClickListener {
             profileListViewModel.deleteProfileSession()
+            logout()
         }
 
         changeAvatarPhoto.setOnClickListener {
@@ -84,17 +84,18 @@ class ProfileFragment : Fragment() {
         map.setOnClickListener {
             val intent = Intent(context, MapsActivity::class.java)
             startActivity(intent)
-
         }
     }
 
-    fun logout() {
+    private fun logout() {
         preferences = context?.getSharedPreferences("Username", 0) as SharedPreferences
         preferences.edit().clear().commit()
         preferences = context?.getSharedPreferences("Avatar", 0) as SharedPreferences
         preferences.edit().clear().commit()
         val intent = Intent(activity, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
+        activity?.finish()
     }
 
     private fun bindView(rootView: ViewGroup) {
@@ -112,10 +113,12 @@ class ProfileFragment : Fragment() {
         val authorizedEmail = Singleton.getUserName() + "@mail.ru"
         nameInfo.text = authorizedName
         emailInfo.text = authorizedEmail
-        if ((this.activity as Context).getSharedPreferences("Username", 0).contains("uri")) {
+        try {
             preferences = (this.activity as Context).getSharedPreferences("Avatar", 0)
             val pathPhotoAvatar = preferences.getString("uri", null)
             avatarIm.setImageURI(Uri.parse(pathPhotoAvatar))
+        } catch (e: Exception) {
+
         }
     }
 
@@ -165,7 +168,7 @@ class ProfileFragment : Fragment() {
 
     private fun openCamera() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (intent.resolveActivity(context!!.packageManager) != null) {
+        if (intent.resolveActivity((this.activity as Context).packageManager) != null) {
             var photoFile: File? = null
             try {
                 photoFile = createImageFile()
@@ -197,7 +200,7 @@ class ProfileFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        preferences = context!!.getSharedPreferences("Avatar", 0)
+        preferences = (this.activity as Context).getSharedPreferences("Avatar", 0)
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_TAKE_PHOTO) {
             preferences.edit().clear().commit()
             preferences.edit().putString("uri", photoPath).commit()
@@ -207,7 +210,7 @@ class ProfileFragment : Fragment() {
 
         } else if (requestCode == RequestConstants.GALLERY) {
             if (data?.data == null) {
-                preferences = context!!.getSharedPreferences("Avatar", 0)
+                preferences = (this.activity as Context).getSharedPreferences("Avatar", 0)
                 val pathPhotoAvatar = preferences.getString("uri", null)
                 avatarIm.setImageURI(Uri.parse(pathPhotoAvatar))
                 Toast.makeText(
@@ -224,7 +227,6 @@ class ProfileFragment : Fragment() {
                     .show()
             }
         }
-
     }
 
     override fun onRequestPermissionsResult(
@@ -234,17 +236,17 @@ class ProfileFragment : Fragment() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == RequestConstants.AVATAR_CAMERA_PERMISSION_REQUEST) {
-            if (grantResults.size != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openCamera()
             }
             return
         } else if (requestCode == RequestConstants.AVATAR_GALLERY_PERMISSION_REQUEST) {
-            if (grantResults.size != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openGallery()
             }
             return
         } else if (requestCode == RequestConstants.AVATAR_PERMISSION_REQUEST) {
-            if (grantResults.size != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 imageChooserDialog()
             }
         }
