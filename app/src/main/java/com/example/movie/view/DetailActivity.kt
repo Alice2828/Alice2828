@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.movie.R
+import com.example.movie.adapter.LikeMoviesAdapter
 import com.example.movie.model.*
 import com.example.movie.view_model.DetailViewModel
 import com.example.movie.view_model.ViewModelProviderFactory
@@ -58,10 +59,8 @@ class DetailActivity : AppCompatActivity() {
                     if (result.likeInt == 1 || result.likeInt == 11) {
                         toolbar.menu.findItem(R.id.favourite).icon =
                             getDrawable(R.drawable.ic_favorite_liked)
-                        val bundle = Bundle()
-                        bundle.putString("my_message", R.id.favourite.toString())
-                        firebaseAnalytics.logEvent("countOfLike", bundle)
-                    } else {
+                    }
+                    else {
                         toolbar.menu.findItem(R.id.favourite).icon =
                             getDrawable(R.drawable.ic_favorite_border)
                     }
@@ -79,11 +78,13 @@ class DetailActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here.
         if (item.itemId == R.id.favourite) {
-
             val drawable: Drawable = item.icon.current
             if (drawable.constantState?.equals(getDrawable(R.drawable.ic_favorite_border)?.constantState) == true) {
                 item.icon = getDrawable(R.drawable.ic_favorite_liked)
                 likeMovie(true)
+                val bundle = Bundle()
+                bundle.putString("my_message", "movieLike")
+                firebaseAnalytics.logEvent("countOfLike", bundle)
             } else {
                 item.icon = getDrawable(R.drawable.ic_favorite_border)
                 likeMovie(false)
@@ -114,7 +115,6 @@ class DetailActivity : AppCompatActivity() {
         if (intent.hasExtra("original_title")) {
             movieId = getIntent().extras?.getInt("movie_id")
             movie = getIntent().extras?.getSerializable("movie") as Movie
-
             val thumbnail = getIntent().extras?.getString("poster_path")
             val movieName = getIntent().extras?.getString("original_title")
             val synopsis = getIntent().extras?.getString("overview")
@@ -128,7 +128,6 @@ class DetailActivity : AppCompatActivity() {
                     .error(R.drawable.loading)
                     .into(imageView)
             } catch (e: Exception) {
-
                 Glide.with(this)
                     .load(R.drawable.loading)
                     .into(imageView)
@@ -157,7 +156,6 @@ class DetailActivity : AppCompatActivity() {
         collapse.title = " "
         val appBarLayout: AppBarLayout = findViewById(R.id.appbar)
         appBarLayout.setExpanded(true)
-
         appBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var isShow = false
             var scrollRange = -1

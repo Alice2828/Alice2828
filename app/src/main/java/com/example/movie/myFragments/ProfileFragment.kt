@@ -29,6 +29,7 @@ class ProfileFragment : Fragment() {
     private lateinit var progressBar: ProgressBar
     private lateinit var profileListViewModel: ProfileViewModel
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {

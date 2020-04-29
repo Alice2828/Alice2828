@@ -71,13 +71,12 @@ class LoginActivity : AppCompatActivity() {
 //                Context.CONNECTIVITY_SERVICE
 //            )as ConnectivityManager
 //            if (connectivity) {
-            val bundle = Bundle()
-            bundle.putString("my_message", stayLogged().toString())
-            firebaseAnalytics.logEvent("login_click_event", bundle)
+            val param = Bundle()
+            param.putString(FirebaseAnalytics.Param.METHOD, "google")
+            firebaseAnalytics.logEvent("Login_button", param)
             loginViewModel.makeToken(email.text.toString(), password.text.toString())
            // }
         }
-
     }
 
     private fun check() {
