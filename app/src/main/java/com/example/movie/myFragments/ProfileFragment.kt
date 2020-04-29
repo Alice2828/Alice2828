@@ -68,12 +68,15 @@ class ProfileFragment : Fragment() {
         })
         bindView(rootView)
         return rootView
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
+
         logout.setOnClickListener {
+
             profileListViewModel.deleteProfileSession()
             logout()
         }
@@ -81,6 +84,7 @@ class ProfileFragment : Fragment() {
         changeAvatarPhoto.setOnClickListener {
             getPermissions()
         }
+      
         map.setOnClickListener {
             val intent = Intent(context, MapsActivity::class.java)
             startActivity(intent)
@@ -108,7 +112,7 @@ class ProfileFragment : Fragment() {
         map = rootView.findViewById(R.id.map)
     }
 
-    private fun initViews() {
+   private fun initViews() {
         val authorizedName = Singleton.getUserName()
         val authorizedEmail = Singleton.getUserName() + "@mail.ru"
         nameInfo.text = authorizedName

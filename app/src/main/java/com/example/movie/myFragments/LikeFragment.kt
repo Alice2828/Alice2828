@@ -80,13 +80,18 @@ class LikeFragment : Fragment() {
         recyclerView.adapter = postAdapter
         postAdapter?.notifyDataSetChanged()
         loadJSON()
+
+
     }
 
     private fun loadJSON() {
         likeListViewModel.getMovieLike()
     }
 
-    private fun bindView() {
+
+    }
+    private fun bindView()
+    {
         commentsIc = (rootView as ViewGroup).findViewById(R.id.ic_comments)
         timeIc = (rootView as ViewGroup).findViewById(R.id.ic_times)
         dateTv = (rootView as ViewGroup).findViewById(R.id.date_movie_info)

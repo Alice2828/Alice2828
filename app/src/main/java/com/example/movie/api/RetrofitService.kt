@@ -3,7 +3,6 @@ package com.example.movie.api
 import com.example.movie.model.MovieResponse
 import com.google.gson.JsonObject
 import retrofit2.Call
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
@@ -97,13 +96,6 @@ interface PostApi {
         @Query("session_id") sessionId: String?
     ): Call<MovieResponse>
 
-    @GET("account/{account_id}/favorite/movies")
-    suspend fun getFavouriteMoviesCoroutine(
-        @Path("account_id") accountId: Int?,
-        @Query("api_key") apiKey: String,
-        @Query("session_id") sessionId: String?
-    ): Response<MovieResponse>
-
     @GET("movie/{movie_id}/account_states")
     fun hasLike(
         @Path("movie_id") movieId: Int?,
@@ -111,8 +103,7 @@ interface PostApi {
         @Query("session_id") sessionId: String?
     ): Call<JsonObject>
 
-    @DELETE("authentication/session")
-    fun deleteSession(@Query("api_key") apiKey: String, @Body body: JsonObject): Call<JsonObject>
+    
 
     @HTTP(method = "DELETE", path = "authentication/session", hasBody = true)
     suspend fun deleteSessionCoroutine(

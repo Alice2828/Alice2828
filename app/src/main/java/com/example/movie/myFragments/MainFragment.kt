@@ -129,6 +129,8 @@ class MainFragment : Fragment() {
         recyclerView.adapter = postAdapter
         postAdapter?.notifyDataSetChanged()
         loadJSON()
+
+
     }
 
     private fun bigPicCard() {
