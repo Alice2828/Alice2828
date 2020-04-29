@@ -24,6 +24,7 @@ import com.example.movie.view.LoginActivity
 import com.example.movie.R
 import com.example.movie.api.RequestConstants
 import com.example.movie.model.Singleton
+import com.example.movie.view.MapsActivity
 import com.example.movie.view_model.ProfileViewModel
 import com.example.movie.view_model.ViewModelProviderFactory
 import java.io.File
@@ -34,6 +35,7 @@ class ProfileFragment : Fragment() {
     private lateinit var nameInfo: TextView
     private lateinit var emailInfo: TextView
     private lateinit var logout: Button
+    private lateinit var map: Button
     private lateinit var editor: SharedPreferences.Editor
     private lateinit var progressBar: ProgressBar
     private lateinit var profileListViewModel: ProfileViewModel
@@ -76,8 +78,14 @@ class ProfileFragment : Fragment() {
         logout.setOnClickListener {
             profileListViewModel.deleteProfileSession()
         }
+
         changeAvatarPhoto.setOnClickListener {
             getPermissions()
+
+        map.setOnClickListener {
+            val intent = Intent(context, MapsActivity::class.java)
+            startActivity(intent)
+
         }
     }
 
@@ -97,6 +105,8 @@ class ProfileFragment : Fragment() {
         progressBar = rootView.findViewById(R.id.progressBar)
         avatarIm = rootView.findViewById(R.id.avatarIm)
         changeAvatarPhoto = rootView.findViewById(R.id.register)
+        editor = preferences.edit()
+        map = rootView.findViewById(R.id.map)
     }
 
     private fun initViews() {
