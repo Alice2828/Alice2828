@@ -13,9 +13,9 @@ interface CinemaDao {
     fun getAllCinemas(): List<Cinema>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertCinema(cinema: Cinema?)
+    fun insert(cinema: Cinema?)
 
-//    @Insert(onConflict = OnConflictStrategy.REPLACE)
-//    suspend fun insertAllCinema(list: List<Cinema>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAllCinemas(list: List<Cinema>)
 }
 

@@ -1,7 +1,9 @@
 package com.example.movie.view
 
 import android.os.Bundle
+import android.widget.ProgressBar
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.movie.R
 import com.example.movie.database.CinemaDao
@@ -9,6 +11,7 @@ import com.example.movie.database.CinemaDatabase
 import com.example.movie.model.Cinema
 import com.example.movie.view_model.CinemaMapViewModel
 import com.example.movie.view_model.ViewModelProviderFactory
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
@@ -18,11 +21,9 @@ import com.google.android.gms.maps.model.MarkerOptions
 class MapsActivity : FragmentActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
-    private var cinemaDao:CinemaDao? = null
     private lateinit var cinemaMapViewModel: CinemaMapViewModel
     private lateinit var cinemaList: List<Cinema>
-
-
+    private lateinit var progressBar: ProgressBar
 
 
 
@@ -30,16 +31,19 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        progressBar = findViewById(R.id.progressBar)
+
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
         val viewModelProviderFactory = ViewModelProviderFactory(context = this)
         cinemaMapViewModel =
             ViewModelProvider(this, viewModelProviderFactory).get(CinemaMapViewModel::class.java)
 
         cinemaList = cinemaMapViewModel.getCinemaList()
-    }
 
+    }
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -52,12 +56,18 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.uiSettings.isZoomControlsEnabled = true
-
-        for(cinema in cinemaList){
+        for(cinema in cinemaList) {
             val position = LatLng(cinema.latitude, cinema.longitude)
-            mMap.addMarker(MarkerOptions().position(position).title(cinema.name))
+            mMap.addMarker(MarkerOptions().position(position).title(cinema.title))
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(position))
 
         }
+  }
+}
+
+
+
+
 
 
         // Add a marker in Sydney and move the camera
@@ -82,6 +92,6 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
 //        googleMap.addMarker(MarkerOptions().position(location4).title("Kinopark 5 Atakent"))
 ////        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location4,10))
 
-    }
 
-}
+
+

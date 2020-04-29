@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.movie.view.LoginActivity
 import com.example.movie.R
 import com.example.movie.model.Singleton
+import com.example.movie.view.MapsActivity
 import com.example.movie.view_model.ProfileViewModel
 import com.example.movie.view_model.ViewModelProviderFactory
 
@@ -25,6 +26,7 @@ class ProfileFragment : Fragment() {
     private lateinit var nameInfo: TextView
     private lateinit var emailInfo: TextView
     private lateinit var logout: Button
+    private lateinit var map: Button
     private lateinit var editor: SharedPreferences.Editor
     private lateinit var progressBar: ProgressBar
     private lateinit var profileListViewModel: ProfileViewModel
@@ -63,6 +65,10 @@ class ProfileFragment : Fragment() {
         logout.setOnClickListener {
             profileListViewModel.deleteProfileSession()
         }
+        map.setOnClickListener {
+            val intent = Intent(context, MapsActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     fun logout() {
@@ -77,6 +83,8 @@ class ProfileFragment : Fragment() {
         logout = rootView.findViewById(R.id.logout)
         progressBar = rootView.findViewById(R.id.progressBar)
         editor = preferences.edit()
+        map = rootView.findViewById(R.id.map)
+
     }
 
     private fun initViews() {
